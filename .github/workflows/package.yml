@@ -1,0 +1,61 @@
+name: 打包isx-cli工具
+
+on:
+  release:
+    types: [published]
+
+jobs:
+
+  package:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: 下载代码
+        uses: actions/checkout@v4
+
+      - name: 缓存go依赖
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: 启动go环境
+        uses: actions/setup-go@v4.1.0
+        with:
+          go-version-file: './go.mod'
+
+      - name: 安装项目依赖
+        run: |
+          go env -w GO111MODULE=auto
+          go mod tidy
+          go install
+
+      - name: 打包windows环境命令
+        run: CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o ./target/isx_windows_amd64.exe main.go
+
+      - name: 打包linux环境命令
+        run: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o ./target/isx_linux_amd64 main.go
+
+      - name: 打包macos环境命令
+        run: CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -o ./target/isx_darwin_arm64 main.go
+
+      - name: 上传二进制文件
+        uses: actions/upload-artifact@v3
+        with:
+          name: i-artifact
+          path: |
+            ./target/isx_windows_amd64.exe
+            ./target/isx_linux_amd64
+            ./target/isx_darwin_arm64
+
+      - name: 推到github中
+        uses: softprops/action-gh-release@v1
+        with:
+          files: target/*
+          token: ${{ secrets.ALL_TOKEN }}
