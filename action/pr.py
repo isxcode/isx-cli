@@ -10,13 +10,13 @@ import subprocess
 
 def get_branch():
     try:
-        result = subprocess.run(["git", "branch", "-r", "-l", "upstream/*-" + get_pr_num()],
+        result = subprocess.run(["git", "branch", "-r", "-l", "upstream/*-#" + get_pr_num()],
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
                                 check=True, cwd=get_current_project_path())
         branches = result.stdout.split('\n')
         for branch in branches:
             branch_sub = branch.strip().split('-')
-            if len(branch_sub) > 1 and branch_sub[1] == get_pr_num():
+            if len(branch_sub) > 1 and branch_sub[1] == "#"+get_pr_num():
                 return branch.strip().replace("upstream/", "")
         print("未找到分支")
         exit(0)
@@ -34,7 +34,7 @@ def pr():
         "X-GitHub-Api-Version": "2022-11-28"
     }
     data = {
-        "title": get_pr_num() + " " + get_pr_message().replace("'", ""),
+        "title": "#" + get_pr_num() + " " + get_pr_message().replace("'", ""),
         "head": branch_name,
         "head_repo": get_account() + "/" + get_current_project(),
         "base": branch_name

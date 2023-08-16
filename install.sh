@@ -14,7 +14,7 @@ rm -rf ${BASE_PATH}/build
 rm -f isx
 
 # 打包
-python3 -m nuitka --output-dir=./build --output-filename=isx main.py
+python3 -m nuitka --follow-imports --output-dir=./build --output-filename=isx main.py
 
 # 配置环境变量
 echo 'export PATH=$PATH:'"${BASE_PATH}" >> ~/.zshrc

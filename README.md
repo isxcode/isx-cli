@@ -56,7 +56,7 @@ isx branch #89
 # 多项目
 isx git <command>
 # 自动提交pr
-isx pr #89 '<message>'
+isx pr 88 '<message>'
 # 初始化项目
 isx init <app-name>
 # 初始化前端模块

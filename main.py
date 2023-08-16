@@ -19,9 +19,9 @@ from action.website import website
 from action.branch import branch
 from action.git import git
 from action.pr import pr
-# from action.init import init
-# from action.frontend import frontend
-# from action.backend import backend
+from action.init import init
+from action.frontend import frontend
+from action.backend import backend
 
 
 if __name__ == '__main__':
@@ -45,9 +45,9 @@ if __name__ == '__main__':
         "branch": branch,
         "git": git,
         "pr": pr,
-        # "init": init,
-        # "frontend": frontend,
-        # "backend": backend,
+        "init": init,
+        "frontend": frontend,
+        "backend": backend
     }
     if get_action() != 'login':
         check_login()
