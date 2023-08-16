@@ -16,7 +16,7 @@ from action.package import package
 from action.docker import docker
 from action.deploy import deploy
 from action.website import website
-# from action.branch import branch
+from action.branch import branch
 from action.git import git
 from action.pr import pr
 # from action.init import init
@@ -42,7 +42,7 @@ if __name__ == '__main__':
         "docker": docker,
         "deploy": deploy,
         "website": website,
-        # "branch": branch,
+        "branch": branch,
         "git": git,
         "pr": pr,
         # "init": init,
