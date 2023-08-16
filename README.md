@@ -51,11 +51,11 @@ isx docker
 isx deploy 
 # 启动本地官网
 isx website
-# 创建开发需求分支
-isx branch #89
+# 创建开发#88需求分支
+isx branch 88
 # 多项目
 isx git <command>
-# 自动提交pr
+# 自动提交#88的pr
 isx pr 88 '<message>'
 # 初始化项目
 isx init <app-name>
