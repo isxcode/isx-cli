@@ -15,18 +15,15 @@ config_temp = {
     },
     "flink-yun": {
         "repository": "https://github.com/isxcode/flink-yun.git",
-        "dir": "",
-        "has_private": True
+        "dir": ""
     },
     "isx-cli": {
         "repository": "https://github.com/isxcode/isx-cli.git",
-        "dir": "",
-        "has_private": False
+        "dir": ""
     },
     "isx-app": {
         "repository": "https://github.com/isxcode/isx-app.git",
-        "dir": "",
-        "has_private": False
+        "dir": ""
     }
 }
 
@@ -84,20 +81,21 @@ def get_current_project_dir():
 
 def get_current_project_path():
     config = get_config()
-    return config[config['current-project']]['dir'] + "/" + config['current-project']
+    return config[config['current-project']]['dir']+"/"+config['current-project']
 
 
 def get_current_project_vip_path():
     config = get_config()
-    return config[config['current-project']]['dir'] + "/" + config['current-project'] + "/" + config[
-        'current-project'] + "-vip"
+    return config[config['current-project']]['dir']+"/"+config['current-project']+"/"+config['current-project']+"-vip"
 
 
 def check_current_project():
     config = get_config()
-    if config['current-project'] == '':
-        print("请使用 isx code 命令，选择开发项目")
+    try:
+        config['current-project']
+    except BaseException:
+        print("请选择开发项目")
         exit(0)
     if config[config['current-project']]['dir'] == '':
-        print("请使用 isx clone 命令，下载开发项目")
+        print("请下载项目")
         exit(0)

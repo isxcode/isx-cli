@@ -6,9 +6,13 @@ from action.login import login
 from action.logout import logout
 from action.clone import clone
 from action.list import list
-from action.develop import develop
+from action.code import code
 from action.show import show
 from action.idea import idea
+from action.version import version
+from action.install import install
+from action.remove import remove
+from action.format import format
 from action.vscode import vscode
 from action.clean import clean
 from action.start import start
@@ -16,6 +20,8 @@ from action.package import package
 from action.docker import docker
 from action.deploy import deploy
 from action.website import website
+from action.web import web
+from action.home import home
 from action.branch import branch
 from action.git import git
 from action.pr import pr
@@ -32,7 +38,7 @@ if __name__ == '__main__':
         "logout": logout,
         "clone": clone,
         "list": list,
-        "develop": develop,
+        "code": code,
         "show": show,
         "idea": idea,
         "vscode": vscode,
@@ -47,7 +53,13 @@ if __name__ == '__main__':
         "pr": pr,
         "init": init,
         "frontend": frontend,
-        "backend": backend
+        "backend": backend,
+        "web": web,
+        "home": home,
+        "install": install,
+        "remove": remove,
+        "format": format,
+        "version": version
     }
     if get_action() != 'login':
         check_login()

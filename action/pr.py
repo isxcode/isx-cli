@@ -51,7 +51,7 @@ def pr():
         "X-GitHub-Api-Version": "2022-11-28"
     }
     data = {
-        "title": get_pr_message(),
+        "title": "#" + get_pr_num() + " " +get_pr_message(),
         "head": branch_name,
         "head_repo": get_account() + "/" + get_current_project() + "-vip",
         "base": branch_name
