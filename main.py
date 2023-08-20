@@ -6,7 +6,7 @@ from action.login import login
 from action.logout import logout
 from action.clone import clone
 from action.list import list
-from action.code import code
+from action.choose import choose
 from action.show import show
 from action.idea import idea
 from action.version import version
@@ -38,7 +38,7 @@ if __name__ == '__main__':
         "logout": logout,
         "clone": clone,
         "list": list,
-        "code": code,
+        "choose": choose,
         "show": show,
         "idea": idea,
         "vscode": vscode,

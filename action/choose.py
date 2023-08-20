@@ -22,7 +22,7 @@ def input_project_name(config):
         exit(0)
 
 
-def code():
+def choose():
     config = get_config()
     print("可选开发项目:")
     project = input_project_name(config)
