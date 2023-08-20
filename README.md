@@ -46,7 +46,7 @@ isx clone
 isx list
 
 # 切换开发项目
-isx code spark-yun
+isx code
 
 # 查看当前开发项目
 isx show
