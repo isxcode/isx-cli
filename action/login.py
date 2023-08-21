@@ -24,4 +24,4 @@ def login():
         token = input("请输入Github的Token：")
         config['user']['token'] = token
         save_config(config)
-    print('登录成功!!!')
+    print('登录成功,欢迎使用isx开发工具')
