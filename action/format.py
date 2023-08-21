@@ -3,5 +3,5 @@ import os
 
 
 def format():
-    command = 'cd ' + get_current_project_path() + ' && ./gradlew start'
+    command = 'cd ' + get_current_project_path() + ' && ./gradlew format'
     os.system(command)

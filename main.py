@@ -24,8 +24,8 @@ from action.web import web
 from action.home import home
 from action.branch import branch
 from action.git import git
+from action.get import get
 from action.pr import pr
-from action.init import init
 from action.frontend import frontend
 from action.backend import backend
 
@@ -48,10 +48,10 @@ if __name__ == '__main__':
         "docker": docker,
         "deploy": deploy,
         "website": website,
-        "branch": branch,
         "git": git,
+        "get": get,
         "pr": pr,
-        "init": init,
+        "branch": branch,
         "frontend": frontend,
         "backend": backend,
         "web": web,

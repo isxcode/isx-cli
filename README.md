@@ -84,8 +84,11 @@ isx deploy
 # 启动本地官网
 isx website
 
-# 创建开发#88需求分支
+# 切开发#88需求分支
 isx branch 88
+
+# 获取编号分支信息
+isx get 88
 
 # 多项目git命令
 isx git <command>

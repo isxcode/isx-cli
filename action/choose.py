@@ -14,7 +14,7 @@ def input_project_name(config):
     try:
         project_name = projects[int(project_number) - 1]['project_name'].strip()
         if config[project_name]['dir'] == '':
-            print("该项目未下载，请选择其他项目")
+            print("该项目未下载，请选择其他项目，或使用 isx clone 下载项目")
             exit(0)
         return project_name
     except IndexError:

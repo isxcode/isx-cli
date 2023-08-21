@@ -12,6 +12,8 @@ def get_git_command():
 def get_pr_num():
     return sys.argv[2]
 
+def get_branch_num():
+    return sys.argv[2]
 
 def get_pr_message():
     return sys.argv[3]
