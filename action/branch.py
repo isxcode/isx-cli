@@ -62,4 +62,5 @@ def branch():
                 release_name = json.loads(response.text)['name'].replace("v", '')
                 branch_name = release_name + "-#" + get_branch_num()
                 print("创建分支：" + branch_name)
+                print("请从github(https://github.com/isxcode/spark-yun) 中创建需求分支：" + branch_name)
                 exec_git_command("git checkout -b " + branch_name + " upstream/latest")
