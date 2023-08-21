@@ -37,6 +37,7 @@ def exec_git_command(git_command):
 def branch():
     check_current_project()
     exec_command("cd " + get_current_project_path() + " && git fetch upstream && git fetch origin")
+    exec_command("cd " + get_current_project_vip_path() + " && git fetch upstream && git fetch origin")
     branch_name = get_branch(get_branch_num(), "origin")
     if branch_name != '':
         print("切换分支：" + branch_name)
