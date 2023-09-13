@@ -12,8 +12,20 @@ from config import get_token
 import os
 
 
+def get_local_branch(num):
+    git_command = "git branch -l *-#" + num
+    result = subprocess.run(git_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+                            cwd=get_current_project_path())
+    branches = result.stdout.split('\n')
+    for branch in branches:
+        branch_sub = branch.strip().split('-')
+        if len(branch_sub) > 1 and branch_sub[1] == "#" + num:
+            return branch.strip()
+    return ""
+
+
 def get_branch(num, origin):
-    git_command = "git branch -r -l " + origin + "*-#" + num
+    git_command = "git branch -r -l " + origin + "/*-#" + num
     result = subprocess.run(git_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
                             cwd=get_current_project_path())
     branches = result.stdout.split('\n')
@@ -38,17 +50,17 @@ def branch():
     check_current_project()
     exec_command("cd " + get_current_project_path() + " && git fetch upstream && git fetch origin")
     exec_command("cd " + get_current_project_vip_path() + " && git fetch upstream && git fetch origin")
-    branch_name = get_branch(get_branch_num(), "")
+    branch_name = get_local_branch(get_branch_num())
     if branch_name != '':
         exec_command("cd " + get_current_project_path() + " && git checkout " + branch_name)
         exec_command("cd " + get_current_project_vip_path() + " && git checkout " + branch_name)
     else:
-        branch_name = get_branch(get_branch_num(), "/origin")
+        branch_name = get_branch(get_branch_num(), "origin")
         if branch_name != '':
             print("切换分支：" + branch_name)
             exec_git_command("git checkout --track origin/" + branch_name)
         else:
-            branch_name = get_branch(get_branch_num(), "/upstream")
+            branch_name = get_branch(get_branch_num(), "upstream")
             if branch_name != '':
                 print("切换分支：" + branch_name)
                 exec_git_command("git checkout --track upstream/" + branch_name)
