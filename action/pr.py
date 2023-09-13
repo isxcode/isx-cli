@@ -1,6 +1,8 @@
 from config import get_current_project
 from config import get_token
+from command import exec_command
 from config import get_current_project_path
+from config import get_current_project_vip_path
 from config import get_account
 from args import get_pr_num
 from args import get_pr_message
@@ -10,6 +12,9 @@ import subprocess
 
 def get_branch():
     try:
+        # 先刷新upstream
+        exec_command("cd " + get_current_project_path() + " && git fetch upstream && git fetch origin")
+        exec_command("cd " + get_current_project_vip_path() + " && git fetch upstream && git fetch origin")
         result = subprocess.run(["git", "branch", "-r", "-l", "upstream/*-#" + get_pr_num()],
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
                                 check=True, cwd=get_current_project_path())
