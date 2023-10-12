@@ -49,7 +49,7 @@ isx list
 isx code
 
 # 查看当前开发项目
-isx show
+isx now
 
 # 快速进入项目目录
 isx home

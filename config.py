@@ -1,32 +1,45 @@
 import os
 import yaml
 
-config_path = os.path.expanduser("~/.isx/config.yml")
+config_path = os.path.expanduser("~/.isx/isx-config.yml")
 config_temp = {
-    "current-project": "",
     "user": {
         "account": "",
         "token": ""
     },
-    "spark-yun": {
-        "repository": "https://github.com/isxcode/spark-yun.git",
-        "dir": "",
-        "has_private": True
-    },
-    "flink-yun": {
-        "repository": "https://github.com/isxcode/flink-yun.git",
-        "dir": "",
-        "has_private": True
-    },
-    "isx-cli": {
-        "repository": "https://github.com/isxcode/isx-cli.git",
-        "dir": "",
-        "has_private": False
-    },
-    "isx-app": {
-        "repository": "https://github.com/isxcode/isx-app.git",
-        "dir": "",
-        "has_private": False
+    "develop-project": "",
+    "projects": {
+        "spark-yun": {
+            "dir": "",
+            "describe": "基于Spark开发批处理大数据平台",
+            "repository": "https://github.com/isxcode/spark-yun.git",
+            "sub-repository": [
+                "https://github.com/isxcode/spark-yun-vip.git",
+            ]
+        },
+        "flink-yun": {
+            "dir": "",
+            "describe": "基于Flink开发流处理大数据平台",
+            "repository": "https://github.com/isxcode/flink-yun.git",
+            "sub-repository": [
+                "https://github.com/isxcode/flink-yun-vip.git",
+            ]
+        },
+        "isx-cli": {
+            "dir": "",
+            "describe": "isxcode组织代码开发cli脚手架",
+            "repository": "https://github.com/isxcode/isx-cli.git",
+            "sub-repository": [
+            ]
+        },
+        "isx-base": {
+            "dir": "",
+            "describe": "isxcode组织代码开发模版",
+            "repository": "https://github.com/isxcode/isx-base.git",
+            "sub-repository": [
+                "https://github.com/isxcode/isx-base-vip.git",
+            ]
+        }
     }
 }
 
@@ -48,7 +61,9 @@ def init_config():
             yaml.dump(config_temp, f)
 
 
+# 直接获取配置文件
 def get_config():
+    init_config()
     config_file = open(config_path, mode='r', encoding='utf-8')
     return yaml.safe_load(config_file)
 

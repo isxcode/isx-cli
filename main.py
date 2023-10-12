@@ -31,7 +31,6 @@ from action.backend import backend
 
 
 if __name__ == '__main__':
-    init_config()
     switch_action = {
         "reset": reset,
         "login": login,

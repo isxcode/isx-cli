@@ -3,7 +3,8 @@ from config import save_config
 
 
 def logout():
-    config = get_config()
-    config['user'] = {'account': '', 'token': ''}
-    save_config(config)
-    print('退出成功!!!')
+    isx_config = get_config()
+    isx_config['user']['account'] = ""
+    isx_config['user']['token'] = ""
+    save_config(isx_config)
+    print('退出成功')
