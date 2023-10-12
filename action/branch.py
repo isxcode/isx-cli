@@ -1,83 +1,104 @@
+import json
+import re
 import subprocess
 
 import requests
-import json
 
-from command import exec_command
-from config import get_current_project_path
-from config import get_current_project_vip_path
-from config import check_current_project
 from args import get_branch_num
+from command import exec_command
+from config import check_current_project
+from config import get_config
 from config import get_token
-import os
 
 
-def get_local_branch(num):
-    git_command = "git branch -l *-#" + num
-    result = subprocess.run(git_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
-                            cwd=get_current_project_path())
+def get_branch(branch_num, project_dir, prefix):
+    if prefix != 'local':
+        prefix = prefix + '/'
+    search_git_command = "git branch -l " + prefix + "*-#" + branch_num
+    result = subprocess.run(search_git_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+                            cwd=project_dir)
     branches = result.stdout.split('\n')
-    for branch in branches:
-        branch_sub = branch.strip().split('-')
-        if len(branch_sub) > 1 and branch_sub[1] == "#" + num:
-            return branch.strip()
+    for branch_meta in branches:
+        branch_sub = branch_meta.strip().split('-')
+        if len(branch_sub) > 1 and branch_sub[1] == "#" + branch_num:
+            return branch_meta.replace("*", '').strip()
     return ""
 
 
-def get_branch(num, origin):
-    git_command = "git branch -r -l " + origin + "/*-#" + num
-    result = subprocess.run(git_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
-                            cwd=get_current_project_path())
-    branches = result.stdout.split('\n')
-    for branch in branches:
-        branch_sub = branch.strip().split('-')
-        if len(branch_sub) > 1 and branch_sub[1] == "#" + num:
-            return branch.strip().replace(origin + "/", "")
-    return ""
+def checkout_branch(project_dir, sub_repository, branch_name):
+    exec_command("cd " + project_dir + " && git checkout " + branch_name)
+    for repository_meta in sub_repository:
+        matcher = re.search(r"/([^/.]+)\.git", repository_meta)
+        project_name = matcher.group(1)
+        exec_command("cd " + project_dir + '/' + project_name + " && git checkout " + branch_name)
 
 
-def exec_git_command(git_command):
-    print("执行git命令：" + git_command)
-    command = "cd " + get_current_project_path() + " && " + git_command
-    os.system(command)
-    command = "cd " + get_current_project_vip_path() + " && " + git_command
-    os.system(command)
-    command = "cd " + get_current_project_path()
-    os.system(command)
+def fetch_branch(project_dir, sub_repository):
+    exec_command("cd " + project_dir + " && git fetch upstream && git fetch origin")
+    for repository_meta in sub_repository:
+        matcher = re.search(r"/([^/.]+)\.git", repository_meta)
+        project_name = matcher.group(1)
+        exec_command("cd " + project_dir + '/' + project_name + " && git fetch upstream && git fetch origin")
+
+
+def push_branch(project_dir, sub_repository, branch_name, prefix):
+    exec_command("cd " + project_dir + " && git push origin " + branch_name)
+    for repository_meta in sub_repository:
+        matcher = re.search(r"/([^/.]+)\.git", repository_meta)
+        project_name = matcher.group(1)
+        exec_command("cd " + project_dir + '/' + project_name + " && git push " + prefix + " " + branch_name)
+
+
+def get_latest_branch():
+    url = "https://api.github.com/repos/isxcode/spark-yun/releases/latest"
+    headers = {
+        "Accept": "application/vnd.github+json",
+        "Authorization": "Bearer " + get_token(),
+        "X-GitHub-Api-Version": "2022-11-28"
+    }
+    response = requests.get(url, headers=headers)
+    if response.status_code == 401:
+        print("github token权限不足，请重新登录")
+        exit(0)
+    else:
+        release_name = json.loads(response.text)['name'].replace("v", '')
+        return release_name + "-#" + get_branch_num()
 
 
 def branch():
-    check_current_project()
-    exec_command("cd " + get_current_project_path() + " && git fetch upstream && git fetch origin")
-    exec_command("cd " + get_current_project_vip_path() + " && git fetch upstream && git fetch origin")
-    branch_name = get_local_branch(get_branch_num())
+    isx_config = get_config()
+    check_current_project(isx_config)
+    project_info = isx_config['projects'][isx_config['develop-project']]
+    project_dir = project_info['dir']
+    sub_repository = list(project_info['sub-repository'])
+    fetch_branch(project_dir, sub_repository)
+    branch_num = get_branch_num()
+
+    # 从本地拉分支
+    branch_name = get_branch(branch_num, project_dir, 'local')
     if branch_name != '':
-        exec_command("cd " + get_current_project_path() + " && git checkout " + branch_name)
-        exec_command("cd " + get_current_project_vip_path() + " && git checkout " + branch_name)
+        checkout_branch(project_dir, sub_repository, branch_name)
+        print("分支名:" + branch_name)
+        exit(0)
+
+    # 从个人仓库拉分支
+    branch_name = get_branch(branch_num, project_dir, 'origin')
+    if branch_name != '':
+        branch_name_command = " -b " + branch_name + " origin/" + branch_name
+        checkout_branch(project_dir, sub_repository, branch_name_command)
+        print("分支名:" + branch_name)
+        exit(0)
+
+    # 从upstream远程仓库拉分支
+    branch_name = get_branch(branch_num, project_dir, 'upstream')
+    if branch_name != '':
+        branch_name_command = " -b " + branch_name + " upstream/" + branch_name
+        checkout_branch(project_dir, sub_repository, branch_name_command)
+        push_branch(branch_name, 'origin')
+        print("分支名:" + branch_name)
     else:
-        branch_name = get_branch(get_branch_num(), "origin")
-        if branch_name != '':
-            print("切换分支：" + branch_name)
-            exec_git_command("git checkout --track origin/" + branch_name)
-        else:
-            branch_name = get_branch(get_branch_num(), "upstream")
-            if branch_name != '':
-                print("切换分支：" + branch_name)
-                exec_git_command("git checkout --track upstream/" + branch_name)
-            else:
-                # 如果自己仓库和upstream仓库都没有分支，则需要创建分支
-                url = "https://api.github.com/repos/isxcode/spark-yun/releases/latest"
-                headers = {
-                    "Accept": "application/vnd.github+json",
-                    "Authorization": "Bearer " + get_token(),
-                    "X-GitHub-Api-Version": "2022-11-28"
-                }
-                response = requests.get(url, headers=headers)
-                if response.status_code == 401:
-                    print("github token权限不足，请重新登录")
-                else:
-                    release_name = json.loads(response.text)['name'].replace("v", '')
-                    branch_name = release_name + "-#" + get_branch_num()
-                    print("创建分支：" + branch_name)
-                    print("请从github(https://github.com/isxcode/spark-yun) 中创建需求分支：" + branch_name)
-                    exec_git_command("git checkout -b " + branch_name + " upstream/latest")
+        branch_name_command = " -b " + get_latest_branch() + " upstream/latest"
+        checkout_branch(project_dir, sub_repository, branch_name_command)
+        push_branch(branch_name, 'origin')
+        push_branch(branch_name, 'upstream')
+        print("分支名:" + branch_name)

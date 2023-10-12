@@ -108,8 +108,7 @@ def get_current_project_vip_path():
         'current-project'] + "-vip"
 
 
-def check_current_project():
-    config = get_config()
-    if config['develop-project'] == '':
-        print("请先使用【isx choose】命令选择开发项目")
+def check_current_project(isx_config):
+    if isx_config['develop-project'] == '':
+        print("请先执行 【isx choose】命令选择开发项目")
         exit(0)
