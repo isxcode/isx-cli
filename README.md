@@ -103,6 +103,27 @@ isx remove
 isx format
 ```
 
+```bash
+isx login      ok 
+isx logout     ok
+isx reset      ok
+isx clone      ok
+isx list       
+isx choose
+isx now
+isx home
+isx install
+isx branch 88  可以切分支 
+isx get 88 
+isx start
+isx package
+isx commit ':sparkles: xxxx'
+isx push 88
+isx pr 88 '提交合并'
+isx git command 
+isx add project 
+```
+
 #### 未支持命令
 
 ```bash
