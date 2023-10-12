@@ -110,9 +110,6 @@ def get_current_project_vip_path():
 
 def check_current_project():
     config = get_config()
-    if config['current-project'] == '':
-        print("请使用 isx choose 命令，选择开发项目")
-        exit(0)
-    if config[config['current-project']]['dir'] == '':
-        print("请使用 isx clone 命令，下载开发项目")
+    if config['develop-project'] == '':
+        print("请先使用【isx choose】命令选择开发项目")
         exit(0)

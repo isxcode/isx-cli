@@ -1,23 +1,19 @@
-import os
+import platform
 
 from command import exec_command
-from config import check_current_project
-from config import get_current_project
-from config import get_current_project_path
+from config import get_config
 
 
 def install():
-    check_current_project()
-    project = get_current_project()
-    project_path = get_current_project_path()
-    download_path = "~/Downloads"
-    if project == 'spark-yun':
-        spark_file_name = "spark-3.4.0-bin-hadoop3.tgz"
-        spark_download_url = "https://archive.apache.org/dist/spark/spark-3.4.0/spark-3.4.0-bin-hadoop3.tgz"
-        if not os.path.exists(os.path.expanduser(download_path + "/" + spark_file_name)):
-            exec_command("cd " + download_path + " && wget " + spark_download_url)
-        if not os.path.exists(project_path + "/spark-yun-dist/spark-min"):
-            spark_min_dir = project_path + "/spark-yun-dist/spark-min"
-            exec_command(
-                "mkdir -p " + spark_min_dir + "  && tar vzxf " + download_path + "/" + spark_file_name + " --strip-components=1 -C "+spark_min_dir)
-    print("依赖安装完成")
+    isx_config = get_config()
+    if isx_config['develop-project'] == '':
+        print("请先执行 【isx choose】命令选择开发项目，在执行 【isx install】")
+        exit(0)
+    project_dir = isx_config['projects'][isx_config['develop-project']]['dir']
+    system_name = platform.system()
+    if system_name == "Darwin":
+        exec_command("cd " + project_dir + " && bash install.sh")
+    elif system_name == "Windows":
+        exec_command("cd " + project_dir + " && install.bat")
+    else:
+        print("本地系统暂不支持")

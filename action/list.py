@@ -15,5 +15,5 @@ def list_project():
         if develop_project == project_name:
             project_info = project_info + ' 【 Coding 】'
         else:
-            project_info = project_info + ' 【 Wait 】'
+            project_info = project_info + ' 【 Wait   】'
         print(project_info)

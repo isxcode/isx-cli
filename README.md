@@ -109,11 +109,9 @@ isx logout     ok
 isx reset      ok
 isx clone      ok
 isx list       ok
-isx choose     
-isx now
-isx home
-isx install
-isx branch 88  可以切分支 
+isx choose     ok
+isx install    ok 
+isx branch 88  
 isx get 88 
 isx start
 isx package
