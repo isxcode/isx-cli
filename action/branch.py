@@ -14,6 +14,8 @@ from config import get_token
 def get_branch(branch_num, project_dir, prefix):
     if prefix != 'local':
         prefix = prefix + '/'
+    else:
+        prefix = ''
     search_git_command = "git branch -l " + prefix + "*-#" + branch_num
     result = subprocess.run(search_git_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
                             cwd=project_dir)
