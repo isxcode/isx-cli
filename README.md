@@ -108,8 +108,8 @@ isx login      ok
 isx logout     ok
 isx reset      ok
 isx clone      ok
-isx list       
-isx choose
+isx list       ok
+isx choose     
 isx now
 isx home
 isx install

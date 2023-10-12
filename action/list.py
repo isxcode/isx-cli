@@ -1,12 +1,12 @@
 from config import get_config
 
 
-def list():
+def list_project():
     isx_config = get_config()
     projects = isx_config['projects']
     develop_project = isx_config['develop-project']
     for index, project_name in enumerate(projects):
-        project_info = str(index) + '. ' + project_name.ljust(12)
+        project_info = '[' + str(index) + '] ' + project_name.ljust(12)
         if projects[project_name]['dir'] != '':
             home_info = '【 已下载 ' + projects[project_name]['dir'] + ' 】'
             project_info = project_info + home_info.ljust(40)

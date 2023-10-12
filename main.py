@@ -5,7 +5,7 @@ from action.reset import reset
 from action.login import login
 from action.logout import logout
 from action.clone import clone
-from action.list import list
+from action.list import list_project
 from action.choose import choose
 from action.show import show
 from action.idea import idea
@@ -36,7 +36,7 @@ if __name__ == '__main__':
         "login": login,
         "logout": logout,
         "clone": clone,
-        "list": list,
+        "list": list_project,
         "choose": choose,
         "show": show,
         "idea": idea,
