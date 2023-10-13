@@ -8,10 +8,6 @@
 - 代码自动生成
 - Git分支管理
 
-#### 前提
-
-- 仅支持macOS系统
-
 #### 安装
 
 ```bash
@@ -22,94 +18,56 @@
 
 > 若系统不支持，下载源码本地构建。
 
-- [https://openfly.oss-cn-shanghai.aliyuncs.com/isx](https://openfly.oss-cn-shanghai.aliyuncs.com/isx)
+- [https://openfly.oss-cn-shanghai.aliyuncs.com/isx/isx_macos_m2_v1.0.0](https://openfly.oss-cn-shanghai.aliyuncs.com/isx/isx_macos_m2_v1.0.0)
 
 #### 使用说明
 
 ```bash
-# 查看版本
-isx version
-
-# 配置重置
+# 重新用户旧配置
 isx reset
 
 # 用户登录
 isx login
 
-# 退出登录
+# 退出登录或者token过期替换
 isx logout
 
-# 下载代码
+# 下载项目代码准备开发
 isx clone
 
-# 查看所有项目列表
+# 查看本地项目列表情况
 isx list
 
-# 切换开发项目
-isx code
+# 选择开发项目
+isx choose
 
-# 查看当前开发项目
-isx now
-
-# 快速进入项目目录
-isx home
-
-# 使用idea开发项目
-isx idea 
-
-# 使用vscode开发项目
-isx vscode
-
-# 清理项目打包内容
-isx clean
-
-# 安装依赖
-isx install
-
-# 打包项目
-isx package
-
-# 启动项目
-isx start 
-
-# 单独启动前端
-isx web
-
-# 打包项目docker镜像
-isx docker 
-
-# 发布项目镜像
-isx deploy 
-
-# 启动本地官网
-isx website
-
-# 切开发#88需求分支
+# 根据缺陷编号，切换开发分支
 isx branch 88
 
-# 获取编号分支信息
+# 安装项目依赖，准备启动项目
+isx install
+
+# 启动项目
+isx start
+
+# 项目打包
+isx package
+
+# 提交代码前，一定要先格式化代码
+isx format
+
+# 获取缺陷编号的真实分支名称，留给提交分支使用
 isx get 88
 
-# 多项目git命令
-isx git <command>
+# 执行相关git命令，会在每个字模块中执行一次，减少重复操作
+isx <git-command>
+isx git add .
+isx git commit -m ":sparkles: 添加需求"
+isx git push origin 0.0.7-#88
+isx git push origin 0.0.7-#88 -f
+isx git rebase upstream/0.0.7-#88
 
-# 自动提交#88的pr
-isx pr 88 '<message>'
-
-# 删除本地项目
-isx remove
-
-# 格式化开发项目代码
-isx format
+# 一剑提交pr，自动提交子模块的pr，减少重复操作
+isx pr 88 '提交pr内容'
 ```
 
-#### 未支持命令
-
-```bash
-# 初始化项目
-isx init <app-name>
-# 初始化前端模块代码
-isx frontend <module-name>
-# 初始化后端模块代码
-isx backend <module-name>
-```

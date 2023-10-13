@@ -21,11 +21,13 @@ def get_branch_name():
     if branch_name != '':
         return branch_name
     else:
-        return branch_name
+        print('分支不存在')
+        exit(0)
 
 
 def get():
+    branch_name = get_branch_name()
     print("====================================")
-    print("分支名称 ==> " + get_branch_name())
+    print("分支名称 ==> " + branch_name)
     print("====================================")
     exit(0)

@@ -13,6 +13,9 @@ def clone():
     check_login()
     isx_config = get_config()
     project_name = input_project_number(isx_config)
+    if isx_config['projects'][project_name]['dir'] != '':
+        print("该项目已下载，请重新执行【isx clone】选择")
+        exit(0)
     project_dir = input_project_dir(project_name)
     clone_github_code(isx_config, project_name, project_dir)
     isx_config["projects"][project_name]['dir'] = project_dir + '/' + project_name
