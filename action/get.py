@@ -4,35 +4,28 @@ from args import get_branch_num
 from config import get_config
 
 
-def get():
+def get_branch_name():
     isx_config = get_config()
     project_info = isx_config['projects'][isx_config['develop-project']]
     project_dir = project_info['dir']
     branch_num = get_branch_num()
     branch_name = get_local_branch(branch_num, project_dir)
     if branch_name != '':
-        print("====================================")
-        print("分支名称 ==> " + branch_name)
-        print("====================================")
-        exit(0)
-
+        return branch_name
     # 从个人仓库拉分支
     branch_name = get_remote_branch(branch_num, project_dir, 'origin')
     if branch_name != '':
-        print("====================================")
-        print("当前开发分支 ==> " + branch_name)
-        print("====================================")
-        exit(0)
-
+        return branch_name
     # 从upstream远程仓库拉分支
     branch_name = get_remote_branch(branch_num, project_dir, 'upstream')
     if branch_name != '':
-        print("====================================")
-        print("当前开发分支 ==> " + branch_name)
-        print("====================================")
-        exit(0)
+        return branch_name
     else:
-        print("====================================")
-        print("开发分支不存在")
-        print("====================================")
-        exit(0)
+        return branch_name
+
+
+def get():
+    print("====================================")
+    print("分支名称 ==> " + get_branch_name())
+    print("====================================")
+    exit(0)
