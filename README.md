@@ -111,10 +111,10 @@ isx clone      ok
 isx list       ok
 isx choose     ok
 isx install    ok 
-isx branch 88  
-isx get 88 
-isx start
-isx package
+isx branch 88  ok
+isx get 88     ok
+isx start      
+isx package    
 isx commit ':sparkles: xxxx'
 isx push 88
 isx pr 88 '提交合并'
