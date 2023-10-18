@@ -1,4 +1,4 @@
 PyYAML==6.0
 Requests==2.31.0
-Urllib3==1.26.6
+Urllib3==1.26.18
 Nuitka==1.8.4
