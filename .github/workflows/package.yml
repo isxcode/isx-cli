@@ -41,8 +41,7 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: 打包isx
-        run: ｜
-          python3 -m nuitka --follow-imports --output-dir=./build --output-filename=isx_macos main.py
+        run: python3 -m nuitka --follow-imports --output-dir=./build --output-filename=isx_macos main.py
 
       - name: 安装node环境
         uses: actions/setup-node@v1
