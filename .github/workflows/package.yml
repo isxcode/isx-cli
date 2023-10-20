@@ -42,6 +42,11 @@ jobs:
       - name: 打包isx
         run: python3 -m nuitka --follow-imports --output-dir=./build --output-filename=isx main.py
 
+      - name: 安装node环境
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+
       - name: isx上传到阿里云oss中
         uses: AliyunWorkbench/workbench-oss@1.0.0
         with:
