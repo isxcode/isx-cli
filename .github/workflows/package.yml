@@ -1,0 +1,107 @@
+name: 打包isx工具
+
+# 推送到main分支就触发
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  # 在mac中打包
+  packageOnMac:
+
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [ "3.9" ]
+
+    steps:
+      - name: 下载代码
+        uses: actions/checkout@v4
+
+      - name: 缓存python依赖
+        uses: actions/cache@v3
+        with:
+          path: ~/Library/Caches/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: 安装python环境
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: 下载python依赖
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: 打包isx
+        run: python3 -m nuitka --follow-imports --output-dir=./build --output-filename=isx main.py
+
+#      - name: isx上传到阿里云oss中
+#        uses: yinlinyang/ali-oss-utils@1.0.1
+#        with:
+#          access-key-id: ${{ secrets.OSS_KEY_ID }}
+#          access-key-secret: ${{ secrets.OSS_KEY_SECRET }}
+#          region: oss-cn-shenzhen
+#          bucket: project
+#          source: /
+#          target: /
+
+#  # 在mac中打包
+#  packageOnMac:
+#
+#    runs-on: macos-latest
+#
+#    steps:
+#
+#      - name: my-app-install token
+#        id: my-app
+#        uses: getsentry/action-github-app-token@v2
+#        with:
+#          app_id: ${{ secrets.APP_ID }}
+#          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+#
+#      - name: 拉取闭源代码
+#        env:
+#          GITHUB_TOKEN: ${{ steps.my-app.outputs.token }}
+#        run: |
+#          gh api octocat
+#
+#      - name: Checkout private repo
+#        uses: actions/checkout@v4
+#        with:
+#          ref: ${{ github.head_ref }}
+#          repository: ispong/spark-yun-vip
+#          token: ${{ steps.my-app.outputs.token }}
+#
+#  # 在windows中打包
+#  packageOnWindows:
+#
+#    runs-on: windows-latest
+#
+#    steps:
+#
+#      - name: my-app-install token
+#        id: my-app
+#        uses: getsentry/action-github-app-token@v2
+#        with:
+#          app_id: ${{ secrets.APP_ID }}
+#          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+#
+#      - name: 拉取闭源代码
+#        env:
+#          GITHUB_TOKEN: ${{ steps.my-app.outputs.token }}
+#        run: |
+#          gh api octocat
+#
+#      - name: Checkout private repo
+#        uses: actions/checkout@v4
+#        with:
+#          ref: ${{ github.head_ref }}
+#          repository: ispong/spark-yun-vip
+#          token: ${{ steps.my-app.outputs.token }}
