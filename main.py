@@ -28,9 +28,10 @@ from action.get import get
 from action.pr import pr
 from action.frontend import frontend
 from action.backend import backend
-
+from args import check_min_args
 
 if __name__ == '__main__':
+    check_min_args()
     switch_action = {
         "reset": reset,
         "login": login,
