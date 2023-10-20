@@ -56,7 +56,7 @@ jobs:
           region: oss-cn-shanghai
           bucket: openfly
           remote-dir: /isx/
-          local-folder: ./
+          local-folder: ./isx_macos
           secure: true
 
   # 在linux中打包
@@ -107,7 +107,7 @@ jobs:
           region: oss-cn-shanghai
           bucket: openfly
           remote-dir: /isx/
-          local-folder: ./
+          local-folder: ./isx_linux
           secure: true
 
   # 在windows中打包
@@ -158,5 +158,5 @@ jobs:
           region: oss-cn-shanghai
           bucket: openfly
           remote-dir: /isx/
-          local-folder: ./
+          local-folder: ./isx_windows.exe
           secure: true
