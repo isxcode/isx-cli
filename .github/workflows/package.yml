@@ -52,7 +52,7 @@ jobs:
         with:
           access-key-id: ${{ secrets.OSS_KEY_ID }}
           access-key-secret: ${{ secrets.OSS_KEY_SECRET }}
-          region: oss-cn-shanghai.aliyuncs.com
+          region: oss-cn-shanghai
           bucket: openfly
           remote-dir: isx/isx_mac
           local-folder: isx
