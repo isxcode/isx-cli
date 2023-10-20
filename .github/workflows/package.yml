@@ -54,8 +54,8 @@ jobs:
           access-key-secret: ${{ secrets.OSS_KEY_SECRET }}
           region: oss-cn-shanghai
           bucket: openfly
-          remote-dir: isx/isx_mac
-          local-folder: isx
+          remote-dir: /isx
+          local-folder: ./
           secure: true
 
   # 在linux中打包
