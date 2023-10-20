@@ -41,7 +41,8 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: 打包isx
-        run: python3 -m nuitka --follow-imports --output-dir=./build --output-filename=./target/isx_macos main.py
+        run: ｜
+          python3 -m nuitka --follow-imports --output-dir=./build --output-filename=isx_macos main.py
 
       - name: 安装node环境
         uses: actions/setup-node@v1
@@ -56,7 +57,7 @@ jobs:
           region: oss-cn-shanghai
           bucket: openfly
           remote-dir: /isx/
-          local-folder: ./target
+          local-folder: ./
           secure: true
 
   # 在linux中打包
@@ -92,7 +93,7 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: 打包isx
-        run: python3 -m nuitka --follow-imports --output-dir=./build --output-filename=./target/isx_linux main.py
+        run: python3 -m nuitka --follow-imports --output-dir=./build --output-filename=isx_linux main.py
 
       - name: 安装node环境
         uses: actions/setup-node@v1
@@ -107,7 +108,7 @@ jobs:
           region: oss-cn-shanghai
           bucket: openfly
           remote-dir: /isx/
-          local-folder: ./target
+          local-folder: ./
           secure: true
 
   # 在windows中打包
@@ -143,7 +144,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: 打包isx
-        run: python3 -m nuitka --follow-imports --output-dir=./build --output-filename=./target/isx_windows main.py
+        run: python3 -m nuitka --follow-imports --output-dir=./build --output-filename=isx_windows main.py
 
       - name: 安装node环境
         uses: actions/setup-node@v1
@@ -158,5 +159,5 @@ jobs:
           region: oss-cn-shanghai
           bucket: openfly
           remote-dir: /isx/
-          local-folder: ./target
+          local-folder: ./
           secure: true
