@@ -48,20 +48,20 @@ jobs:
           node-version: '12.x'
 
       - name: isx上传到阿里云oss中
-        uses: AliyunWorkbench/workbench-oss@1.0.0
+        uses: tiyee/aliyun-oss-auto-upload@v2.0.0
         with:
-          ACCESS_KEY: ${{ secrets.OSS_KEY_ID }}
-          ACCESS_SECRET: ${{ secrets.OSS_KEY_SECRET }}
-          OSS_REGION: oss-cn-shanghai.aliyuncs.com
-          OSS_BUCKET: openfly
-          OSS_PATH: isx/isx_mac
-          UPLOAD_PATH: isx
+          access-key-id: ${{ secrets.OSS_KEY_ID }}
+          access-key-secret: ${{ secrets.OSS_KEY_SECRET }}
+          region: oss-cn-shanghai.aliyuncs.com
+          bucket: openfly
+          remote-dir: isx/isx_mac
+          local-folder: isx
+          secure: true
 
-
-#  # 在mac中打包
-#  packageOnMac:
+  # 在linux中打包
+#  packageOnLinux:
 #
-#    runs-on: macos-latest
+#    runs-on: ubuntu-latest
 #
 #    steps:
 #
@@ -84,8 +84,8 @@ jobs:
 #          ref: ${{ github.head_ref }}
 #          repository: ispong/spark-yun-vip
 #          token: ${{ steps.my-app.outputs.token }}
-#
-#  # 在windows中打包
+
+  # 在windows中打包
 #  packageOnWindows:
 #
 #    runs-on: windows-latest
