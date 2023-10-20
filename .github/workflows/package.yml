@@ -42,15 +42,15 @@ jobs:
       - name: 打包isx
         run: python3 -m nuitka --follow-imports --output-dir=./build --output-filename=isx main.py
 
-#      - name: isx上传到阿里云oss中
-#        uses: yinlinyang/ali-oss-utils@1.0.1
-#        with:
-#          access-key-id: ${{ secrets.OSS_KEY_ID }}
-#          access-key-secret: ${{ secrets.OSS_KEY_SECRET }}
-#          region: oss-cn-shenzhen
-#          bucket: project
-#          source: /
-#          target: /
+      - name: isx上传到阿里云oss中
+        uses: yinlinyang/ali-oss-utils@1.0.1
+        with:
+          access-key-id: ${{ secrets.OSS_KEY_ID }}
+          access-key-secret: ${{ secrets.OSS_KEY_SECRET }}
+          region: oss-cn-shanghai.aliyuncs.com
+          bucket: openfly
+          source: isx
+          target: isx/isx_2
 
 #  # 在mac中打包
 #  packageOnMac:
