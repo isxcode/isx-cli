@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"io"
 	"log"
+	"net/http"
 	"os"
 	"os/exec"
 	"strconv"
@@ -30,6 +32,13 @@ var cloneCmd = &cobra.Command{
 
 func cloneCmdMain() {
 
+	// 判断用户是否登录
+	isLogin := checkUserAccount()
+	if !isLogin {
+		fmt.Println("请先登录")
+		os.Exit(1)
+	}
+
 	// 选择项目编号
 	inputProjectNumber()
 
@@ -41,6 +50,37 @@ func cloneCmdMain() {
 
 	// 保存配置
 	saveConfig()
+}
+
+func checkUserAccount() bool {
+
+	headers := http.Header{}
+	headers.Set("Accept", "application/vnd.github+json")
+	headers.Set("Authorization", "Bearer "+viper.GetString("user.token"))
+	headers.Set("X-GitHub-Api-Version", "2022-11-28")
+
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", "https://api.github.com/octocat", nil)
+
+	req.Header = headers
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Println("请求失败:", err)
+		os.Exit(1)
+	}
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+
+		}
+	}(resp.Body)
+
+	// 解析结果
+	if resp.StatusCode == http.StatusOK {
+		return true
+	} else {
+		return false
+	}
 }
 
 func inputProjectNumber() {
