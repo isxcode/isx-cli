@@ -1,4 +1,4 @@
-### isx-cli
+## isx-cli
 
 ##### 使用手册
 
@@ -12,9 +12,10 @@ isx -h
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/isxcode/isx-cli/main/install.sh)"
 ```
 
-##### 本地编译
+##### 本地安装
 
 ```bash
+# 编译代码
 docker run --rm \
   -v "/Users/ispong/isxcode/isx-cli":/usr/src/myapp \
   -w /usr/src/myapp \
@@ -22,10 +23,7 @@ docker run --rm \
   -e GOARCH=arm64 \
   -e CGO_ENABLED=0 \
   golang:1.21 go build -v -o ./target/isx
-```
-
-##### 本地安装
-
-````bash
+  
+# 安装命令
 sudo mv /Users/ispong/isxcode/isx-cli/target/isx /usr/local/bin/isx
-````
+```
