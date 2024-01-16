@@ -12,7 +12,7 @@ func init() {
 
 var setCmd = &cobra.Command{
 	Use:   "set",
-	Short: printCommand("isx set <config_key> <value>") + "| 设置配置参数",
+	Short: printCommand("isx set <config_key> <value>", 65) + "| 设置配置参数",
 	Long:  `isx set user.account ispong`,
 	Run: func(cmd *cobra.Command, args []string) {
 		setCmdMain(args)

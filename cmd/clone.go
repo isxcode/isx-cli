@@ -21,7 +21,7 @@ func init() {
 
 var cloneCmd = &cobra.Command{
 	Use:   "clone",
-	Short: printCommand("isx clone") + "| 下载项目代码",
+	Short: printCommand("isx clone", 65) + "| 下载项目代码",
 	Long:  `isx clone`,
 	Run: func(cmd *cobra.Command, args []string) {
 		cloneCmdMain()

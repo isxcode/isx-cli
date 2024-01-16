@@ -19,7 +19,7 @@ var (
 
 var loginCmd = &cobra.Command{
 	Use:   "login",
-	Short: printCommand("isx login") + "| 登录github账号",
+	Short: printCommand("isx login", 65) + "| 登录github账号",
 	Long:  `github用户登录`,
 	Run: func(cmd *cobra.Command, args []string) {
 
