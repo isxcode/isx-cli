@@ -117,7 +117,7 @@ project-list:
     - isx-cli
 spark-yun:
     name: spark-yun
-    describe: 至轻云
+    describe: 至轻云，超轻量级大数据平台
     dir: ""
     repository:
         url: https://github.com/isxcode/spark-yun.git
@@ -127,7 +127,7 @@ spark-yun:
           name: spark-yun-vip
 flink-yun:
     name: flink-yun
-    describe: 至流云
+    describe: 至流云，流数据管理平台
     dir: ""
     repository:
         url: https://github.com/isxcode/flink-yun.git
@@ -137,7 +137,7 @@ flink-yun:
           name: flink-yun-vip
 isx-cli:
     name: isx-cli
-    describe: isx专用工具
+    describe: isxcode组织专用工具
     dir: ""
     repository:
         url: https://github.com/isxcode/isx-cli.git

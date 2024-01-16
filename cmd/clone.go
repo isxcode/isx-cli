@@ -88,7 +88,7 @@ func inputProjectNumber() {
 	// 打印项目列表
 	projectList := viper.GetStringSlice("project-list")
 	for index, projectName := range projectList {
-		fmt.Println("[" + strconv.Itoa(index) + "] " + viper.GetString(projectName+".name") + ": " + viper.GetString(projectName+".describe"))
+		fmt.Println("[" + strconv.Itoa(index) + "] " + printCommand(viper.GetString(projectName+".name"), 14) + "[ " + printCommand(viper.GetString(projectName+".repository.url"), 45) + "] : " + viper.GetString(projectName+".describe"))
 	}
 
 	// 输入项目编号
