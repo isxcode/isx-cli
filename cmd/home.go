@@ -12,7 +12,7 @@ func init() {
 
 var homeCmd = &cobra.Command{
 	Use:   "home",
-	Short: printCommand("isx home") + "| 快速进入项目目录",
+	Short: printCommand("isx home", 65) + "| 快速进入项目目录",
 	Long:  `isx home`,
 	Run: func(cmd *cobra.Command, args []string) {
 		homeCmdMain()

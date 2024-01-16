@@ -14,7 +14,7 @@ func init() {
 
 var chooseCmd = &cobra.Command{
 	Use:   "choose",
-	Short: printCommand("isx choose") + "| 选择开发项目",
+	Short: printCommand("isx choose", 65) + "| 选择开发项目",
 	Long:  `从isxcode组织中选择开发项目,isx choose`,
 	Run: func(cmd *cobra.Command, args []string) {
 		chooseCmdMain()
@@ -26,7 +26,14 @@ func chooseCmdMain() {
 	// 打印项目列表
 	projectList := viper.GetStringSlice("project-list")
 	for index, chooseProjectName := range projectList {
-		fmt.Println("[" + strconv.Itoa(index) + "] " + viper.GetString(chooseProjectName+".name") + ": " + viper.GetString(chooseProjectName+".describe") + " 下载状态 【" + viper.GetString(chooseProjectName+".repository.download") + "】")
+		status := viper.GetString(chooseProjectName + ".repository.download")
+		if status == "no" {
+			status = "no"
+		} else {
+			status = "can choose"
+		}
+
+		fmt.Println("[" + strconv.Itoa(index) + "] " + printCommand(viper.GetString(chooseProjectName+".name"), 12) + printCommand(status, 10) + " : " + viper.GetString(chooseProjectName+".describe"))
 	}
 
 	// 选择项目编号
