@@ -15,7 +15,7 @@ func init() {
 
 var formatCmd = &cobra.Command{
 	Use:   "format",
-	Short: printCommand("isx format") + "| 代码格式化",
+	Short: printCommand("isx format", 65) + "| 代码格式化",
 	Long:  `isx format`,
 	Run: func(cmd *cobra.Command, args []string) {
 		formatCmdMain()

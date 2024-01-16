@@ -161,7 +161,7 @@ version:
 	}
 }
 
-func printCommand(commandDesc string) string {
+func printCommand(commandDesc string, length int) string {
 
-	return commandDesc + strings.Repeat(" ", 65-len(commandDesc))
+	return commandDesc + strings.Repeat(" ", length-len(commandDesc))
 }
