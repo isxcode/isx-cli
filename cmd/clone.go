@@ -109,6 +109,13 @@ func inputProjectPath() {
 		fmt.Println("目录不存在，请重新输入")
 		os.Exit(1)
 	}
+
+	// 目录不存在则报错
+	_, err = os.Stat(projectPath + "/" + projectName)
+	if err == nil {
+		fmt.Println("项目已存在，请重新选择目录")
+		os.Exit(1)
+	}
 }
 
 func cloneCode(isxcodeRepository string, path string, name string, isMain bool) {
