@@ -9,6 +9,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"os/exec"
 )
 
 func init() {
@@ -45,17 +46,32 @@ func prCmdMain(issueNumber string) {
 		os.Exit(1)
 	}
 
+	projectName := viper.GetString("current-project.name")
+	projectPath := viper.GetString(projectName+".dir") + "/" + projectName
+
 	// 通过api创建pr
-	createPr(branchName+" "+title, branchName)
+	createPr(branchName+" : "+title, branchName, projectPath, projectName)
 
 	var subRepository []Repository
 	viper.UnmarshalKey(viper.GetString("current-project.name")+".sub-repository", &subRepository)
 	for _ = range subRepository {
-		createPr(branchName+" "+title, branchName)
+		createPr(branchName+" : "+title, branchName, projectPath, projectName)
 	}
 }
 
-func createPr(titleName string, branchName string) {
+func createPr(titleName string, branchName string, path string, name string) {
+
+	// 先提交代码 git push origin xxx
+	pushOriginCommand := "git push origin " + branchName
+	pushOriginCmd := exec.Command("bash", "-c", pushOriginCommand)
+	pushOriginCmd.Stdout = os.Stdout
+	pushOriginCmd.Stderr = os.Stderr
+	pushOriginCmd.Dir = path + "/" + name
+	err := pushOriginCmd.Run()
+	if err != nil {
+		fmt.Println("请先提交代码")
+		os.Exit(1)
+	}
 
 	headers := http.Header{}
 	headers.Set("Accept", "application/vnd.github+json")
