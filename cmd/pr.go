@@ -50,7 +50,7 @@ func prCmdMain(issueNumber string) {
 	projectPath := viper.GetString(projectName + ".dir")
 
 	// 通过api创建pr
-	createPr(branchName+" : "+title, branchName, projectPath, projectName)
+	createPr("["+branchName+"] "+title, branchName, projectPath, projectName)
 
 	var subRepository []Repository
 	viper.UnmarshalKey(viper.GetString("current-project.name")+".sub-repository", &subRepository)
