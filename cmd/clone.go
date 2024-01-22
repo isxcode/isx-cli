@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"io"
@@ -102,6 +103,16 @@ func inputProjectPath() {
 	// 输入安装路径
 	fmt.Print("请输入安装路径:")
 	fmt.Scanln(&projectPath)
+
+	// 支持克隆路径替换～为当前用户目录
+	if strings.HasPrefix(projectPath, "~/") {
+		home, err := homedir.Dir()
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		projectPath = strings.Replace(projectPath, "~", home, 1)
+	}
 
 	// 目录不存在则报错
 	_, err := os.Stat(projectPath)
