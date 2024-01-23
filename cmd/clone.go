@@ -168,6 +168,14 @@ func cloneCode(isxcodeRepository string, path string, name string, isMain bool) 
 	addUpstreamCmd.Stderr = os.Stderr
 	addUpstreamCmd.Dir = path + "/" + name
 	addUpstreamCmd.Run()
+
+	// main分支映射到isxcode仓库中
+	linkUpstreamCommand := "git branch --set-upstream-to=upstream/main main"
+	linkUpstreamCmd := exec.Command("bash", "-c", linkUpstreamCommand)
+	linkUpstreamCmd.Stdout = os.Stdout
+	linkUpstreamCmd.Stderr = os.Stderr
+	linkUpstreamCmd.Dir = path + "/" + name
+	linkUpstreamCmd.Run()
 }
 
 func cloneProjectCode() {
