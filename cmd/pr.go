@@ -89,7 +89,7 @@ func createPr(titleName string, branchName string, path string, name string) {
 	reqJson := ReqJSON{
 		Title:    titleName,
 		Head:     branchName,
-		HeadRepo: viper.GetString("user.account") + "/" + viper.GetString("current-project.name"),
+		HeadRepo: viper.GetString("user.account") + "/" + name,
 		Base:     branchName,
 		Body:     branchName,
 	}
@@ -99,7 +99,7 @@ func createPr(titleName string, branchName string, path string, name string) {
 	if err != nil {
 		return
 	}
-	req, err := http.NewRequest("POST", "https://api.github.com/repos/isxcode/"+viper.GetString("current-project.name")+"/pulls", bytes.NewBuffer(payload))
+	req, err := http.NewRequest("POST", "https://api.github.com/repos/isxcode/"+name+"/pulls", bytes.NewBuffer(payload))
 
 	req.Header = headers
 	resp, err := client.Do(req)
