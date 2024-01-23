@@ -389,8 +389,8 @@ func getGithubIssueBranch(issueNumber string) string {
 			fmt.Println("解析 JSON 失败:", err)
 		}
 		// 使用正则表达式查找匹配项
-		versionStart := "### 版本号\n\nv"
-		versionEnd := "\n\n### 缺陷内容"
+		versionStart := "### ReleaseName (发布版本号)\n\n"
+		versionEnd := "\n\n### Scope (范围)"
 
 		startIndex := strings.Index(content.Body, versionStart)
 		endIndex := strings.Index(content.Body, versionEnd)
