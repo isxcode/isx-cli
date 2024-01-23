@@ -91,7 +91,7 @@ func createPr(titleName string, branchName string, path string, name string) {
 		Head:     branchName,
 		HeadRepo: viper.GetString("user.account") + "/" + viper.GetString("current-project.name"),
 		Base:     branchName,
-		Body:     branchName
+		Body:     branchName,
 	}
 
 	client := &http.Client{}
