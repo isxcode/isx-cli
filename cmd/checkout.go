@@ -14,7 +14,8 @@ import (
 )
 
 type GithubIssue struct {
-	Body string `json:"body"`
+	Body  string `json:"body"`
+	State string `json:"state"`
 }
 
 func init() {
@@ -378,6 +379,12 @@ func getGithubIssueBranch(issueNumber string) string {
 	if resp.StatusCode == http.StatusOK {
 		var content GithubIssue
 		err := json.Unmarshal(body, &content)
+
+		if content.State == "closed" {
+			fmt.Println("issue已关闭")
+			os.Exit(1)
+		}
+
 		if err != nil {
 			fmt.Println("解析 JSON 失败:", err)
 		}
