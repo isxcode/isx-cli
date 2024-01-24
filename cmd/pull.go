@@ -52,6 +52,9 @@ func rebaseBranch(path string, branchName string) {
 
 func getBranchName() string {
 
+	projectName := viper.GetString("current-project.name")
+	projectPath := viper.GetString(projectName+".dir") + "/" + projectName
+
 	executeCommand := "git branch --show-current"
 	branchCmd := exec.Command("bash", "-c", executeCommand)
 	branchCmd.Dir = projectPath
