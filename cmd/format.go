@@ -89,7 +89,6 @@ func commitAndPushCode(path string, branchName string) {
 	err = pushOriginCmd.Run()
 	if err != nil {
 		fmt.Println("无法推送，请尝试强推： isx git push origin " + branchName + " -f")
-		os.Exit(1)
 	}
 }
 
