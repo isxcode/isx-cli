@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"log"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 func init() {
@@ -18,18 +20,13 @@ var pullCmd = &cobra.Command{
 	Long:  `isx pull 123`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		if len(args) != 1 {
-			fmt.Println("使用方式不对，请重新输入命令")
-			os.Exit(1)
-		}
-
-		pullCmdMain(args[0])
+		pullCmdMain()
 	},
 }
 
-func pullCmdMain(issueNumber string) {
+func pullCmdMain() {
 
-	branchName := "GH-" + issueNumber
+	branchName := getBranchName()
 
 	projectName := viper.GetString("current-project.name")
 	projectPath := viper.GetString(projectName+".dir") + "/" + projectName
@@ -51,4 +48,19 @@ func rebaseBranch(path string, branchName string) {
 	rebaseCmd.Stderr = os.Stderr
 	rebaseCmd.Dir = path
 	rebaseCmd.Run()
+}
+
+func getBranchName() string {
+
+	executeCommand := "git branch --show-current"
+	branchCmd := exec.Command("bash", "-c", executeCommand)
+	branchCmd.Dir = projectPath
+	output, err := branchCmd.Output()
+	if err != nil {
+		fmt.Printf(nowTmpl, projectName, "获取分支名称失败", projectPath)
+		fmt.Println("执行命令失败:", err)
+		log.Fatal(err)
+		os.Exit(1)
+	}
+	return strings.Split(string(output), "\n")[0]
 }
