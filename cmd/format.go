@@ -53,7 +53,7 @@ func formatCmdMain() {
 	var subRepository []Repository
 	viper.UnmarshalKey(viper.GetString("current-project.name")+".sub-repository", &subRepository)
 	for _, repository := range subRepository {
-		rebaseBranch(projectPath+"/"+repository.Name, branchName)
+		commitAndPushCode(projectPath+"/"+repository.Name, branchName)
 	}
 
 }
@@ -88,8 +88,7 @@ func commitAndPushCode(path string, branchName string) {
 	pushOriginCmd.Dir = path
 	err = pushOriginCmd.Run()
 	if err != nil {
-		fmt.Println("无法推送，请尝试强推： isx git push origin " + branchName + " -f")
-		os.Exit(1)
+		fmt.Println("无法推送，请谨慎尝试强推： isx git push origin " + branchName + " -f")
 	}
 }
 
