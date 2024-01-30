@@ -26,10 +26,52 @@ var upgradeCmd = &cobra.Command{
 	},
 }
 
+type Project struct {
+	Name       string `json:"name"`
+	Describe   string `json:"describe"`
+	Dir        string `json:"dir"`
+	Repository struct {
+		URL      string `json:"url"`
+		Download string `json:"download"`
+	} `json:"repository"`
+	SubRepository []string `json:"sub-repository"`
+}
+
+func contains(slice []string, item string) bool {
+	for _, s := range slice {
+		if strings.Contains(s, item) {
+			return true
+		}
+	}
+	return false
+}
+
 func upgradeCmdMain() {
 
 	// 获取当前版本中的版本号
 	oldVersion := viper.GetString("version.number")
+
+	// 判断是否有至匠云模块，没有则直接添加
+	projectList := viper.GetStringSlice("project-list")
+	if !contains(projectList, "tools-yun") {
+		projectList = append(projectList, "tools-yun")
+		viper.Set("project-list", projectList)
+		toolsYun := Project{
+			Name:     "tools-yun",
+			Describe: "至匠云，导航中心",
+			Dir:      "",
+			Repository: struct {
+				URL      string `json:"url"`
+				Download string `json:"download"`
+			}{
+				URL:      "https://github.com/isxcode/tools-yun.git",
+				Download: "no",
+			},
+			SubRepository: []string{},
+		}
+		viper.Set("tools-yun", toolsYun)
+		viper.WriteConfig()
+	}
 
 	// 获取github中的版本号
 	headers := http.Header{}
