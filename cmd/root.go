@@ -115,6 +115,7 @@ project-list:
     - spark-yun
     - flink-yun
     - isx-cli
+    - tools-yun
 spark-yun:
     name: spark-yun
     describe: 至轻云，超轻量级大数据平台
@@ -141,6 +142,14 @@ isx-cli:
     dir: ""
     repository:
         url: https://github.com/isxcode/isx-cli.git
+        download: no
+    sub-repository:
+tools-yun:
+    name: tools-yun
+    describe: 至匠云，导航中心
+    dir: ""
+    repository:
+        url: https://github.com/isxcode/tools-yun.git
         download: no
     sub-repository:
 version:
