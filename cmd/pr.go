@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/isxcode/isx-cli/common"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"io"
@@ -59,11 +60,6 @@ func prCmdMain(issueNumber string) {
 
 func createPr(titleName string, branchName string, name string) {
 
-	headers := http.Header{}
-	headers.Set("Accept", "application/vnd.github+json")
-	headers.Set("Authorization", "Bearer "+viper.GetString("user.token"))
-	headers.Set("X-GitHub-Api-Version", "2022-11-28")
-
 	type ReqJSON struct {
 		Title    string `json:"title"`
 		Body     string `json:"body"`
@@ -87,7 +83,7 @@ func createPr(titleName string, branchName string, name string) {
 	}
 	req, err := http.NewRequest("POST", "https://api.github.com/repos/isxcode/"+name+"/pulls", bytes.NewBuffer(payload))
 
-	req.Header = headers
+	req.Header = common.GitHubHeader(viper.GetString("user.token"))
 	resp, err := client.Do(req)
 	if err != nil {
 		fmt.Println("请求失败:", err)
@@ -121,15 +117,10 @@ func createPr(titleName string, branchName string, name string) {
 
 func getGithubIssueTitle(issueNumber string) string {
 
-	headers := http.Header{}
-	headers.Set("Accept", "application/vnd.github+json")
-	headers.Set("Authorization", "Bearer "+viper.GetString("user.token"))
-	headers.Set("X-GitHub-Api-Version", "2022-11-28")
-
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", "https://api.github.com/repos/isxcode/"+viper.GetString("current-project.name")+"/issues/"+issueNumber, nil)
 
-	req.Header = headers
+	req.Header = common.GitHubHeader(viper.GetString("user.token"))
 	resp, err := client.Do(req)
 	if err != nil {
 		fmt.Println("请求失败:", err)

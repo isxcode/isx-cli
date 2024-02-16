@@ -2,12 +2,11 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/isxcode/isx-cli/git"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"log"
 	"os"
 	"os/exec"
-	"strings"
 )
 
 func init() {
@@ -36,7 +35,7 @@ func formatCmdMain() {
 		gradleCmd.Dir = projectPath
 		err := gradleCmd.Run()
 		if err != nil {
-			log.Fatal(err)
+			fmt.Println("执行失败:", err)
 			os.Exit(1)
 		} else {
 			fmt.Println("执行成功")
@@ -44,7 +43,7 @@ func formatCmdMain() {
 	}
 
 	// 获取当前分支
-	branchName := getCurrentBranchName()
+	branchName := git.GetCurrentBranchName(viper.GetString("current-project.name"), true)
 
 	// 自动commit 和 提交代码
 	commitAndPushCode(projectPath, branchName)
@@ -90,22 +89,4 @@ func commitAndPushCode(path string, branchName string) {
 	if err != nil {
 		fmt.Println("无法推送，请谨慎尝试强推： isx git push origin " + branchName + " -f")
 	}
-}
-
-func getCurrentBranchName() string {
-
-	projectName := viper.GetString("current-project.name")
-	projectPath := viper.GetString(projectName+".dir") + "/" + projectName
-
-	executeCommand := "git branch --show-current"
-	branchCmd := exec.Command("bash", "-c", executeCommand)
-	branchCmd.Dir = projectPath
-	output, err := branchCmd.Output()
-	if err != nil {
-		fmt.Printf(nowTmpl, projectName, "获取分支名称失败", projectPath)
-		fmt.Println("执行命令失败:", err)
-		log.Fatal(err)
-		os.Exit(1)
-	}
-	return strings.Split(string(output), "\n")[0]
 }

@@ -1,13 +1,11 @@
 package cmd
 
 import (
-	"fmt"
+	"github.com/isxcode/isx-cli/git"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"log"
 	"os"
 	"os/exec"
-	"strings"
 )
 
 func init() {
@@ -26,7 +24,7 @@ var pullCmd = &cobra.Command{
 
 func pullCmdMain() {
 
-	branchName := getBranchName()
+	branchName := git.GetCurrentBranchName(viper.GetString("current-project.name"), true)
 
 	projectName := viper.GetString("current-project.name")
 	projectPath := viper.GetString(projectName+".dir") + "/" + projectName
@@ -48,22 +46,4 @@ func rebaseBranch(path string, branchName string) {
 	rebaseCmd.Stderr = os.Stderr
 	rebaseCmd.Dir = path
 	rebaseCmd.Run()
-}
-
-func getBranchName() string {
-
-	projectName := viper.GetString("current-project.name")
-	projectPath := viper.GetString(projectName+".dir") + "/" + projectName
-
-	executeCommand := "git branch --show-current"
-	branchCmd := exec.Command("bash", "-c", executeCommand)
-	branchCmd.Dir = projectPath
-	output, err := branchCmd.Output()
-	if err != nil {
-		fmt.Printf(nowTmpl, projectName, "获取分支名称失败", projectPath)
-		fmt.Println("执行命令失败:", err)
-		log.Fatal(err)
-		os.Exit(1)
-	}
-	return strings.Split(string(output), "\n")[0]
 }

@@ -2,12 +2,9 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/mitchellh/go-homedir"
+	"github.com/isxcode/isx-cli/common"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"io"
-	"log"
-	"net/http"
 	"os"
 	"os/exec"
 	"strconv"
@@ -34,7 +31,7 @@ var cloneCmd = &cobra.Command{
 func cloneCmdMain() {
 
 	// 判断用户是否登录
-	isLogin := checkUserAccount()
+	isLogin := common.CheckUserAccount(viper.GetString("user.token"))
 	if !isLogin {
 		fmt.Println("请先登录")
 		os.Exit(1)
@@ -51,37 +48,6 @@ func cloneCmdMain() {
 
 	// 保存配置
 	saveConfig()
-}
-
-func checkUserAccount() bool {
-
-	headers := http.Header{}
-	headers.Set("Accept", "application/vnd.github+json")
-	headers.Set("Authorization", "Bearer "+viper.GetString("user.token"))
-	headers.Set("X-GitHub-Api-Version", "2022-11-28")
-
-	client := &http.Client{}
-	req, err := http.NewRequest("GET", "https://api.github.com/octocat", nil)
-
-	req.Header = headers
-	resp, err := client.Do(req)
-	if err != nil {
-		fmt.Println("请求失败:", err)
-		os.Exit(1)
-	}
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-
-		}
-	}(resp.Body)
-
-	// 解析结果
-	if resp.StatusCode == http.StatusOK {
-		return true
-	} else {
-		return false
-	}
 }
 
 func inputProjectNumber() {
@@ -106,12 +72,7 @@ func inputProjectPath() {
 
 	// 支持克隆路径替换～为当前用户目录
 	if strings.HasPrefix(projectPath, "~/") {
-		home, err := homedir.Dir()
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-		projectPath = strings.Replace(projectPath, "~", home, 1)
+		projectPath = strings.Replace(projectPath, "~", common.HomeDir(), 1)
 	}
 
 	// 目录不存在则报错
@@ -142,7 +103,7 @@ func cloneCode(isxcodeRepository string, path string, name string, isMain bool) 
 	cloneCmd.Dir = path
 	err := cloneCmd.Run()
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println("执行失败:", err)
 		os.Exit(1)
 	} else {
 		if isMain {

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"log"
 	"os"
 	"os/exec"
 )
@@ -37,7 +36,7 @@ func gitCmdMain(args []string) {
 	gitCmd.Dir = gitProjectPath + "/" + gitProjectName
 	err := gitCmd.Run()
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println("执行失败:", err)
 		os.Exit(1)
 	} else {
 		fmt.Println(gitProjectName + "git命令执行成功")
@@ -54,7 +53,7 @@ func gitCmdMain(args []string) {
 		gitCmd.Dir = gitProjectPath + "/" + gitProjectName + "/" + repository.Name
 		err := gitCmd.Run()
 		if err != nil {
-			log.Fatal(err)
+			fmt.Println("执行失败:", err)
 			os.Exit(1)
 		} else {
 			fmt.Println(repository.Name + "git命令执行成功")
