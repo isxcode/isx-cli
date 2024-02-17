@@ -76,7 +76,7 @@ func createPr(titleName string, branchName string, name string) {
 		Title:    titleName,
 		Head:     branchName,
 		HeadRepo: viper.GetString("user.account") + "/" + name,
-		Base:     branchName,
+		Base:     "main",
 		Body:     branchName,
 	}
 
