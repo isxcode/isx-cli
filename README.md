@@ -27,3 +27,17 @@ docker run --rm \
 # 安装命令
 sudo mv /Users/ispong/isxcode/isx-cli/target/isx /usr/local/bin/isx
 ```
+
+##### 开发流程
+
+```bash
+# 切出分支
+isx checkout <issue_number>
+# 提交代码
+git commit -m "your commit message"
+# 格式化代码
+# 并推送到origin仓库
+isx format
+# 提交pr
+isx pr <issue_number>
+```
