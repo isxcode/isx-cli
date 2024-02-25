@@ -32,11 +32,11 @@ func GetCurrentBranchName(projectName string, abortOnFailure bool) string {
 	return strings.Split(string(output), "\n")[0]
 }
 
-func PushBranch2Origin(branchName, path string) {
+func PushBranchToOrigin(branchName, path string) {
 	pushBranch(branchName, "origin", path)
 }
 
-func PushBranch2Upstream(branchName, path string) {
+func PushBranchToUpstream(branchName, path string) {
 	pushBranch(branchName, "upstream", path)
 }
 

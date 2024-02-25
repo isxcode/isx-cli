@@ -196,10 +196,10 @@ func createReleaseBranch(path string, branchName string, releaseName string) {
 	}
 
 	// 推到isxcode仓库
-	git.PushBranch2Upstream(branchName, path)
+	git.PushBranchToUpstream(branchName, path)
 
 	// 推到自己的仓库
-	git.PushBranch2Origin(branchName, path)
+	git.PushBranchToOrigin(branchName, path)
 }
 
 func checkoutOriginBranch(path string, branchName string) {
@@ -234,7 +234,7 @@ func checkoutUpstreamBranch(path string, branchName string) {
 	}
 
 	// 推到自己的仓库
-	git.PushBranch2Origin(branchName, path)
+	git.PushBranchToOrigin(branchName, path)
 
 }
 
