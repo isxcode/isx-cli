@@ -40,4 +40,6 @@ git commit -m "your commit message"
 isx format
 # 提交pr
 isx pr <issue_number>
+# 如果提交的pr，无法成功rebase合并
+isx pull && isx format
 ```
