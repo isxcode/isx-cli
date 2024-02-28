@@ -28,7 +28,7 @@ func nowCmdMain() {
 	projectName := viper.GetString("current-project.name")
 
 	if projectName == "" {
-		fmt.Println("请先选择项目开发")
+		fmt.Println("请先使用【isx choose】选择项目")
 		os.Exit(1)
 	}
 
