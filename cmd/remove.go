@@ -94,7 +94,7 @@ func removeProject() {
 
 	// 保存配置
 	if viper.GetString("current-project.name") == projectName {
-		viper.Set("current-project.name:", "")
+		viper.Set("current-project.name", "")
 	}
 	viper.Set(projectName+".dir", "")
 	viper.Set(projectName+".repository.download", "no")
