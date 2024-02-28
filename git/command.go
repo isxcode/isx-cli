@@ -41,7 +41,7 @@ func PushBranchToUpstream(branchName, path string) {
 }
 
 func pushBranch(branchName, repositoryAlias, path string) {
-	pushOriginCmd := exec.Command("bash", "-c", "git push", repositoryAlias, branchName)
+	pushOriginCmd := exec.Command("bash", "-c", "git push "+repositoryAlias+" "+branchName)
 	pushOriginCmd.Stdout = os.Stdout
 	pushOriginCmd.Stderr = os.Stderr
 	pushOriginCmd.Dir = path
