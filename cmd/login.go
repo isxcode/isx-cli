@@ -23,8 +23,7 @@ var loginCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 		// 输入github账号
-		fmt.Print("不支持邮箱格式，请输入github的account")
-		fmt.Print("请输入github账号:")
+		fmt.Print("请输入github账号(不支持邮箱):")
 		fmt.Scanln(&account)
 
 		// 输入github令牌
