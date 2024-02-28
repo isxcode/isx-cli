@@ -2,12 +2,11 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/isxcode/isx-cli/common"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"log"
 	"os"
 	"os/exec"
-	"os/user"
 )
 
 func init() {
@@ -28,12 +27,12 @@ func buildCmdMain() {
 	projectName := viper.GetString("current-project.name")
 	projectPath := viper.GetString(projectName+".dir") + "/" + viper.GetString(projectName+".name")
 	buildImage := "registry.cn-shanghai.aliyuncs.com/isxcode/zhiqingyun-build"
-	usr, _ := user.Current()
+	home := common.HomeDir()
 
 	// 获取gradle缓存目录
 	cacheGradleDir := viper.GetString("cache.gradle.dir")
 	if cacheGradleDir == "" {
-		cacheGradleDir = usr.HomeDir + "/.gradle"
+		cacheGradleDir = home + "/.gradle"
 		viper.Set("cache.gradle.dir", cacheGradleDir)
 		viper.WriteConfig()
 	}
@@ -49,7 +48,7 @@ func buildCmdMain() {
 	// 获取pnpm缓存目录
 	cachePnpmDir := viper.GetString("cache.pnpm.dir")
 	if cachePnpmDir == "" {
-		cachePnpmDir = usr.HomeDir + "/.pnpm-store"
+		cachePnpmDir = home + "/.pnpm-store"
 		viper.Set("cache.pnpm.dir", cachePnpmDir)
 		viper.WriteConfig()
 	}
@@ -74,8 +73,7 @@ func buildCmdMain() {
 	buildCmd.Stderr = os.Stderr
 	err = buildCmd.Run()
 	if err != nil {
-		log.Fatal(err)
-		fmt.Println("代码编译失败")
+		fmt.Println("代码编译失败", err)
 		os.Exit(1)
 	} else {
 		fmt.Println("代码编译完成")

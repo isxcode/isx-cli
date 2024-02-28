@@ -3,6 +3,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/isxcode/isx-cli/common"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"io"
@@ -74,10 +75,6 @@ func upgradeCmdMain() {
 	}
 
 	// 获取github中的版本号
-	headers := http.Header{}
-	headers.Set("Accept", "application/vnd.github+json")
-	headers.Set("Authorization", "Bearer "+viper.GetString("user.token"))
-	headers.Set("X-GitHub-Api-Version", "2022-11-28")
 
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", "https://api.github.com/repos/isxcode/isx-cli/releases/latest", nil)
@@ -86,7 +83,7 @@ func upgradeCmdMain() {
 		os.Exit(1)
 	}
 
-	req.Header = headers
+	req.Header = common.GitHubHeader(viper.GetString("user.token"))
 	resp, err := client.Do(req)
 	if err != nil {
 		fmt.Println("请求失败:", err)

@@ -6,12 +6,11 @@ package cmd
 import (
 	"bytes"
 	"fmt"
-	"github.com/mitchellh/go-homedir"
+	"github.com/isxcode/isx-cli/common"
+	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"os"
 	"strings"
-
-	"github.com/spf13/cobra"
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -73,11 +72,7 @@ func init() {
 func initConfig() {
 
 	// 获取home目录
-	home, err := homedir.Dir()
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
+	home := common.HomeDir()
 
 	// 初始化配置文件信息
 	viper.SetConfigFile(home + "/.isx/isx-config.yml")

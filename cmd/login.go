@@ -5,10 +5,9 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/isxcode/isx-cli/common"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"io"
-	"net/http"
 	"os"
 )
 
@@ -52,30 +51,7 @@ func saveConfigLogin() {
 }
 
 func checkGithubToken() {
-
-	headers := http.Header{}
-	headers.Set("Accept", "application/vnd.github+json")
-	headers.Set("Authorization", "Bearer "+token)
-	headers.Set("X-GitHub-Api-Version", "2022-11-28")
-
-	client := &http.Client{}
-	req, err := http.NewRequest("GET", "https://api.github.com/octocat", nil)
-
-	req.Header = headers
-	resp, err := client.Do(req)
-	if err != nil {
-		fmt.Println("请求失败:", err)
-		os.Exit(1)
-	}
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-
-		}
-	}(resp.Body)
-
-	// 解析结果
-	if resp.StatusCode == http.StatusOK {
+	if common.CheckUserAccount(token) {
 		fmt.Println("登录成功，欢迎使用isx-cli开发工具")
 	} else {
 		fmt.Println("无法验证token合法性，登录失败")
