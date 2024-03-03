@@ -12,6 +12,12 @@ isx -h
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/isxcode/isx-cli/main/install.sh)"
 ```
 
+##### brew安装
+
+```bash
+brew tap isxcode/isxcode && brew install isx
+```
+
 ##### 本地安装
 
 ```bash
