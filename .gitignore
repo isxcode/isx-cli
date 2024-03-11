@@ -1,6 +1,7 @@
 build/**
 isx
 .idea/**
+!.idea/icon.svg
 
 src
 goPath
