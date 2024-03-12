@@ -59,6 +59,7 @@ type Repository struct {
 }
 
 func init() {
+
 	cobra.OnInitialize(initConfig)
 
 	// 解析配置文件
@@ -111,9 +112,10 @@ project-list:
     - flink-yun
     - isx-cli
     - tools-yun
+	- pytorch-yun
 spark-yun:
     name: spark-yun
-    describe: 至轻云，超轻量级大数据平台
+    describe: 至轻云-超轻量级大数据平台
     dir: ""
     repository:
         url: https://github.com/isxcode/spark-yun.git
@@ -123,7 +125,7 @@ spark-yun:
           name: spark-yun-vip
 flink-yun:
     name: flink-yun
-    describe: 至流云，流数据管理平台
+    describe: 至流云-流数据管理平台
     dir: ""
     repository:
         url: https://github.com/isxcode/flink-yun.git
@@ -131,9 +133,19 @@ flink-yun:
     sub-repository:
         - url: https://github.com/isxcode/flink-yun-vip.git
           name: flink-yun-vip
+pytorch-yun:
+    name: pytorch-yun
+    describe: 至慧云-AI训练部署平台
+    dir: ""
+    repository:
+        url: https://github.com/isxcode/pytorch-yun.git
+        download: no
+    sub-repository:
+        - url: https://github.com/isxcode/pytorch-yun-vip.git
+          name: pytorch-yun-vip
 isx-cli:
     name: isx-cli
-    describe: isxcode组织专用工具
+    describe: 至行-组织专用工具
     dir: ""
     repository:
         url: https://github.com/isxcode/isx-cli.git
@@ -141,7 +153,7 @@ isx-cli:
     sub-repository:
 tools-yun:
     name: tools-yun
-    describe: 至匠云，导航中心
+    describe: 至匠云-导航中心
     dir: ""
     repository:
         url: https://github.com/isxcode/tools-yun.git
