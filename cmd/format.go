@@ -28,7 +28,7 @@ func formatCmdMain() {
 	projectPath := viper.GetString(projectName+".dir") + "/" + projectName
 
 	// 除了isx-cli项目，其他都要使用gradle 格式化代码
-	if "isx-cli" != projectName {
+	if "isx-cli" != projectName && "tools-yun" != projectName {
 		gradleCmd := exec.Command("./gradlew", "format")
 		gradleCmd.Stdout = os.Stdout
 		gradleCmd.Stderr = os.Stderr
