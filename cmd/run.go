@@ -109,6 +109,7 @@ func runCmdMain(runType string, port string) {
 			"-v " + projectPath + ":/spark-yun " +
 			"-v " + cacheGradleDir + ":/root/.gradle " +
 			"-e ENV_TYPE='BACKEND' " +
+			"-e TZ=Asia/Shanghai " +
 			"-p " + port + ":8080 " +
 			" registry.cn-shanghai.aliyuncs.com/isxcode/zhiqingyun-local:latest"
 		break
@@ -117,6 +118,7 @@ func runCmdMain(runType string, port string) {
 			"-v " + projectPath + ":/spark-yun " +
 			"-v " + cachePnpmDir + ":/root/.pnpm-store " +
 			"-e ENV_TYPE='FRONTEND' " +
+			"-e TZ=Asia/Shanghai " +
 			"-p " + port + ":5173 " +
 			" registry.cn-shanghai.aliyuncs.com/isxcode/zhiqingyun-local:latest"
 		break
@@ -124,12 +126,14 @@ func runCmdMain(runType string, port string) {
 		runCommand = "docker run " +
 			"-v " + projectPath + ":/spark-yun " +
 			"-e ENV_TYPE='ALL' " +
+			"-e TZ=Asia/Shanghai " +
 			"-p " + port + ":8080 " +
 			" registry.cn-shanghai.aliyuncs.com/isxcode/zhiqingyun-local:latest"
 		break
 	case "web":
 		runCommand = "docker run " +
 			"-e ENV_TYPE='WEB' " +
+			"-e TZ=Asia/Shanghai " +
 			"-p " + port + ":3000 " +
 			"-v " + projectPath + ":/spark-yun " +
 			"-v " + cachePnpmDir + ":/root/.pnpm-store " +
