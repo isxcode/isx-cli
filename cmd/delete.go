@@ -108,6 +108,9 @@ func getGithubIssueStatus(issueNumber string) string {
 	} else if resp.StatusCode == http.StatusNotFound {
 		fmt.Println("issue不存在")
 		os.Exit(1)
+	} else if resp.StatusCode == http.StatusGone {
+		fmt.Println("issue已删除,请手动删除分支")
+		os.Exit(1)
 	} else {
 		fmt.Println("无法验证token合法性，登录失败")
 		os.Exit(1)
