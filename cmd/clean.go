@@ -27,8 +27,11 @@ func cleanCmdMain() {
 	resourcePath := ""
 	if projectName == "spark-yun" {
 		resourcePath = "zhiqingyun"
-	} else {
+	} else if projectName == "flink-yun" {
 		resourcePath = "zhiliuyun"
+	} else {
+		fmt.Println("该项目" + projectName + "暂不支持,请升级isx命令")
+		os.Exit(1)
 	}
 
 	// 删除项目文件

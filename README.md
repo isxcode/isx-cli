@@ -21,6 +21,12 @@ brew tap isxcode/isxcode && brew install isx
 ##### 本地安装
 
 ```bash
+cd /Users/ispong/isxcode/isx-cli
+CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -o ./target/isx main.go
+sudo mv /Users/ispong/isxcode/isx-cli/target/isx /usr/local/bin/isx
+```
+
+```bash
 # mac
 docker run --rm \
   -v "/Users/ispong/isxcode/isx-cli":/usr/src/myapp \
