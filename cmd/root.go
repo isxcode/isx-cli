@@ -115,7 +115,7 @@ project-list:
 	- pytorch-yun
 spark-yun:
     name: spark-yun
-    describe: 至轻云-超轻量级大数据平台
+    describe: 至轻云-打造大数据计算平台
     dir: ""
     repository:
         url: https://github.com/isxcode/spark-yun.git
@@ -125,7 +125,7 @@ spark-yun:
           name: spark-yun-vip
 flink-yun:
     name: flink-yun
-    describe: 至流云-流数据管理平台
+    describe: 至流云-打造流数据分析平台
     dir: ""
     repository:
         url: https://github.com/isxcode/flink-yun.git
@@ -135,7 +135,7 @@ flink-yun:
           name: flink-yun-vip
 pytorch-yun:
     name: pytorch-yun
-    describe: 至慧云-AI训练部署平台
+    describe: 至慧云-打造智能微模型平台
     dir: ""
     repository:
         url: https://github.com/isxcode/pytorch-yun.git
@@ -143,20 +143,32 @@ pytorch-yun:
     sub-repository:
         - url: https://github.com/isxcode/pytorch-yun-vip.git
           name: pytorch-yun-vip
+meta-yun:
+    name: meta-yun
+    describe: 至数云-打造元数据管理平台
+    dir: ""
+    repository:
+        url: https://github.com/isxcode/meta-yun.git
+        download: no
+    sub-repository:
+        - url: https://github.com/isxcode/meta-yun-vip.git
+          name: meta-yun-vip
+echarts-yun:
+    name: echarts-yun
+    describe: 至视云-打造数据可视化平台
+    dir: ""
+    repository:
+        url: https://github.com/isxcode/echarts-yun.git
+        download: no
+    sub-repository:
+        - url: https://github.com/isxcode/echarts-yun-vip.git
+          name: echarts-yun-vip
 isx-cli:
     name: isx-cli
-    describe: 至行-组织专用工具
+    describe: 至行云-打造开发规范脚手架
     dir: ""
     repository:
         url: https://github.com/isxcode/isx-cli.git
-        download: no
-    sub-repository:
-tools-yun:
-    name: tools-yun
-    describe: 至匠云-导航中心
-    dir: ""
-    repository:
-        url: https://github.com/isxcode/tools-yun.git
         download: no
     sub-repository:
 version:

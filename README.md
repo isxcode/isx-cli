@@ -1,4 +1,10 @@
-## isx-cli
+<h1 align="center">
+  至行云
+</h1>
+
+<h3 align="center">
+  打造开发规范脚手架
+</h3>
 
 ##### 使用手册
 
@@ -18,52 +24,70 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/isxcode/isx-cli/main/insta
 brew tap isxcode/isxcode && brew install isx
 ```
 
-##### 本地安装
+##### Go编译
 
 ```bash
 cd /Users/ispong/isxcode/isx-cli
-CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -o ./target/isx main.go
-sudo mv /Users/ispong/isxcode/isx-cli/target/isx /usr/local/bin/isx
+CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -o ./target/isx_darwin_arm64 main.go
 ```
 
+##### Docker编译
+
+> mac(M系列)
+
 ```bash
-# mac
 docker run --rm \
   -v "/Users/ispong/isxcode/isx-cli":/usr/src/myapp \
   -w /usr/src/myapp \
   -e GOOS=darwin \
   -e GOARCH=arm64 \
   -e CGO_ENABLED=0 \
-  golang:1.21 go build -v -o ./target/isx
-  
-# 安装命令
-sudo mv /Users/ispong/isxcode/isx-cli/target/isx /usr/local/bin/isx
+  golang:1.21 go build -v -o ./target/isx_darwin_arm64
+```
 
-# linux
+> mac(Intel系列)
+
+```bash
+docker run --rm \
+  -v "/Users/ispong/isxcode/isx-cli":/usr/src/myapp \
+  -w /usr/src/myapp \
+  -e GOOS=darwin \
+  -e GOARCH=amd64 \
+  -e CGO_ENABLED=0 \
+  golang:1.21 go build -v -o ./target/isx_darwin_amd64
+```
+
+> linux
+
+```bash
 docker run --rm \
   -v "/home/ispong/isxcode/isx-cli":/usr/src/myapp \
   -w /usr/src/myapp \
   -e GOOS=linux \
   -e GOARCH=amd64 \
   -e CGO_ENABLED=0 \
-  golang:1.21 go build -v -o ./target/isx
-  
-# 安装命令
-sudo mv /home/ispong/isxcode/isx-cli/target/isx /usr/local/bin/isx
+  golang:1.21 go build -v -o ./target/isx_linux_amd64
+```
+
+##### 安装命令
+
+```bash
+sudo mv /Users/ispong/isxcode/isx-cli/target/isx_darwin_arm64 /usr/local/bin/isx
 ```
 
 ##### 开发流程
 
 ```bash
-# 切出分支
+# 1.选择开发项目
+isx choose
+# 2.切出开发分支
 isx checkout <issue_number>
-# 提交代码
+# 3.提交代码到本地
 git commit -m "your commit message"
-# 格式化代码
-# 并推送到origin仓库
+# 4.格式化代码 (自动推送到origin仓库)
 isx format
-# 提交pr
+# 5.提交pr
 isx pr <issue_number>
-# 如果提交的pr，无法成功rebase合并
+# 6.如果提交的pr，无法成功rebase合并，需要更新代码二次提交
 isx pull && isx format
 ```
