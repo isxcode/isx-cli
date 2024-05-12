@@ -110,9 +110,10 @@ user:
 project-list:
     - spark-yun
     - flink-yun
+    - echarts-yun
+    - pytorch-yun
+    - meta-yun
     - isx-cli
-    - tools-yun
-	- pytorch-yun
 spark-yun:
     name: spark-yun
     describe: 至轻云-打造大数据计算平台
@@ -172,7 +173,7 @@ isx-cli:
         download: no
     sub-repository:
 version:
-    number: 0.0.5
+    number: 1.1.0
 `)
 			err := viper.ReadConfig(bytes.NewBuffer(yamlExample))
 			if err != nil {
