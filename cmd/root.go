@@ -112,7 +112,7 @@ project-list:
     - flink-yun
     - echarts-yun
     - pytorch-yun
-    - meta-yun
+    - lucene-yun
     - isx-cli
 spark-yun:
     name: spark-yun
@@ -144,16 +144,16 @@ pytorch-yun:
     sub-repository:
         - url: https://github.com/isxcode/pytorch-yun-vip.git
           name: pytorch-yun-vip
-meta-yun:
-    name: meta-yun
+lucene-yun:
+    name: lucene-yun
     describe: 至数云-打造元数据管理平台
     dir: ""
     repository:
-        url: https://github.com/isxcode/meta-yun.git
+        url: https://github.com/isxcode/lucene-yun.git
         download: no
     sub-repository:
-        - url: https://github.com/isxcode/meta-yun-vip.git
-          name: meta-yun-vip
+        - url: https://github.com/isxcode/lucene-yun-vip.git
+          name: lucene-yun-vip
 echarts-yun:
     name: echarts-yun
     describe: 至视云-打造数据可视化平台
