@@ -59,21 +59,21 @@ jobs:
       - name: isx_darwin_amd64
         run: CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o ./target/isx_darwin_amd64 main.go
 
-      - name: Upload file
-        uses: actions/upload-artifact@v3
-        with:
-          name: i-artifact
-          path: |
-            ./target/isx_windows_amd64.exe
-            ./target/isx_linux_amd64
-            ./target/isx_darwin_arm64
-            ./target/isx_darwin_amd64
+#      - name: Upload file
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: i-artifact
+#          path: |
+#            ./target/isx_windows_amd64.exe
+#            ./target/isx_linux_amd64
+#            ./target/isx_darwin_arm64
+#            ./target/isx_darwin_amd64
 
-      - name: Push to github
-        uses: softprops/action-gh-release@v1
-        with:
-          files: target/*
-          token: ${{ env.ADMIN_GITHUB_TOKEN }}
+#      - name: Push to github
+#        uses: softprops/action-gh-release@v1
+#        with:
+#          files: target/*
+#          token: ${{ env.ADMIN_GITHUB_TOKEN }}
 
       - name: Upload Package to Ali oss
         uses: chf007/aliyun-oss-upload-action@main
