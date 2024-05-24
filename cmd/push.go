@@ -18,7 +18,7 @@ func init() {
 
 var pushCmd = &cobra.Command{
 	Use:   "push",
-	Short: printCommand("isx push", 65) + "| 代码格式化",
+	Short: printCommand("isx push", 65) + "| 格式化代码后,提交代码",
 	Long:  `isx push = isx format + isx push`,
 	Run: func(cmd *cobra.Command, args []string) {
 		pushCmdMain()
