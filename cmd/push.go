@@ -9,7 +9,10 @@ import (
 	"os/exec"
 )
 
+var forceFlag bool
+
 func init() {
+	pushCmd.Flags().BoolVarP(&forceFlag, "force", "f", false, "Force push")
 	rootCmd.AddCommand(pushCmd)
 }
 
@@ -80,7 +83,12 @@ func commitAndPushCode(path string, branchName string) {
 	}
 
 	// 推送代码
-	pushOriginCommand := "git push origin " + branchName
+	pushOriginCommand := ""
+	if forceFlag {
+		pushOriginCommand = "git push origin " + branchName + "-f"
+	} else {
+		pushOriginCommand = "git push origin " + branchName
+	}
 	pushOriginCmd := exec.Command("bash", "-c", pushOriginCommand)
 	pushOriginCmd.Stdout = os.Stdout
 	pushOriginCmd.Stderr = os.Stderr
