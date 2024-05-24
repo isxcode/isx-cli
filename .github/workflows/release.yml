@@ -1,9 +1,8 @@
-name: release project
+name: tag package
 
 on:
-  issues:
-    types:
-      - closed
+  release:
+    types: [published]
 
 jobs:
 
@@ -15,10 +14,6 @@ jobs:
 
       - name: Checkout isx-cli
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.ADMIN_GITHUB_TOKEN }}
-          repository: "isxcode/isx-cli"
-          ref: 'main'
 
       - name: Cache go modules
         uses: actions/cache@v3
@@ -53,13 +48,18 @@ jobs:
       - name: isx_darwin_amd64
         run: CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o ./target/isx_darwin_amd64 main.go
 
-      - name: Upload Package to Ali oss
-        uses: chf007/aliyun-oss-upload-action@main
-        env:
-          OSS_ACCESS_KEY_ID: ${{ secrets.ALI_OSS_KEY_ID }}
-          OSS_ACCESS_KEY_SECRET: ${{ secrets.ALI_OSS_KEY_SECRET }}
+      - name: Upload BinaryFile
+        uses: actions/upload-artifact@v3
         with:
-          region: oss-cn-shanghai
-          bucket: isxcode
-          source-dir: 'target'
-          dest-dir: 'zhixingyun'
+          name: i-artifact
+          path: |
+            ./target/isx_windows_amd64.exe
+            ./target/isx_linux_amd64
+            ./target/isx_darwin_arm64
+            ./target/isx_darwin_amd64
+
+      - name: Publish to github
+        uses: softprops/action-gh-release@v1
+        with:
+          files: target/*
+          token: ${{ secrets.ADMIN_GITHUB_TOKEN }}
