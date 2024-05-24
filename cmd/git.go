@@ -17,7 +17,7 @@ func init() {
 
 var gitCmd = &cobra.Command{
 	Use:   "git",
-	Short: printCommand("isx git <git command>", 65) + "| 子父项目执行git命令",
+	Short: printCommand("isx git <git command>", 65) + "| 项目内执行git命令",
 	Long:  `isx git <git command>`,
 	Run: func(cmd *cobra.Command, args []string) {
 		gitCmdMain(args)

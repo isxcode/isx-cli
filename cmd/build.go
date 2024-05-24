@@ -15,8 +15,8 @@ func init() {
 
 var buildCmd = &cobra.Command{
 	Use:   "build",
-	Short: printCommand("isx build", 65) + "| 编译项目代码，大约需要10分钟",
-	Long:  `isx build`,
+	Short: printCommand("isx build", 65) + "| Docker编译项目代码",
+	Long:  `isx build,大约需要10分钟,需要docker环境`,
 	Run: func(cmd *cobra.Command, args []string) {
 		buildCmdMain()
 	},
