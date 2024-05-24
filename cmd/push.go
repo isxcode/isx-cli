@@ -85,7 +85,7 @@ func commitAndPushCode(path string, branchName string) {
 	// 推送代码
 	pushOriginCommand := ""
 	if forceFlag {
-		pushOriginCommand = "git push origin " + branchName + "-f"
+		pushOriginCommand = "git push origin " + branchName + " -f"
 	} else {
 		pushOriginCommand = "git push origin " + branchName
 	}
