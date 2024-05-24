@@ -9,13 +9,16 @@ import (
 	"os/exec"
 )
 
+var forceFlag bool
+
 func init() {
+	pushCmd.Flags().BoolVarP(&forceFlag, "force", "f", false, "Force push")
 	rootCmd.AddCommand(pushCmd)
 }
 
 var pushCmd = &cobra.Command{
 	Use:   "push",
-	Short: printCommand("isx push", 65) + "| 代码格式化",
+	Short: printCommand("isx push", 65) + "| 格式化代码后,提交代码",
 	Long:  `isx push = isx format + isx push`,
 	Run: func(cmd *cobra.Command, args []string) {
 		pushCmdMain()
@@ -80,7 +83,12 @@ func commitAndPushCode(path string, branchName string) {
 	}
 
 	// 推送代码
-	pushOriginCommand := "git push origin " + branchName
+	pushOriginCommand := ""
+	if forceFlag {
+		pushOriginCommand = "git push origin " + branchName + "-f"
+	} else {
+		pushOriginCommand = "git push origin " + branchName
+	}
 	pushOriginCmd := exec.Command("bash", "-c", pushOriginCommand)
 	pushOriginCmd.Stdout = os.Stdout
 	pushOriginCmd.Stderr = os.Stderr
