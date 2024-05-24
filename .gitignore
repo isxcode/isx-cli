@@ -9,3 +9,4 @@ isx*
 main
 
 target/**
+.DS_Store
