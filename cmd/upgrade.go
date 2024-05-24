@@ -49,9 +49,6 @@ func contains(slice []string, item string) bool {
 
 func upgradeCmdMain() {
 
-	// 获取当前版本中的版本号
-	oldVersion := viper.GetString("version.number")
-
 	// 判断是否有至匠云模块，没有则直接添加
 	projectList := viper.GetStringSlice("project-list")
 
@@ -139,27 +136,20 @@ func upgradeCmdMain() {
 		os.Exit(1)
 	}
 
-	// 版本号进行对比
-	if oldVersion < latestVersion {
-
-		// 执行更新命令
-		executeCommand := "sh -c \"$(curl -fsSL https://raw.githubusercontent.com/isxcode/isx-cli/main/install.sh)\""
-		result := exec.Command("bash", "-c", executeCommand)
-		result.Stdout = os.Stdout
-		result.Stderr = os.Stderr
-
-		err := result.Run()
-		if err != nil {
-			log.Fatal(err)
-		} else {
-			fmt.Println("已更新到最新版本：" + latestVersion)
-		}
-
-		// 更新配置中的版本信息
-		viper.Set("version.number", latestVersion)
-		viper.WriteConfig()
+	// 每次升级都直接重新下载安装
+	// 执行更新命令
+	executeCommand := "sh -c \"$(curl -fsSL https://raw.githubusercontent.com/isxcode/isx-cli/main/install.sh)\""
+	result := exec.Command("bash", "-c", executeCommand)
+	result.Stdout = os.Stdout
+	result.Stderr = os.Stderr
+	err = result.Run()
+	if err != nil {
+		log.Fatal(err)
 	} else {
-		fmt.Println("已经是最新版本")
-		os.Exit(1)
+		fmt.Println("已更新到最新版本：" + latestVersion)
 	}
+
+	// 更新配置中的版本信息
+	viper.Set("version.number", latestVersion)
+	viper.WriteConfig()
 }
