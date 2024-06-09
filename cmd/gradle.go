@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"runtime"
 )
 
 func init() {
@@ -27,7 +28,13 @@ func gradleCmdMain(args []string) {
 	projectName := viper.GetString("current-project.name")
 	projectPath := viper.GetString(projectName+".dir") + "/" + projectName
 
-	gradleCmd := exec.Command("./gradlew", args...)
+	var gradleCmd *exec.Cmd
+	if runtime.GOOS == "windows" {
+		gradleCmd = exec.Command("gradlew.bat", args...)
+	} else {
+		gradleCmd = exec.Command("./gradlew", args...)
+	}
+
 	gradleCmd.Stdout = os.Stdout
 	gradleCmd.Stderr = os.Stderr
 	gradleCmd.Dir = projectPath
