@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/viper"
 	"os"
 	"os/exec"
+	"runtime"
 )
 
 var forceFlag bool
@@ -32,7 +33,14 @@ func pushCmdMain() {
 
 	// 除了isx-cli项目，其他都要使用gradle 格式化代码
 	if "isx-cli" != projectName && "tools-yun" != projectName {
-		gradleCmd := exec.Command("./gradlew", "format")
+
+		var gradleCmd *exec.Cmd
+		if runtime.GOOS == "windows" {
+			gradleCmd = exec.Command("gradlew.bat", "format")
+		} else {
+			gradleCmd = exec.Command("./gradlew", "format")
+		}
+
 		gradleCmd.Stdout = os.Stdout
 		gradleCmd.Stderr = os.Stderr
 		gradleCmd.Dir = projectPath
