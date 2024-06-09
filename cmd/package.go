@@ -30,7 +30,7 @@ func packageCmdMain() {
 
 	var gradleCmd *exec.Cmd
 	if runtime.GOOS == "windows" {
-		gradleCmd = exec.Command("gradlew.bat", "clean", "package")
+		gradleCmd = exec.Command("./gradlew.bat", "clean", "package")
 	} else {
 		gradleCmd = exec.Command("./gradlew", "clean", "package")
 	}
