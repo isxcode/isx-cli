@@ -204,7 +204,7 @@ func createReleaseBranch(path string, branchName string, releaseName string) {
 
 func checkoutOriginBranch(path string, branchName string) {
 
-	executeCommand := "git fetch && git checkout --track origin/" + branchName
+	executeCommand := "git fetch origin && git checkout --track origin/" + branchName
 	checkoutCmd := exec.Command("bash", "-c", executeCommand)
 	checkoutCmd.Stdout = os.Stdout
 	checkoutCmd.Stderr = os.Stderr
