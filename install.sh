@@ -3,10 +3,9 @@
 ARCH=$(uname -m)
 OS_TYPE=$OSTYPE
 
-echo "需要sudo授权"
-sudo echo "授权成功"
-
 if [[ "$OS_TYPE" == "linux-gnu"* ]]; then
+    echo "需要sudo授权"
+    sudo echo "授权成功"
     if [ "$ARCH" == "x86_64" ]; then
         echo "开始下载"
         sudo curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhixingyun/isx_linux_amd64 -o /usr/bin/isx_linux_amd64
@@ -16,6 +15,8 @@ if [[ "$OS_TYPE" == "linux-gnu"* ]]; then
         echo "安装成功"
     fi
 elif [[ "$OS_TYPE" == "darwin"* ]]; then
+    echo "需要sudo授权"
+    sudo echo "授权成功"
     if [ "$ARCH" == "x86_64" ]; then
         echo "开始下载"
         sudo curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhixingyun/isx_darwin_amd64 -o /usr/local/bin/isx_darwin_amd64
