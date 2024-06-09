@@ -30,7 +30,7 @@ func gradleCmdMain(args []string) {
 
 	var gradleCmd *exec.Cmd
 	if runtime.GOOS == "windows" {
-		gradleCmd = exec.Command("gradlew.bat", args...)
+		gradleCmd = exec.Command("./gradlew.bat", args...)
 	} else {
 		gradleCmd = exec.Command("./gradlew", args...)
 	}
