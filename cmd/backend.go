@@ -30,7 +30,7 @@ func backendCmdMain() {
 
 	var gradleCmd *exec.Cmd
 	if runtime.GOOS == "windows" {
-		gradleCmd = exec.Command("gradlew.bat", "backend")
+		gradleCmd = exec.Command("./gradlew.bat", "backend")
 	} else {
 		gradleCmd = exec.Command("./gradlew", "backend")
 	}
