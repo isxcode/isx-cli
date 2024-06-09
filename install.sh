@@ -37,6 +37,6 @@ else
     echo "开始下载"
     curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhixingyun/isx_windows_amd64.exe -o /usr/bin/isx.exe
     echo "下载完成"
-    chmod a+x /usr/local/bin/isx
+    chmod a+x /usr/bin/isx.exe
     echo "安装成功"
 fi
