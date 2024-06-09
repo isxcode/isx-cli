@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"runtime"
 )
 
@@ -26,11 +27,12 @@ var packageCmd = &cobra.Command{
 func packageCmdMain() {
 
 	projectName := viper.GetString("current-project.name")
-	projectPath := viper.GetString(projectName+".dir") + "/" + projectName
+	projectDir := viper.GetString(projectName + ".dir")
+	projectPath := filepath.Join(projectDir, projectName)
 
 	var gradleCmd *exec.Cmd
 	if runtime.GOOS == "windows" {
-		gradleCmd = exec.Command("./gradlew.bat", "clean", "package")
+		gradleCmd = exec.Command("bash", "-c", "./gradlew.bat clean package")
 	} else {
 		gradleCmd = exec.Command("./gradlew", "clean", "package")
 	}
