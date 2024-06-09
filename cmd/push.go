@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/viper"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"runtime"
 )
 
@@ -29,14 +30,15 @@ var pushCmd = &cobra.Command{
 func pushCmdMain() {
 
 	projectName := viper.GetString("current-project.name")
-	projectPath := viper.GetString(projectName+".dir") + "/" + projectName
+	projectDir := viper.GetString(projectName + ".dir")
+	projectPath := filepath.Join(projectDir, projectName)
 
 	// 除了isx-cli项目，其他都要使用gradle 格式化代码
 	if "isx-cli" != projectName && "tools-yun" != projectName {
 
 		var gradleCmd *exec.Cmd
 		if runtime.GOOS == "windows" {
-			gradleCmd = exec.Command("./gradlew.bat", "format")
+			gradleCmd = exec.Command("bash", "-c", "./gradlew.bat format")
 		} else {
 			gradleCmd = exec.Command("./gradlew", "format")
 		}
