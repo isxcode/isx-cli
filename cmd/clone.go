@@ -73,6 +73,7 @@ func inputProjectPath() {
 	// 支持克隆路径替换～为当前用户目录
 	if strings.HasPrefix(projectPath, "~/") {
 		projectPath = strings.Replace(projectPath, "~", common.HomeDir(), 1)
+		projectPath = strings.Replace(projectPath, "\\", "/", 1)
 	}
 
 	// 目录不存在则报错
