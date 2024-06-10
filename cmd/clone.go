@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/viper"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strconv"
 	"strings"
 )
@@ -83,7 +84,7 @@ func inputProjectPath() {
 	}
 
 	// 目录不存在则报错
-	_, err = os.Stat(projectPath + "/" + projectName)
+	_, err = os.Stat(filepath.Join(projectPath, projectName))
 	if err == nil {
 		fmt.Println("项目已存在，请重新选择目录")
 		os.Exit(1)
@@ -119,7 +120,7 @@ func cloneCode(isxcodeRepository string, path string, name string, isMain bool) 
 	updateOriginCmd := exec.Command("bash", "-c", updateOriginCommand)
 	updateOriginCmd.Stdout = os.Stdout
 	updateOriginCmd.Stderr = os.Stderr
-	updateOriginCmd.Dir = path + "/" + name
+	updateOriginCmd.Dir = filepath.Join(path, name)
 	updateOriginCmd.Run()
 
 	// 添加upstream仓库
@@ -127,7 +128,7 @@ func cloneCode(isxcodeRepository string, path string, name string, isMain bool) 
 	addUpstreamCmd := exec.Command("bash", "-c", addUpstreamCommand)
 	addUpstreamCmd.Stdout = os.Stdout
 	addUpstreamCmd.Stderr = os.Stderr
-	addUpstreamCmd.Dir = path + "/" + name
+	addUpstreamCmd.Dir = filepath.Join(path, name)
 	addUpstreamCmd.Run()
 
 	// main分支映射到isxcode仓库中
@@ -135,7 +136,7 @@ func cloneCode(isxcodeRepository string, path string, name string, isMain bool) 
 	linkUpstreamCmd := exec.Command("bash", "-c", linkUpstreamCommand)
 	linkUpstreamCmd.Stdout = os.Stdout
 	linkUpstreamCmd.Stderr = os.Stderr
-	linkUpstreamCmd.Dir = path + "/" + name
+	linkUpstreamCmd.Dir = filepath.Join(path, name)
 	linkUpstreamCmd.Run()
 }
 
@@ -149,7 +150,7 @@ func cloneProjectCode() {
 	var subRepository []Repository
 	viper.UnmarshalKey(projectName+".sub-repository", &subRepository)
 	for _, repository := range subRepository {
-		cloneCode(repository.Url, projectPath+"/"+projectName, repository.Name, false)
+		cloneCode(repository.Url, filepath.Join(projectPath, projectName), repository.Name, false)
 	}
 }
 
