@@ -1,6 +1,3 @@
-/*
-Copyright © 2023 EchoJamie HERE <EMAIL ADDRESS>
-*/
 package cmd
 
 import (
@@ -9,6 +6,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"os"
+	"path/filepath"
 )
 
 func init() {
@@ -32,7 +30,7 @@ func nowCmdMain() {
 		os.Exit(1)
 	}
 
-	projectPath := viper.GetString(projectName+".dir") + "/" + projectName
+	projectPath := filepath.Join(viper.GetString(projectName+".dir"), projectName)
 	branchName := git.GetCurrentBranchName(projectName, false)
 
 	fmt.Printf(git.BranchTemplate, projectName, branchName, projectPath)
