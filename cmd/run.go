@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"os/user"
+	"path/filepath"
 )
 
 func init() {
@@ -70,7 +71,7 @@ var runCmd = &cobra.Command{
 func runCmdMain(runType string, port string) {
 
 	projectName := viper.GetString("current-project.name")
-	projectPath := viper.GetString(projectName+".dir") + "/" + viper.GetString(projectName+".name")
+	projectPath := filepath.Join(viper.GetString(projectName+".dir"), viper.GetString(projectName+".name"))
 
 	usr, _ := user.Current()
 

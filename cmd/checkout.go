@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 )
 
@@ -42,13 +43,13 @@ type checkoutBranchDelegate func(projectPath, branchName string)
 
 func checkoutBranch(branch string, delegate checkoutBranchDelegate) {
 	projectName := viper.GetString("current-project.name")
-	projectPath := viper.GetString(projectName+".dir") + "/" + projectName
+	projectPath := filepath.Join(viper.GetString(projectName+".dir"), projectName)
 	delegate(projectPath, branch)
 
 	var subRepository []Repository
 	viper.UnmarshalKey(viper.GetString("current-project.name")+".sub-repository", &subRepository)
 	for _, repository := range subRepository {
-		delegate(projectPath+"/"+repository.Name, branch)
+		delegate(filepath.Join(projectPath, repository.Name), branch)
 	}
 }
 
@@ -84,13 +85,13 @@ func checkoutCmdMain(issueNumber string) {
 
 	// 本地切出分支
 	projectName := viper.GetString("current-project.name")
-	projectPath := viper.GetString(projectName+".dir") + "/" + projectName
+	projectPath := filepath.Join(viper.GetString(projectName+".dir"), projectName)
 	createReleaseBranch(projectPath, branch, releaseBranchName)
 
 	var subRepository []Repository
 	viper.UnmarshalKey(viper.GetString("current-project.name")+".sub-repository", &subRepository)
 	for _, repository := range subRepository {
-		createReleaseBranch(projectPath+"/"+repository.Name, branch, releaseBranchName)
+		createReleaseBranch(filepath.Join(projectPath, repository.Name), branch, releaseBranchName)
 	}
 
 	return
@@ -99,7 +100,7 @@ func checkoutCmdMain(issueNumber string) {
 func getLocalBranchName(branchName string) string {
 
 	projectName := viper.GetString("current-project.name")
-	projectPath := viper.GetString(projectName+".dir") + "/" + projectName
+	projectPath := filepath.Join(viper.GetString(projectName+".dir"), projectName)
 
 	cmd := exec.Command("bash", "-c", "git branch -l "+"\""+branchName+"\"")
 	cmd.Dir = projectPath

@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/viper"
 	"os"
 	"os/exec"
+	"path/filepath"
 )
 
 func init() {
@@ -27,13 +28,13 @@ func pullCmdMain() {
 	branchName := git.GetCurrentBranchName(viper.GetString("current-project.name"), true)
 
 	projectName := viper.GetString("current-project.name")
-	projectPath := viper.GetString(projectName+".dir") + "/" + projectName
+	projectPath := filepath.Join(viper.GetString(projectName+".dir"), projectName)
 	rebaseBranch(projectPath, branchName)
 
 	var subRepository []Repository
 	viper.UnmarshalKey(viper.GetString("current-project.name")+".sub-repository", &subRepository)
 	for _, repository := range subRepository {
-		rebaseBranch(projectPath+"/"+repository.Name, branchName)
+		rebaseBranch(filepath.Join(projectPath, repository.Name), branchName)
 	}
 }
 

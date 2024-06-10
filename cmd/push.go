@@ -65,7 +65,7 @@ func pushCmdMain() {
 	var subRepository []Repository
 	viper.UnmarshalKey(viper.GetString("current-project.name")+".sub-repository", &subRepository)
 	for _, repository := range subRepository {
-		commitAndPushCode(projectPath+"/"+repository.Name, branchName)
+		commitAndPushCode(filepath.Join(projectPath, repository.Name), branchName)
 	}
 
 }
