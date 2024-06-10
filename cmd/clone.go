@@ -7,7 +7,6 @@ import (
 	"github.com/spf13/viper"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"strconv"
 	"strings"
 )
@@ -74,6 +73,7 @@ func inputProjectPath() {
 	// 支持克隆路径替换～为当前用户目录
 	if strings.HasPrefix(projectPath, "~/") {
 		projectPath = strings.Replace(projectPath, "~", common.HomeDir(), 1)
+		projectPath = strings.Replace(projectPath, "\\", "/", 1)
 	}
 
 	// 目录不存在则报错
@@ -84,7 +84,7 @@ func inputProjectPath() {
 	}
 
 	// 目录不存在则报错
-	_, err = os.Stat(filepath.Join(projectPath, projectName))
+	_, err = os.Stat(projectPath + "/" + projectName)
 	if err == nil {
 		fmt.Println("项目已存在，请重新选择目录")
 		os.Exit(1)
@@ -120,7 +120,7 @@ func cloneCode(isxcodeRepository string, path string, name string, isMain bool) 
 	updateOriginCmd := exec.Command("bash", "-c", updateOriginCommand)
 	updateOriginCmd.Stdout = os.Stdout
 	updateOriginCmd.Stderr = os.Stderr
-	updateOriginCmd.Dir = filepath.Join(path, name)
+	updateOriginCmd.Dir = path + "/" + name
 	updateOriginCmd.Run()
 
 	// 添加upstream仓库
@@ -128,7 +128,7 @@ func cloneCode(isxcodeRepository string, path string, name string, isMain bool) 
 	addUpstreamCmd := exec.Command("bash", "-c", addUpstreamCommand)
 	addUpstreamCmd.Stdout = os.Stdout
 	addUpstreamCmd.Stderr = os.Stderr
-	addUpstreamCmd.Dir = filepath.Join(path, name)
+	addUpstreamCmd.Dir = path + "/" + name
 	addUpstreamCmd.Run()
 
 	// main分支映射到isxcode仓库中
@@ -136,7 +136,7 @@ func cloneCode(isxcodeRepository string, path string, name string, isMain bool) 
 	linkUpstreamCmd := exec.Command("bash", "-c", linkUpstreamCommand)
 	linkUpstreamCmd.Stdout = os.Stdout
 	linkUpstreamCmd.Stderr = os.Stderr
-	linkUpstreamCmd.Dir = filepath.Join(path, name)
+	linkUpstreamCmd.Dir = path + "/" + name
 	linkUpstreamCmd.Run()
 }
 
@@ -150,7 +150,7 @@ func cloneProjectCode() {
 	var subRepository []Repository
 	viper.UnmarshalKey(projectName+".sub-repository", &subRepository)
 	for _, repository := range subRepository {
-		cloneCode(repository.Url, filepath.Join(projectPath, projectName), repository.Name, false)
+		cloneCode(repository.Url, projectPath+"/"+projectName, repository.Name, false)
 	}
 }
 

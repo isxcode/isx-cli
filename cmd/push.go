@@ -7,7 +7,6 @@ import (
 	"github.com/spf13/viper"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"runtime"
 )
 
@@ -31,7 +30,7 @@ func pushCmdMain() {
 
 	projectName := viper.GetString("current-project.name")
 	projectDir := viper.GetString(projectName + ".dir")
-	projectPath := filepath.Join(projectDir, projectName)
+	projectPath := projectDir + "/" + projectName
 
 	// 除了isx-cli项目，其他都要使用gradle 格式化代码
 	if "isx-cli" != projectName && "tools-yun" != projectName {
@@ -65,7 +64,7 @@ func pushCmdMain() {
 	var subRepository []Repository
 	viper.UnmarshalKey(viper.GetString("current-project.name")+".sub-repository", &subRepository)
 	for _, repository := range subRepository {
-		commitAndPushCode(filepath.Join(projectPath, repository.Name), branchName)
+		commitAndPushCode(projectPath+"/"+repository.Name, branchName)
 	}
 
 }
