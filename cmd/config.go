@@ -13,7 +13,7 @@ import (
 // configCmd represents the config command
 var configCmd = &cobra.Command{
 	Use:   "config",
-	Short: printCommand("isx config", 65) + "| 查看配置文件",
+	Short: printCommand("isx config", 65) + "| 查看配置",
 	Long:  `查看配置内容，举例：isx config`,
 	Run: func(cmd *cobra.Command, args []string) {
 		data, err := yaml.Marshal(viper.AllSettings())

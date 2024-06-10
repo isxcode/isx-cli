@@ -14,7 +14,7 @@ func init() {
 
 var chooseCmd = &cobra.Command{
 	Use:   "choose",
-	Short: printCommand("isx choose", 65) + "| 选择开发项目",
+	Short: printCommand("isx choose", 65) + "| 切换开发项目",
 	Long:  `从isxcode组织中选择开发项目,isx choose`,
 	Run: func(cmd *cobra.Command, args []string) {
 		chooseCmdMain()
