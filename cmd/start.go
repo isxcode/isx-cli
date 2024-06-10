@@ -16,9 +16,9 @@ func init() {
 }
 
 var backendCmd = &cobra.Command{
-	Use:   "backend",
-	Short: printCommand("isx backend", 65) + "| 使用gradle启动项目",
-	Long:  `isx backend`,
+	Use:   "start",
+	Short: printCommand("isx start", 65) + "| 启动项目,需要先执行isx package",
+	Long:  `isx start`,
 	Run: func(cmd *cobra.Command, args []string) {
 		backendCmdMain()
 	},
