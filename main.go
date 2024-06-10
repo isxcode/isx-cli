@@ -8,3 +8,5 @@ import "github.com/isxcode/isx-cli/cmd"
 func main() {
 	cmd.Execute()
 }
+
+测试
