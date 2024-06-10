@@ -6,7 +6,6 @@ import (
 	"github.com/spf13/viper"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"strconv"
 )
 
@@ -73,7 +72,7 @@ func removeProject() {
 
 	// 三次确认删除
 	deleteProject := "N"
-	fmt.Print("确认要删除【" + filepath.Join(projectPath, projectName) + "】路径吗?(Y/N) default is N: ")
+	fmt.Print("确认要删除【" + projectPath + "/" + projectName + "】路径吗?(Y/N) default is N: ")
 	fmt.Scanln(&deleteProject)
 	if deleteProject == "N" {
 		fmt.Println("已中止")
@@ -81,7 +80,7 @@ func removeProject() {
 	}
 
 	// 删除项目文件
-	removeCommand := "rm -rf " + filepath.Join(projectPath, projectName)
+	removeCommand := "rm -rf " + projectPath + "/" + projectName
 	removeCmd := exec.Command("bash", "-c", removeCommand)
 	removeCmd.Stdout = os.Stdout
 	removeCmd.Stderr = os.Stderr
@@ -90,7 +89,7 @@ func removeProject() {
 		fmt.Println("执行失败:", err)
 		os.Exit(1)
 	} else {
-		fmt.Println(filepath.Join(projectPath, projectName) + "路径已删除")
+		fmt.Println(projectPath + "/" + projectName + "路径已删除")
 	}
 
 	// 保存配置

@@ -7,7 +7,6 @@ import (
 	"log"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"runtime"
 	"strings"
 )
@@ -29,7 +28,7 @@ func gradleCmdMain(args []string) {
 
 	projectName := viper.GetString("current-project.name")
 	projectDir := viper.GetString(projectName + ".dir")
-	projectPath := filepath.Join(projectDir, projectName)
+	projectPath := projectDir + "/" + projectName
 
 	var gradleCmd *exec.Cmd
 	if runtime.GOOS == "windows" {

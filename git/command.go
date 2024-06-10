@@ -6,14 +6,13 @@ import (
 	"log"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"strings"
 )
 
 const BranchTemplate = "当前项目: %s\n当前分支: %s\n项目路径: %s\n"
 
 func GetCurrentBranchName(projectName string, abortOnFailure bool) string {
-	projectPath := filepath.Join(viper.GetString(projectName+".dir"), projectName)
+	projectPath := viper.GetString(projectName+".dir") + "/" + projectName
 
 	executeCommand := "git symbolic-ref --short HEAD"
 	branchCmd := exec.Command("bash", "-c", executeCommand)
