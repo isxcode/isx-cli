@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/viper"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 func init() {
@@ -33,6 +34,7 @@ func buildCmdMain() {
 	cacheGradleDir := viper.GetString("cache.gradle.dir")
 	if cacheGradleDir == "" {
 		cacheGradleDir = home + "/.gradle"
+		cacheGradleDir = strings.ReplaceAll(cacheGradleDir, "\\", "/")
 		viper.Set("cache.gradle.dir", cacheGradleDir)
 		viper.WriteConfig()
 	}
@@ -49,6 +51,7 @@ func buildCmdMain() {
 	cachePnpmDir := viper.GetString("cache.pnpm.dir")
 	if cachePnpmDir == "" {
 		cachePnpmDir = home + "/.pnpm-store"
+		cachePnpmDir = strings.ReplaceAll(cachePnpmDir, "\\", "/")
 		viper.Set("cache.pnpm.dir", cachePnpmDir)
 		viper.WriteConfig()
 	}
