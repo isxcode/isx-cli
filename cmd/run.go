@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"os/user"
+	"path/filepath"
 )
 
 func init() {
@@ -16,7 +17,7 @@ func init() {
 
 var runCmd = &cobra.Command{
 	Use:   "run",
-	Short: printCommand("isx run [frontend/backend/web] [port]", 65) + "| 运行项目",
+	Short: printCommand("isx run [frontend/backend/web] [port]", 65) + "| 使用docker运行项目",
 	Long:  `isx run frontend 8888/ isx run backend 8888/ isx run 8888/isx run web 8888`,
 	Run: func(cmd *cobra.Command, args []string) {
 
@@ -70,7 +71,7 @@ var runCmd = &cobra.Command{
 func runCmdMain(runType string, port string) {
 
 	projectName := viper.GetString("current-project.name")
-	projectPath := viper.GetString(projectName+".dir") + "/" + viper.GetString(projectName+".name")
+	projectPath := filepath.Join(viper.GetString(projectName+".dir"), viper.GetString(projectName+".name"))
 
 	usr, _ := user.Current()
 

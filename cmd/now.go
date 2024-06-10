@@ -1,6 +1,3 @@
-/*
-Copyright © 2023 EchoJamie HERE <EMAIL ADDRESS>
-*/
 package cmd
 
 import (
@@ -9,6 +6,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"os"
+	"path/filepath"
 )
 
 func init() {
@@ -17,7 +15,7 @@ func init() {
 
 var nowCmd = &cobra.Command{
 	Use:   "now",
-	Short: printCommand("isx now", 65) + "| 查看当前开发项目",
+	Short: printCommand("isx now", 65) + "| 查看项目信息",
 	Long:  `isx now`,
 	Run: func(cmd *cobra.Command, args []string) {
 		nowCmdMain()
@@ -32,7 +30,7 @@ func nowCmdMain() {
 		os.Exit(1)
 	}
 
-	projectPath := viper.GetString(projectName+".dir") + "/" + projectName
+	projectPath := filepath.Join(viper.GetString(projectName+".dir"), projectName)
 	branchName := git.GetCurrentBranchName(projectName, false)
 
 	fmt.Printf(git.BranchTemplate, projectName, branchName, projectPath)

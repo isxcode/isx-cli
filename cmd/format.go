@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/viper"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"runtime"
 )
 
@@ -15,7 +16,7 @@ func init() {
 
 var formatCmd = &cobra.Command{
 	Use:   "format",
-	Short: printCommand("isx format", 65) + "| 代码格式化",
+	Short: printCommand("isx format", 65) + "| 格式化代码",
 	Long:  `isx format`,
 	Run: func(cmd *cobra.Command, args []string) {
 		formatCmdMain()
@@ -25,7 +26,7 @@ var formatCmd = &cobra.Command{
 func formatCmdMain() {
 
 	projectName := viper.GetString("current-project.name")
-	projectPath := viper.GetString(projectName+".dir") + "/" + projectName
+	projectPath := filepath.Join(viper.GetString(projectName+".dir"), projectName)
 
 	// 除了isx-cli项目，其他都要使用gradle 格式化代码
 	if "isx-cli" != projectName && "tools-yun" != projectName {
