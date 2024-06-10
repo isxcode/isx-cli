@@ -53,7 +53,7 @@ isx login -h
 ```
 
 ```text
-  ____ _____ __ __           __  _      ____ 
+ ____ _____ __ __           __  _      ____ 
 |    / ___/|  |  |         /  ]| |    |    |
  |  (   \_ |  |  | _____  /  / | |     |  | 
  |  |\__  ||_   _||     |/  /  | |___  |  | 
@@ -68,32 +68,30 @@ Usage:
   isx [command]
 
 Available Commands:
-  backend     isx backend                                                      | 使用gradle启动项目
-  build       isx build                                                        | Docker编译项目代码
+  build       isx build                                                        | 使用docker编译项目代码
   checkout    isx checkout <issue_number>                                      | 切换开发分支
-  choose      isx choose                                                       | 选择开发项目
+  choose      isx choose                                                       | 切换开发项目
   clean       isx clean                                                        | 删除项目缓存
   clone       isx clone                                                        | 下载项目代码
   completion  Generate the autocompletion script for the specified shell
-  config      isx config                                                       | 查看配置文件
+  config      isx config                                                       | 查看配置
   db          isx db list | isx db <issue_number>                              | 查看当前db(暂不开放)
-  delete      isx delete <issue_number>                                        | 删除组织远程分支
-  format      isx format                                                       | 代码格式化
+  delete      isx delete <issue_number>                                        | 删除组织分支
+  format      isx format                                                       | 格式化代码
   git         isx git <git command>                                            | 项目内执行git命令
-  gradle      isx gradle <gradle_command>                                      | 执行项目gradle命令
+  gradle      isx gradle <gradle_command>                                      | 项目内执行gradle命令
   help        Help about any command
-  home        isx home                                                         | 打印项目所在目录
-  install     isx install                                                      | 使用gradle安装依赖
+  install     isx install                                                      | 安装项目依赖
   login       isx login                                                        | 登录github账号
-  now         isx now                                                          | 查看当前开发项目
-  open        isx open                                                         | 使用IDE打开当前项目
-  package     isx package                                                      | 使用gradle打包
+  now         isx now                                                          | 查看项目信息
+  package     isx package                                                      | 源码编译打包
   pr          isx pr <issue_number>                                            | 提交pr
-  pull        isx pull                                                         | 拉去远程组织当前分支代码
+  pull        isx pull                                                         | 拉取组织代码
   push        isx push                                                         | 格式化代码后,提交代码
   remove      isx remove                                                       | 删除本地项目
-  run         isx run [frontend/backend/web] [port]                            | 运行项目
+  run         isx run [frontend/backend/web] [port]                            | 使用docker运行项目
   set         isx set <config_key> <value>                                     | 设置配置参数
+  start       isx start                                                        | 启动项目
   sync        isx sync <branch_name>                                           | 同步Github个人仓库指定分支
   upgrade     isx upgrade                                                      | 升级isx-cli脚手架
   version     isx version                                                      | 查看版本号
