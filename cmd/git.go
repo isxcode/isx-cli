@@ -6,7 +6,6 @@ import (
 	"github.com/spf13/viper"
 	"os"
 	"os/exec"
-	"path/filepath"
 )
 
 var gitProjectPath string
@@ -34,7 +33,7 @@ func gitCmdMain(args []string) {
 	gitCmd := exec.Command("git", args...)
 	gitCmd.Stdout = os.Stdout
 	gitCmd.Stderr = os.Stderr
-	gitCmd.Dir = filepath.Join(gitProjectPath, gitProjectName)
+	gitCmd.Dir = gitProjectPath + "/" + gitProjectName
 	err := gitCmd.Run()
 	if err != nil {
 		fmt.Println("执行失败:", err)
@@ -51,7 +50,7 @@ func gitCmdMain(args []string) {
 		gitCmd := exec.Command("git", args...)
 		gitCmd.Stdout = os.Stdout
 		gitCmd.Stderr = os.Stderr
-		gitCmd.Dir = filepath.Join(gitProjectPath, gitProjectName, repository.Name)
+		gitCmd.Dir = gitProjectPath + "/" + gitProjectName + "/" + repository.Name
 		err := gitCmd.Run()
 		if err != nil {
 			fmt.Println("执行失败:", err)

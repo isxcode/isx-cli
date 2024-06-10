@@ -10,7 +10,6 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
-	"path/filepath"
 )
 
 type GithubIssueStatus struct {
@@ -51,13 +50,13 @@ func deleteCmdMain(issueNumber string) {
 
 	// 删除远程分支
 	projectName := viper.GetString("current-project.name")
-	projectPath := filepath.Join(viper.GetString(projectName+".dir"), projectName)
+	projectPath := viper.GetString(projectName+".dir") + "/" + projectName
 	deleteUpstreamBranch(projectPath, branchName)
 
 	var subRepository []Repository
 	viper.UnmarshalKey(viper.GetString("current-project.name")+".sub-repository", &subRepository)
 	for _, repository := range subRepository {
-		deleteUpstreamBranch(filepath.Join(projectPath, repository.Name), branchName)
+		deleteUpstreamBranch(projectPath+"/"+repository.Name, branchName)
 	}
 }
 

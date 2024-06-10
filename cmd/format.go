@@ -6,7 +6,6 @@ import (
 	"github.com/spf13/viper"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"runtime"
 )
 
@@ -26,7 +25,7 @@ var formatCmd = &cobra.Command{
 func formatCmdMain() {
 
 	projectName := viper.GetString("current-project.name")
-	projectPath := filepath.Join(viper.GetString(projectName+".dir"), projectName)
+	projectPath := viper.GetString(projectName+".dir") + "/" + projectName
 
 	// 除了isx-cli项目，其他都要使用gradle 格式化代码
 	if "isx-cli" != projectName && "tools-yun" != projectName {
