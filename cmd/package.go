@@ -17,7 +17,7 @@ func init() {
 
 var packageCmd = &cobra.Command{
 	Use:   "package",
-	Short: printCommand("isx package", 65) + "| 使用gradle打包",
+	Short: printCommand("isx package", 65) + "| 源码编译打包",
 	Long:  `isx package`,
 	Run: func(cmd *cobra.Command, args []string) {
 		packageCmdMain()
