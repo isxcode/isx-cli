@@ -17,3 +17,12 @@ func HomeDir() string {
 	}
 	return home
 }
+
+func CurrentWorkDir() string {
+	dir, err := os.Getwd()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	return dir
+}
