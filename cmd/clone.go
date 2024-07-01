@@ -65,10 +65,21 @@ func inputProjectNumber() {
 }
 
 func inputProjectPath() {
-
+	currentWorkDir := common.CurrentWorkDir()
 	// 输入安装路径
-	fmt.Print("请输入安装路径:")
-	fmt.Scanln(&projectPath)
+	fmt.Printf("是否安装在当前路径(%s)下? (y/n) ", common.WhiteText(currentWorkDir))
+	var flag = ""
+	fmt.Scanln(&flag)
+	flag = strings.Trim(flag, " ")
+	for flag == "y" || flag == "n" {
+		if flag == "y" {
+			projectPath = currentWorkDir
+		}
+		if flag == "n" {
+			fmt.Print("请输入安装路径:")
+			fmt.Scanln(&projectPath)
+		}
+	}
 
 	// 支持克隆路径替换～为当前用户目录
 	if strings.HasPrefix(projectPath, "~/") {
