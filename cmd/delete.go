@@ -17,14 +17,19 @@ type GithubIssueStatus struct {
 	State string `json:"state"`
 }
 
+var deleteForceFlag bool
+var deleteAllFlag bool
+
 func init() {
+	deleteCmd.Flags().BoolVarP(&deleteForceFlag, "force", "f", false, "Force delete")
+	deleteCmd.Flags().BoolVarP(&deleteAllFlag, "all", "a", false, "Delete upstream/origin/local")
 	rootCmd.AddCommand(deleteCmd)
 }
 
 var deleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: printCommand("isx delete <issue_number>", 65) + "| 删除组织分支",
-	Long:  `isx delete 123`,
+	Long:  `isx delete 123、isx delete 123 -f 强行删除、 isx delete 123 -a 删除所有和自己相关的需求分支`,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		if len(args) != 1 {
@@ -39,10 +44,12 @@ var deleteCmd = &cobra.Command{
 func deleteCmdMain(issueNumber string) {
 
 	// 判断issue是否被关闭，未关闭的issue不允许删除
-	status := getGithubIssueStatus(issueNumber)
-	if status != "closed" {
-		fmt.Println("issue未关闭，不允许删除")
-		os.Exit(1)
+	if !deleteForceFlag {
+		status := getGithubIssueStatus(issueNumber)
+		if status != "closed" {
+			fmt.Println("issue未关闭，不允许删除")
+			os.Exit(1)
+		}
 	}
 
 	// 需要删除的分支名
@@ -58,11 +65,35 @@ func deleteCmdMain(issueNumber string) {
 	for _, repository := range subRepository {
 		deleteUpstreamBranch(projectPath+"/"+repository.Name, branchName)
 	}
+
+	// 如果-a的话，删除和自己相关的所有分支
+	if deleteAllFlag {
+		deleteOriginBranch(projectPath, branchName)
+		for _, repository := range subRepository {
+			deleteOriginBranch(projectPath+"/"+repository.Name, branchName)
+		}
+		fmt.Println("请执行 isx git branch -D " + branchName + " 命令删除本地分支 ")
+	}
 }
 
 func deleteUpstreamBranch(path string, branchName string) {
 
 	executeCommand := "git push upstream -d " + branchName
+	deleteBranchCmd := exec.Command("bash", "-c", executeCommand)
+	deleteBranchCmd.Stdout = os.Stdout
+	deleteBranchCmd.Stderr = os.Stderr
+	deleteBranchCmd.Dir = path
+	err := deleteBranchCmd.Run()
+	if err != nil {
+		fmt.Println("远程没有需要删除的分支")
+	} else {
+		fmt.Println(branchName + "删除成功")
+	}
+}
+
+func deleteOriginBranch(path string, branchName string) {
+
+	executeCommand := "git push origin -d " + branchName
 	deleteBranchCmd := exec.Command("bash", "-c", executeCommand)
 	deleteBranchCmd.Stdout = os.Stdout
 	deleteBranchCmd.Stderr = os.Stderr
