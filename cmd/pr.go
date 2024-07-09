@@ -12,7 +12,10 @@ import (
 	"os"
 )
 
+var prMainFlag bool
+
 func init() {
+	prCmd.Flags().BoolVarP(&prMainFlag, "main", "m", false, "pr to main")
 	rootCmd.AddCommand(prCmd)
 }
 
@@ -68,12 +71,23 @@ func createPr(titleName string, branchName string, name string) {
 		Base     string `json:"base"`
 	}
 
-	reqJson := ReqJSON{
-		Title:    titleName,
-		Head:     branchName,
-		HeadRepo: viper.GetString("user.account") + "/" + name,
-		Base:     branchName,
-		Body:     branchName,
+	reqJson := ReqJSON{}
+	if prMainFlag {
+		reqJson = ReqJSON{
+			Title:    titleName,
+			Head:     branchName,
+			HeadRepo: "isxcode/" + name,
+			Base:     "main",
+			Body:     branchName,
+		}
+	} else {
+		reqJson = ReqJSON{
+			Title:    titleName,
+			Head:     branchName,
+			HeadRepo: viper.GetString("user.account") + "/" + name,
+			Base:     branchName,
+			Body:     branchName,
+		}
 	}
 
 	client := &http.Client{}
