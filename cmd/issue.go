@@ -82,7 +82,7 @@ func GetIssueList(projectName, username string) []IssueListResp {
 			fmt.Println("github token权限不足，请重新登录")
 			os.Exit(1)
 		} else {
-			fmt.Println("获取最新版本失败")
+			fmt.Println("获取issue列表失败")
 			fmt.Println("状态码:", resp.StatusCode)
 			os.Exit(1)
 		}
