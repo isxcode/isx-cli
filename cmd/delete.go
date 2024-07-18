@@ -111,7 +111,7 @@ func getGithubIssueStatus(issueNumber string) string {
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", "https://api.github.com/repos/isxcode/"+viper.GetString("current-project.name")+"/issues/"+issueNumber, nil)
 
-	req.Header = common.GitHubHeader(viper.GetString("user.token"))
+	req.Header = common.GitHubHeader(common.GetToken())
 	resp, err := client.Do(req)
 	if err != nil {
 		fmt.Println("请求失败:", err)

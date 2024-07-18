@@ -13,6 +13,7 @@ import (
 	"github.com/spf13/viper"
 	"io"
 	"os"
+	"strings"
 )
 
 func HomeDir() string {
@@ -49,6 +50,11 @@ func GetToken() string {
 	if token == "" {
 		fmt.Println("请先登录")
 		os.Exit(1)
+	}
+	if strings.HasPrefix(token, "ghp_") {
+		encryptToken := Encrypt(token)
+		viper.Set("user.token", encryptToken)
+		return token
 	}
 	s, err := decryptAES(token, key)
 	if err != nil {

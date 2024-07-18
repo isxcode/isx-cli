@@ -61,7 +61,7 @@ func SyncBranch(projectName, branchName string) {
 	userName := viper.GetString("user.account")
 	req, err := http.NewRequest("POST", common.GithubApiReposDomain+"/"+userName+"/"+projectName+"/merge-upstream", bytes.NewBuffer(payload))
 
-	req.Header = common.GitHubHeader(viper.GetString("user.token"))
+	req.Header = common.GitHubHeader(common.GetToken())
 	resp, err := client.Do(req)
 	if err != nil {
 		fmt.Println("请求失败:", err)
