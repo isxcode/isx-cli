@@ -5,63 +5,52 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/isxcode/isx-cli/common"
+	"github.com/isxcode/isx-cli/github"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"io"
-	"net/http"
-	"os"
 )
 
+var testExistFlag bool
+
 func init() {
+	forkCmd.Flags().BoolVarP(&testExistFlag, "test", "t", false, "测试是否已经fork过")
 	rootCmd.AddCommand(forkCmd)
 }
 
 var forkCmd = &cobra.Command{
 	Use:   "fork",
 	Short: printCommand("isx fork", 65) + "| Fork当前项目为同名个人仓库",
-	Long:  `isx fork`,
+	Long:  `isx fork | isx fork <project-name> | isx fork -t | isx fork -t <project-name>`,
 	Run: func(cmd *cobra.Command, args []string) {
-		ForkCmdMain()
+		ForkCmdMain(args)
 	},
 }
 
-func ForkCmdMain() {
-	fmt.Println("fork")
-	currentProject := viper.GetString("current-project.name")
-	fmt.Println(currentProject)
-	ForkRepository("flink-yun", "TestRepo")
-}
-
-func ForkRepository(projectName, newName string) string {
-	client := &http.Client{}
-	url := common.GithubApiReposDomain + "/isxcode/" + projectName + "/forks"
-	req, err := http.NewRequest("POST", url, nil)
-
-	req.Header = common.GitHubHeader(viper.GetString("user.token"))
-	resp, err := client.Do(req)
-	if err != nil {
-		fmt.Println("请求失败:", err)
-		os.Exit(1)
-	}
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-			fmt.Println("关闭响应体失败:", err)
+func ForkCmdMain(args []string) {
+	if testExistFlag {
+		if len(args) > 0 {
+			forked := github.IsRepoForked(viper.GetString("user.account"), args[0])
+			if forked {
+				fmt.Println(args[0], "is forked!")
+			} else {
+				fmt.Println(args[0], "is not forked!")
+			}
+		} else {
+			for _, project := range viper.GetStringSlice("project-list") {
+				forked := github.IsRepoForked(viper.GetString("user.account"), viper.GetString(project+".name"))
+				if forked {
+					fmt.Println(viper.GetString(project+".name"), "is forked!")
+				} else {
+					fmt.Println(viper.GetString(project+".name"), "is not forked!")
+				}
+			}
 		}
-	}(resp.Body)
-
-	if resp.StatusCode == http.StatusAccepted {
-		fmt.Println("正在处理中，请稍后")
-		return "oj8k"
+		return
+	} else {
+		projectName := viper.GetString("current-project.name")
+		if len(args) > 0 {
+			projectName = args[0]
+		}
+		github.ForkRepository("isxcode", projectName, "")
 	}
-	if resp.StatusCode == http.StatusUnauthorized {
-		fmt.Println("github token权限不足，请重新登录")
-		os.Exit(1)
-	}
-	if resp.StatusCode == http.StatusNotFound {
-		fmt.Println("项目不存在")
-		os.Exit(1)
-	}
-	return "omg"
 }
