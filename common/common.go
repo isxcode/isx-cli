@@ -34,7 +34,7 @@ func CurrentWorkDir() string {
 	return dir
 }
 
-var key = []byte("isxcode")
+var key = []byte("isxcode-20240719")
 
 func Encrypt(token string) string {
 	ciphertext, err := encryptAES([]byte(token), key)
@@ -54,6 +54,7 @@ func GetToken() string {
 	if strings.HasPrefix(token, "ghp_") {
 		encryptToken := Encrypt(token)
 		viper.Set("user.token", encryptToken)
+		//viper.WriteConfig()
 		return token
 	}
 	s, err := decryptAES(token, key)
