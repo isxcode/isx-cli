@@ -54,7 +54,7 @@ func GetToken() string {
 	if strings.HasPrefix(token, "ghp_") {
 		encryptToken := Encrypt(token)
 		viper.Set("user.token", encryptToken)
-		//viper.WriteConfig()
+		viper.WriteConfig()
 		return token
 	}
 	s, err := decryptAES(token, key)
