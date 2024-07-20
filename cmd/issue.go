@@ -50,7 +50,7 @@ func GetIssueList(projectName, username string) []IssueListResp {
 	url := common.GithubApiReposDomain + "/isxcode/" + projectName + "/issues?state=open&assignee=" + username
 	req, err := http.NewRequest("GET", url, nil)
 
-	req.Header = common.GitHubHeader(viper.GetString("user.token"))
+	req.Header = common.GitHubHeader(common.GetToken())
 	resp, err := client.Do(req)
 	if err != nil {
 		fmt.Println("请求失败:", err)
