@@ -32,7 +32,7 @@ var cloneCmd = &cobra.Command{
 func cloneCmdMain() {
 
 	// 判断用户是否登录
-	isLogin := common.CheckUserAccount(viper.GetString("user.token"))
+	isLogin := common.CheckUserAccount(common.GetToken())
 	if !isLogin {
 		fmt.Println("请先登录")
 		os.Exit(1)
@@ -106,7 +106,7 @@ func inputProjectPath() {
 func cloneCode(isxcodeRepository string, path string, name string, isMain bool) {
 
 	// 替换下载链接
-	isxcodeRepository = strings.Replace(isxcodeRepository, "https://", "https://"+viper.GetString("user.token")+"@", -1)
+	isxcodeRepository = strings.Replace(isxcodeRepository, "https://", "https://"+common.GetToken()+"@", -1)
 
 	// 下载主项目代码
 	executeCommand := "git clone -b main " + isxcodeRepository
