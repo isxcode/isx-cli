@@ -8,6 +8,7 @@ import (
 	"crypto/cipher"
 	"crypto/rand"
 	"encoding/hex"
+  "encoding/json"
 	"fmt"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
@@ -105,4 +106,30 @@ func decryptAES(ciphertext string, key []byte) (string, error) {
 	stream.XORKeyStream(ciphertextBytes, ciphertextBytes)
 
 	return string(ciphertextBytes), nil
+}
+
+func Parse(reader io.Reader, v any) {
+	body, err := io.ReadAll(reader)
+	if err != nil {
+		fmt.Println("读取响应体失败:", err)
+		os.Exit(1)
+	}
+	err = json.Unmarshal(body, v)
+	if err != nil {
+		fmt.Println("解析 JSON 失败:", err)
+		os.Exit(1)
+	}
+}
+
+func ToJsonString(v any) string {
+	return string(ToJsonBytes(v))
+}
+
+func ToJsonBytes(v any) []byte {
+	jsonBytes, err := json.Marshal(v)
+	if err != nil {
+		fmt.Println("解析 JSON 失败:", err)
+		os.Exit(1)
+	}
+	return jsonBytes
 }

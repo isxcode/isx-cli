@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"github.com/isxcode/isx-cli/common"
+	"github.com/isxcode/isx-cli/github"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"os"
@@ -155,13 +156,23 @@ func cloneProjectCode() {
 
 	// 下载主项目代码
 	mainRepository := viper.GetString(projectName + ".repository.url")
-	cloneCode(mainRepository, projectPath, projectName, true)
+	if !github.IsRepoForked(account, projectName) {
+		github.ForkRepository("isxcode", projectName, "")
+		cloneCode(mainRepository, projectPath, projectName, true)
+	} else {
+		cloneCode(mainRepository, projectPath, projectName, true)
+	}
 
 	// 下载子项目代码
 	var subRepository []Repository
 	viper.UnmarshalKey(projectName+".sub-repository", &subRepository)
 	for _, repository := range subRepository {
-		cloneCode(repository.Url, projectPath+"/"+projectName, repository.Name, false)
+		if !github.IsRepoForked(account, projectName) {
+			github.ForkRepository("isxcode", projectName, "")
+			cloneCode(repository.Url, projectPath+"/"+projectName, repository.Name, false)
+		} else {
+			cloneCode(repository.Url, projectPath+"/"+projectName, repository.Name, false)
+		}
 	}
 }
 

@@ -14,6 +14,7 @@ const GithubDomain = "https://github.com"
 const GithubRawDomain = "https://raw.github.com"
 const GithubApiDomain = "https://api.github.com"
 const GithubApiReposDomain = "https://api.github.com/repos"
+const IsxcodeGithubApiReposDomain = GithubApiReposDomain + "/isxcode"
 
 func GitHubHeader(accessToken string) http.Header {
 	headers := http.Header{}
