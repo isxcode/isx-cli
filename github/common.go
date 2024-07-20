@@ -6,7 +6,6 @@ package github
 import (
 	"fmt"
 	"github.com/isxcode/isx-cli/common"
-	"github.com/spf13/viper"
 	"io"
 	"net/http"
 	"os"
@@ -24,7 +23,7 @@ func request(url, method string, reqBody io.Reader) *http.Response {
 	client := &http.Client{}
 	req, err := http.NewRequest(method, url, reqBody)
 
-	req.Header = common.GitHubHeader(viper.GetString("user.token"))
+	req.Header = common.GitHubHeader(common.GetToken())
 	resp, err := client.Do(req)
 	if err != nil {
 		fmt.Println("请求失败:", err)
