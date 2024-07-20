@@ -96,7 +96,7 @@ func upgradeCmdMain() {
 		os.Exit(1)
 	}
 
-	req.Header = common.GitHubHeader(viper.GetString("user.token"))
+	req.Header = common.GitHubHeader(common.GetToken())
 	resp, err := client.Do(req)
 	if err != nil {
 		fmt.Println("请求失败:", err)
