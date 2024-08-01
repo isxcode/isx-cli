@@ -6,7 +6,9 @@ import (
 	"github.com/spf13/viper"
 	"os"
 	"os/exec"
+	"runtime"
 	"strconv"
+	"strings"
 )
 
 var deleteProjectNumber int
@@ -79,8 +81,16 @@ func removeProject() {
 		os.Exit(1)
 	}
 
-	// 删除项目文件
-	removeCommand := "rm -rf " + projectPath + "/" + projectName
+	// 更新平台替换projectPath
+	removeCommand := ""
+	if runtime.GOOS == "windows" {
+		projectPath = strings.ReplaceAll(projectPath, "C:", "/c")
+		projectPath = strings.ReplaceAll(projectPath, " ", "\\ ")
+		removeCommand = "rm -rf " + projectPath + "/" + projectName
+	} else {
+		removeCommand = "rm -rf " + projectPath + "/" + projectName
+	}
+
 	removeCmd := exec.Command("bash", "-c", removeCommand)
 	removeCmd.Stdout = os.Stdout
 	removeCmd.Stderr = os.Stderr

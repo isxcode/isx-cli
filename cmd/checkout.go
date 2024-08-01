@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/isxcode/isx-cli/common"
 	"github.com/isxcode/isx-cli/git"
+	"github.com/isxcode/isx-cli/github"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"io"
@@ -48,7 +49,9 @@ func checkoutBranch(branch string, delegate checkoutBranchDelegate) {
 	var subRepository []Repository
 	viper.UnmarshalKey(viper.GetString("current-project.name")+".sub-repository", &subRepository)
 	for _, repository := range subRepository {
-		delegate(projectPath+"/"+repository.Name, branch)
+		if github.IsRepoForked(viper.GetString("user.account"), repository.Name) {
+			delegate(projectPath+"/"+repository.Name, branch)
+		}
 	}
 }
 
