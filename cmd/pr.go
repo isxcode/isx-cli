@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/isxcode/isx-cli/common"
+	"github.com/isxcode/isx-cli/github"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"io"
@@ -57,7 +58,9 @@ func prCmdMain(issueNumber string) {
 	var subRepository []Repository
 	viper.UnmarshalKey(viper.GetString("current-project.name")+".sub-repository", &subRepository)
 	for _, repository := range subRepository {
-		createPr(branchName+" "+title, branchName, repository.Name)
+		if github.IsRepoForked(viper.GetString("user.account"), repository.Name) {
+			createPr(branchName+" "+title, branchName, repository.Name)
+		}
 	}
 }
 
