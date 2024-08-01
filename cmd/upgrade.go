@@ -138,7 +138,7 @@ func upgradeCmdMain() {
 
 	// 每次升级都直接重新下载安装
 	// 执行更新命令
-	executeCommand := "sh -c \"$(curl -fsSL https://raw.githubusercontent.com/isxcode/isx-cli/main/install.sh)\""
+	executeCommand := "sh -c \"$(curl -fsSL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhixingyun/install.sh)\""
 	result := exec.Command("bash", "-c", executeCommand)
 	result.Stdout = os.Stdout
 	result.Stderr = os.Stderr

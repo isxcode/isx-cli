@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/isxcode/isx-cli/git"
+	"github.com/isxcode/isx-cli/github"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"os"
@@ -33,7 +34,9 @@ func pullCmdMain() {
 	var subRepository []Repository
 	viper.UnmarshalKey(viper.GetString("current-project.name")+".sub-repository", &subRepository)
 	for _, repository := range subRepository {
-		rebaseBranch(projectPath+"/"+repository.Name, branchName)
+		if github.IsRepoForked(viper.GetString("user.account"), repository.Name) {
+			rebaseBranch(projectPath+"/"+repository.Name, branchName)
+		}
 	}
 }
 

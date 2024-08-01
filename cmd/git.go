@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/isxcode/isx-cli/github"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"os"
@@ -47,16 +48,18 @@ func gitCmdMain(args []string) {
 	viper.UnmarshalKey(gitProjectName+".sub-repository", &subRepository)
 	for _, repository := range subRepository {
 
-		gitCmd := exec.Command("git", args...)
-		gitCmd.Stdout = os.Stdout
-		gitCmd.Stderr = os.Stderr
-		gitCmd.Dir = gitProjectPath + "/" + gitProjectName + "/" + repository.Name
-		err := gitCmd.Run()
-		if err != nil {
-			fmt.Println("执行失败:", err)
-			os.Exit(1)
-		} else {
-			fmt.Println(repository.Name + "git命令执行成功")
+		if github.IsRepoForked(viper.GetString("user.account"), repository.Name) {
+			gitCmd := exec.Command("git", args...)
+			gitCmd.Stdout = os.Stdout
+			gitCmd.Stderr = os.Stderr
+			gitCmd.Dir = gitProjectPath + "/" + gitProjectName + "/" + repository.Name
+			err := gitCmd.Run()
+			if err != nil {
+				fmt.Println("执行失败:", err)
+				os.Exit(1)
+			} else {
+				fmt.Println(repository.Name + "git命令执行成功")
+			}
 		}
 	}
 }
