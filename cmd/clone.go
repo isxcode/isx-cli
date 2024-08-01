@@ -72,14 +72,17 @@ func inputProjectPath() {
 	var flag = ""
 	fmt.Scanln(&flag)
 	flag = strings.Trim(flag, " ")
-	for flag == "y" || flag == "n" {
-		if flag == "y" {
-			projectPath = currentWorkDir
-		}
-		if flag == "n" {
-			fmt.Print("请输入安装路径:")
-			fmt.Scanln(&projectPath)
-		}
+	flag = strings.ToUpper(flag)
+	if flag != "Y" && flag != "N" {
+		fmt.Println("输入值异常")
+		os.Exit(1)
+	}
+	if flag == "Y" {
+		projectPath = currentWorkDir
+	}
+	if flag == "N" {
+		fmt.Print("请输入安装路径:")
+		fmt.Scanln(&projectPath)
 	}
 
 	// 支持克隆路径替换～为当前用户目录
@@ -156,7 +159,7 @@ func cloneProjectCode() {
 
 	// 下载主项目代码
 	mainRepository := viper.GetString(projectName + ".repository.url")
-	if !github.IsRepoForked(account, projectName) {
+	if !github.IsRepoForked(viper.GetString("user.account"), projectName) {
 		github.ForkRepository("isxcode", projectName, "")
 		cloneCode(mainRepository, projectPath, projectName, true)
 	} else {
@@ -167,11 +170,13 @@ func cloneProjectCode() {
 	var subRepository []Repository
 	viper.UnmarshalKey(projectName+".sub-repository", &subRepository)
 	for _, repository := range subRepository {
-		if !github.IsRepoForked(account, projectName) {
-			github.ForkRepository("isxcode", projectName, "")
-			cloneCode(repository.Url, projectPath+"/"+projectName, repository.Name, false)
+		if !github.IsRepoForked(viper.GetString("user.account"), repository.Name) {
+			forkRepository := github.ForkRepository("isxcode", repository.Name, "")
+			if forkRepository {
+				cloneCode(repository.Url, projectPath+"/"+repository.Name, repository.Name, false)
+			}
 		} else {
-			cloneCode(repository.Url, projectPath+"/"+projectName, repository.Name, false)
+			cloneCode(repository.Url, projectPath+"/"+repository.Name, repository.Name, false)
 		}
 	}
 }
