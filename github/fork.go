@@ -1,6 +1,3 @@
-/*
-Copyright © 2024 jamie HERE <EMAIL ADDRESS>
-*/
 package github
 
 import (
@@ -9,7 +6,6 @@ import (
 	"github.com/isxcode/isx-cli/common"
 	"io"
 	"net/http"
-	"os"
 	"strings"
 )
 
@@ -26,8 +22,7 @@ func IsRepoForked(account, projectName string) bool {
 		return repo.Fork
 	}
 	if resp.StatusCode == http.StatusUnauthorized {
-		fmt.Println("github token权限不足，请重新登录")
-		os.Exit(1)
+		return false
 	}
 	if resp.StatusCode == http.StatusNotFound {
 		return false
@@ -49,16 +44,13 @@ func ForkRepository(owner, projectName, newName string) bool {
 	defer CloseRespBody(resp.Body)
 
 	if resp.StatusCode == http.StatusAccepted {
-		fmt.Println("正在处理中，请稍后")
 		return true
 	}
 	if resp.StatusCode == http.StatusUnauthorized {
-		fmt.Println("github token权限不足，请重新登录")
-		os.Exit(1)
+		return false
 	}
 	if resp.StatusCode == http.StatusNotFound {
-		fmt.Println("项目不存在")
-		os.Exit(1)
+		return false
 	}
 	return false
 }
