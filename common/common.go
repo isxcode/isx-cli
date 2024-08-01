@@ -1,6 +1,3 @@
-/*
-Copyright © 2024 jamie HERE <EMAIL ADDRESS>
-*/
 package common
 
 import (
@@ -8,7 +5,7 @@ import (
 	"crypto/cipher"
 	"crypto/rand"
 	"encoding/hex"
-  "encoding/json"
+	"encoding/json"
 	"fmt"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
