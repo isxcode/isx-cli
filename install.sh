@@ -33,12 +33,21 @@ elif [[ "$OS_TYPE" == "darwin"* ]]; then
         echo "安装成功"
     fi
 else
-    # msys系统
-    echo "开始下载"
-    curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhixingyun/isx_windows_amd64.exe -o /usr/bin/isx_windows_amd64.exe
-    echo "下载完成"
-    rm -rf /usr/bin/isx.exe
-    mv /usr/bin/isx_windows_amd64.exe /usr/bin/isx.exe
-    chmod a+x /usr/bin/isx.exe
-    echo "安装成功"
+   if [ "$ARCH" == "x86_64" ]; then
+        echo "开始下载"
+        curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhixingyun/isx_windows_amd64.exe -o /usr/bin/isx_windows_amd64.exe
+        echo "下载完成"
+        rm -rf /usr/bin/isx.exe
+        mv /usr/bin/isx_windows_amd64.exe /usr/bin/isx.exe
+        chmod a+x /usr/bin/isx.exe
+        echo "安装成功"
+    elif [ "$ARCH" == "arm64" ]; then
+        echo "开始下载"
+        curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhixingyun/isx_windows_arm64.exe -o /usr/bin/isx_windows_arm64.exe
+        echo "下载完成"
+        rm -rf /usr/bin/isx.exe
+        mv /usr/bin/isx_windows_arm64.exe /usr/bin/isx.exe
+        chmod a+x /usr/bin/isx.exe
+        echo "安装成功"
+    fi
 fi
