@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"github.com/isxcode/isx-cli/git"
+	"github.com/isxcode/isx-cli/github"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"os"
@@ -64,7 +65,9 @@ func pushCmdMain() {
 	var subRepository []Repository
 	viper.UnmarshalKey(viper.GetString("current-project.name")+".sub-repository", &subRepository)
 	for _, repository := range subRepository {
-		commitAndPushCode(projectPath+"/"+repository.Name, branchName)
+		if github.IsRepoForked(viper.GetString("user.account"), repository.Name) {
+			commitAndPushCode(projectPath+"/"+repository.Name, branchName)
+		}
 	}
 
 }
