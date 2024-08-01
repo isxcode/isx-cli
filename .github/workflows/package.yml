@@ -56,6 +56,9 @@ jobs:
       - name: isx_darwin_amd64
         run: CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o ./target/isx_darwin_amd64 main.go
 
+      - name: copy install.sh
+        run: cp install.sh target/install.sh
+
       - name: Upload Package to Ali oss
         uses: chf007/aliyun-oss-upload-action@main
         env:
