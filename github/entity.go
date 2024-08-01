@@ -1,6 +1,3 @@
-/*
-Copyright © 2024 jamie HERE <EMAIL ADDRESS>
-*/
 package github
 
 type Repository struct {

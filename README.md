@@ -20,6 +20,12 @@
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/isxcode/isx-cli/main/install.sh)"
 ```
 
+> 国内阿里云下载
+
+```bash
+sh -c "$(curl -fsSL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhixingyun/install.sh)"
+```
+
 ##### 开发流程
 
 ```bash
