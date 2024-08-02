@@ -176,10 +176,10 @@ func cloneProjectCode() {
 		if !github.IsRepoForked(viper.GetString("user.account"), repository.Name) {
 			forkRepository := github.ForkRepository("isxcode", repository.Name, "")
 			if forkRepository {
-				cloneCode(repository.Url, projectPath+"/"+repository.Name, repository.Name, false)
+				cloneCode(repository.Url, projectPath+"/"+projectName, repository.Name, false)
 			}
 		} else {
-			cloneCode(repository.Url, projectPath+"/"+repository.Name, repository.Name, false)
+			cloneCode(repository.Url, projectPath+"/"+projectName, repository.Name, false)
 		}
 	}
 }
