@@ -1,10 +1,6 @@
-<h1 align="center">
-  至行云
-</h1>
+# 至行云
 
-<h3 align="center">
-  团队开发规范脚手架
-</h3>
+### 团队开发规范脚手架
 
 ##### 最新版本下载
 
@@ -37,16 +33,18 @@ isx clone
 isx choose
 # 4.切换开发分支
 isx checkout <issue_number>
-# 5.提交代码到本地
+# 5.格式化代码
+isx format
+# 6.提交代码到本地
 isx git add .
 isx git commit -m "your commit message"
-# 6.推送到origin仓库(自带格式化代码)
+# 7.推送到origin仓库
 isx push
-# 7.提交pr
+# 8.提交pr
 isx pr <issue_number>
-# 8.如果提交的pr，无法成功rebase合并
+# 9.如果提交的pr，无法成功rebase合并
 isx pull 
-# 9.修复冲突,重新提交推送代码
+# 10.修复冲突,重新提交推送代码
 isx push -f
 ```
 
@@ -75,6 +73,7 @@ Usage:
   isx [command]
 
 Available Commands:
+  autotest    isx autotest                                                     | 自动化测试
   build       isx build                                                        | 使用docker编译项目代码
   checkout    isx checkout <issue_number>                                      | 切换开发分支
   choose      isx choose                                                       | 切换开发项目
@@ -84,11 +83,13 @@ Available Commands:
   config      isx config                                                       | 查看配置
   db          isx db list | isx db <issue_number>                              | 查看当前db(暂不开放)
   delete      isx delete <issue_number>                                        | 删除组织分支
+  fork        isx fork                                                         | Fork当前项目为同名个人仓库
   format      isx format                                                       | 格式化代码
   git         isx git <git command>                                            | 项目内执行git命令
   gradle      isx gradle <gradle_command>                                      | 项目内执行gradle命令
   help        Help about any command
   install     isx install                                                      | 安装项目依赖
+  issue       isx issue                                                        | 列出当前仓库分配给您的issue
   login       isx login                                                        | 登录github账号
   now         isx now                                                          | 查看项目信息
   package     isx package                                                      | 源码编译打包
@@ -97,11 +98,14 @@ Available Commands:
   push        isx push                                                         | 格式化代码后,提交代码
   remove      isx remove                                                       | 删除本地项目
   run         isx run [frontend/backend/web] [port]                            | 使用docker运行项目
+  server      isx server                                                       | 本地启动后端程序
   set         isx set <config_key> <value>                                     | 设置配置参数
   start       isx start                                                        | 启动项目
   sync        isx sync <branch_name>                                           | 同步Github个人仓库指定分支
   upgrade     isx upgrade                                                      | 升级isx-cli脚手架
   version     isx version                                                      | 查看版本号
+  web         isx web                                                          | 本地启动前端服务
+  website     isx website                                                      | 本地启动官网
 
 Flags:
       --config string   config file (default is $HOME/.isx/isx-config.yml)
