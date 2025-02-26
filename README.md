@@ -53,7 +53,7 @@ isx push -f
 ```bash
 # 查看所有命令
 isx -h
-# 命令详解
+# 命令详解†
 isx login -h
 ```
 
