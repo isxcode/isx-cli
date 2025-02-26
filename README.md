@@ -2,7 +2,7 @@
 
 ### 团队开发规范脚手架
 
-##### 最新版本下载
+##### 安装包下载
 
 - [isx_linux_amd64](https://isxcode.oss-cn-shanghai.aliyuncs.com/zhixingyun/isx_linux_amd64)
 - [isx_windows_amd64.exe](https://isxcode.oss-cn-shanghai.aliyuncs.com/zhixingyun/isx_windows_amd64.exe)
@@ -16,7 +16,7 @@
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/isxcode/isx-cli/main/install.sh)"
 ```
 
-> 国内阿里云下载
+##### 国内阿里云安装
 
 ```bash
 sh -c "$(curl -fsSL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhixingyun/install.sh)"
@@ -53,7 +53,7 @@ isx push -f
 ```bash
 # 查看所有命令
 isx -h
-# 命令详解
+# 命令详解†
 isx login -h
 ```
 
