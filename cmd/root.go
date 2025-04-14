@@ -110,13 +110,12 @@ user:
 project-list:
     - spark-yun
     - flink-yun
-    - echarts-yun
-    - pytorch-yun
-    - lucene-yun
+    - ollama-yun
+    - camunda-yun
     - isx-cli
 spark-yun:
     name: spark-yun
-    describe: 至轻云-打造大数据计算平台
+    describe: 至轻云-轻量级大数据计算平台
     dir: ""
     repository:
         url: https://github.com/isxcode/spark-yun.git
@@ -126,7 +125,7 @@ spark-yun:
           name: spark-yun-vip
 flink-yun:
     name: flink-yun
-    describe: 至流云-打造流数据分析平台
+    describe: 至流云-轻量级实时流分析平台
     dir: ""
     repository:
         url: https://github.com/isxcode/flink-yun.git
@@ -134,39 +133,29 @@ flink-yun:
     sub-repository:
         - url: https://github.com/isxcode/flink-yun-vip.git
           name: flink-yun-vip
-pytorch-yun:
-    name: pytorch-yun
-    describe: 至慧云-打造智能微模型平台
+ollama-yun:
+    name: ollama-yun
+    describe: 至慧云-轻量级大模型训练平台
     dir: ""
     repository:
-        url: https://github.com/isxcode/pytorch-yun.git
+        url: https://github.com/isxcode/ollama-yun.git
         download: no
     sub-repository:
-        - url: https://github.com/isxcode/pytorch-yun-vip.git
-          name: pytorch-yun-vip
-lucene-yun:
-    name: lucene-yun
-    describe: 至数云-打造元数据管理平台
+        - url: https://github.com/isxcode/ollama-yun-vip.git
+          name: ollama-yun-vip
+camunda-yun:
+    name: camunda-yun
+    describe: 至数云-轻量级低代码流程平台
     dir: ""
     repository:
-        url: https://github.com/isxcode/lucene-yun.git
+        url: https://github.com/isxcode/camunda-yun.git
         download: no
     sub-repository:
-        - url: https://github.com/isxcode/lucene-yun-vip.git
-          name: lucene-yun-vip
-echarts-yun:
-    name: echarts-yun
-    describe: 至视云-打造数据可视化平台
-    dir: ""
-    repository:
-        url: https://github.com/isxcode/echarts-yun.git
-        download: no
-    sub-repository:
-        - url: https://github.com/isxcode/echarts-yun-vip.git
-          name: echarts-yun-vip
+        - url: https://github.com/isxcode/camunda-yun-vip.git
+          name: camunda-yun-vip
 isx-cli:
     name: isx-cli
-    describe: 至行云-打造开发规范脚手架
+    describe: 至行云-项目开发规范脚手架
     dir: ""
     repository:
         url: https://github.com/isxcode/isx-cli.git
