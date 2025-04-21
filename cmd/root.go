@@ -110,7 +110,7 @@ user:
 project-list:
     - spark-yun
     - flink-yun
-    - ollama-yun
+    - pytorch-yun
     - camunda-yun
     - isx-cli
 spark-yun:
@@ -133,16 +133,16 @@ flink-yun:
     sub-repository:
         - url: https://github.com/isxcode/flink-yun-vip.git
           name: flink-yun-vip
-ollama-yun:
-    name: ollama-yun
+pytorch-yun:
+    name: pytorch-yun
     describe: 至慧云-轻量级大模型训练平台
     dir: ""
     repository:
-        url: https://github.com/isxcode/ollama-yun.git
+        url: https://github.com/isxcode/pytorch-yun.git
         download: no
     sub-repository:
-        - url: https://github.com/isxcode/ollama-yun-vip.git
-          name: ollama-yun-vip
+        - url: https://github.com/isxcode/pytorch-yun-vip.git
+          name: pytorch-yun-vip
 camunda-yun:
     name: camunda-yun
     describe: 至数云-轻量级低代码流程平台
