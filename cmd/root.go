@@ -62,6 +62,23 @@ func init() {
 
 	cobra.OnInitialize(initConfig)
 
+	// 禁用自动生成的 completion 命令
+	rootCmd.CompletionOptions.DisableDefaultCmd = true
+
+	// 禁用自动生成的 help 命令
+	rootCmd.SetHelpCommand(&cobra.Command{
+		Use:    "no-help",
+		Hidden: true,
+	})
+
+	// 隐藏使用说明和标志
+	rootCmd.SetUsageTemplate(`{{if .Runnable}}{{.UseLine}}{{end}}{{if .HasAvailableSubCommands}}
+
+Available Commands:{{range .Commands}}{{if (or .IsAvailableCommand (eq .Name "help"))}}
+  {{rpad .Name .NamePadding }} {{.Short}}{{end}}{{end}}{{end}}
+
+`)
+
 	// 解析配置文件
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.isx/isx-config.yml)")
 
