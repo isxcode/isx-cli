@@ -28,7 +28,16 @@ var dbCmd = &cobra.Command{
 }
 
 func dbCmdMain(args []string) {
-	projectName := viper.GetString("current-project.name")
+	// 获取当前项目名称 - 支持新旧配置格式
+	projectName := viper.GetString("now-project")
+	if projectName == "" {
+		projectName = viper.GetString("current-project.name")
+	}
+
+	if projectName == "" {
+		fmt.Println("请先使用【isx choose】选择项目")
+		os.Exit(1)
+	}
 	if projectName != "spark-yun" {
 		fmt.Println("目前仅 spark-yun 项目支持该命令")
 		os.Exit(1)

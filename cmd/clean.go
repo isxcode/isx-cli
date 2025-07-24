@@ -24,8 +24,16 @@ var cleanCmd = &cobra.Command{
 }
 
 func cleanCmdMain() {
+	// 获取当前项目名称 - 支持新旧配置格式
+	projectName := viper.GetString("now-project")
+	if projectName == "" {
+		projectName = viper.GetString("current-project.name")
+	}
 
-	projectName := viper.GetString("current-project.name")
+	if projectName == "" {
+		fmt.Println("请先使用【isx choose】选择项目")
+		os.Exit(1)
+	}
 	var resourcePath string
 	if projectName == "spark-yun" {
 		resourcePath = "~/.zhiqingyun"
