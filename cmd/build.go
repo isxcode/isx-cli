@@ -25,9 +25,42 @@ var buildCmd = &cobra.Command{
 }
 
 func buildCmdMain() {
+	// 定义项目结构体
+	type ProjectConfig struct {
+		Name          string `mapstructure:"name"`
+		Describe      string `mapstructure:"describe"`
+		RepositoryURL string `mapstructure:"repository-url"`
+		Dir           string `mapstructure:"dir"`
+	}
 
-	projectName := viper.GetString("current-project.name")
-	projectPath := viper.GetString(projectName+".dir") + "/" + viper.GetString(projectName+".name")
+	projectName := viper.GetString("now-project")
+	if projectName == "" {
+		fmt.Println("没有选择当前项目，请先使用 'isx choose' 选择项目")
+		os.Exit(1)
+	}
+
+	// 获取项目列表
+	var projectList []ProjectConfig
+	err := viper.UnmarshalKey("project-list", &projectList)
+	if err != nil {
+		fmt.Printf("读取项目列表失败: %v\n", err)
+		os.Exit(1)
+	}
+
+	// 找到当前项目的路径
+	var projectPath string
+	for _, proj := range projectList {
+		if proj.Name == projectName {
+			projectPath = proj.Dir
+			break
+		}
+	}
+
+	if projectPath == "" {
+		fmt.Println("当前项目未下载，请先使用 'isx clone' 下载项目代码")
+		os.Exit(1)
+	}
+
 	buildImage := "registry.cn-shanghai.aliyuncs.com/isxcode/zhiqingyun-build"
 	home := common.HomeDir()
 
@@ -39,7 +72,7 @@ func buildCmdMain() {
 		viper.Set("cache.gradle.dir", cacheGradleDir)
 		viper.WriteConfig()
 	}
-	_, err := os.Stat(cacheGradleDir)
+	_, err = os.Stat(cacheGradleDir)
 	if os.IsNotExist(err) {
 		err := os.Mkdir(cacheGradleDir, 0755)
 		if err != nil {

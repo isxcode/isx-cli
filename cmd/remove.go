@@ -58,8 +58,7 @@ func inputRemoveProjectNumber() {
 
 	for i, proj := range projectList {
 		// 检查项目是否已下载（通过dir字段判断）
-		projectDir := viper.GetString(proj.Name + ".dir")
-		if projectDir != "" {
+		if proj.Dir != "" {
 			// 格式化显示项目信息
 			option := fmt.Sprintf("%s [%s] : %s",
 				printCommand(proj.Name, 14),
@@ -130,17 +129,27 @@ func removeProject() {
 	}
 
 	// 获取项目目录
-	projectName := projectList[deleteProjectNumber].Name
-	projectPath := viper.GetString(projectName + ".dir")
+	selectedProject := projectList[deleteProjectNumber]
+	projectName := selectedProject.Name
+	projectFullPath := selectedProject.Dir // 这已经是完整路径，包含项目名
+
+	// 三次确认删除
+	deleteProject := "N"
+	fmt.Print("确认要删除【" + projectFullPath + "】路径吗?(Y/N) default is N: ")
+	fmt.Scanln(&deleteProject)
+	if deleteProject == "N" {
+		fmt.Println("已中止")
+		os.Exit(1)
+	}
 
 	// 更新平台替换projectPath
 	removeCommand := ""
 	if runtime.GOOS == "windows" {
-		projectPath = strings.ReplaceAll(projectPath, "C:", "/c")
-		projectPath = strings.ReplaceAll(projectPath, " ", "\\ ")
-		removeCommand = "rm -rf " + projectPath + "/" + projectName
+		projectFullPath = strings.ReplaceAll(projectFullPath, "C:", "/c")
+		projectFullPath = strings.ReplaceAll(projectFullPath, " ", "\\ ")
+		removeCommand = "rm -rf " + projectFullPath
 	} else {
-		removeCommand = "rm -rf " + projectPath + "/" + projectName
+		removeCommand = "rm -rf " + projectFullPath
 	}
 
 	removeCmd := exec.Command("bash", "-c", removeCommand)
@@ -151,14 +160,28 @@ func removeProject() {
 		fmt.Println("执行失败:", err)
 		os.Exit(1)
 	} else {
-		fmt.Println(projectPath + "/" + projectName + "路径已删除")
+		fmt.Println(projectFullPath + "路径已删除")
 	}
 
-	// 保存配置：清空dir字段和下载状态
-	if viper.GetString("current-project.name") == projectName {
-		viper.Set("current-project.name", "")
+	// 保存配置：清空project-list中对应项目的dir字段
+	projectListRaw := viper.Get("project-list").([]interface{})
+
+	// 遍历项目列表，找到对应项目并清空dir字段
+	for i, item := range projectListRaw {
+		if project, ok := item.(map[string]interface{}); ok {
+			if name, exists := project["name"]; exists && name == projectName {
+				// 只清空dir字段
+				project["dir"] = ""
+				projectListRaw[i] = project
+				break
+			}
+		}
 	}
-	viper.Set(projectName+".dir", "")
-	viper.Set(projectName+".repository.download", "")
+
+	// 更新配置
+	viper.Set("project-list", projectListRaw)
+	if viper.GetString("now-project") == projectName {
+		viper.Set("now-project", "")
+	}
 	viper.WriteConfig()
 }
