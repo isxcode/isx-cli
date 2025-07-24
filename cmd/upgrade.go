@@ -67,7 +67,7 @@ func upgradeCmdMain() {
 
 		// 添加配置
 		home := common.HomeDir()
-		_, err := os.Stat(home + "/.isx/isx-config.yml")
+		_, err := os.Stat(home + "/.isx/config.yml")
 		if !os.IsNotExist(err) {
 			pytorchYunStr := "pytorch-yun:\n" +
 				"    name: pytorch-yun\n" +
@@ -79,7 +79,7 @@ func upgradeCmdMain() {
 				"    sub-repository:\n" +
 				"        - url: https://github.com/isxcode/pytorch-yun-vip.git\n" +
 				"          name: pytorch-yun-vip"
-			file, err := os.OpenFile(home+"/.isx/isx-config.yml", os.O_APPEND|os.O_WRONLY, 0644)
+			file, err := os.OpenFile(home+"/.isx/config.yml", os.O_APPEND|os.O_WRONLY, 0644)
 			defer file.Close()
 			_, err = file.WriteString(pytorchYunStr)
 			if err != nil {
