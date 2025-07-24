@@ -113,30 +113,35 @@ func initConfig() {
 		if os.IsNotExist(err) {
 			// 初始化配置
 			viper.SetConfigType("yaml")
+
+			// 生成随机密钥用于加密
+			encryptionKey := common.GenerateEncryptionKey()
+
 			var yamlExample = []byte(`version: 1.1.2
 user:
-    account: 
-    token: 
+    account:
+    token:
+    secret: ` + encryptionKey + `
 now-project: isx-cli
-spark-yun:
-    describe: 至轻云-超轻量级智能化数据中心
-    dir:
-    repository-url: https://github.com/isxcode/spark-yun.git
-    sub-repository:
-        - name: spark-yun-vip
-          url: https://github.com/isxcode/spark-yun-vip.git
-torch-yun:
-    describe: 至数云-超轻量级一体化应用平台
-    dir:
-    repository-url: https://github.com/isxcode/torch-yun.git
-    sub-repository:
-        - name: torch-yun-vip
-          url: https://github.com/isxcode/torch-yun-vip.git
-isx-cli:
-    describe: 至行云-至爻数据开发规范脚手架
-    dir:
-    name: isx-cli
-    repository-url: https://github.com/isxcode/isx-cli.git
+project-list:
+	- spark-yun:
+		describe: 至轻云-超轻量级智能化数据中心
+		repository-url: https://github.com/isxcode/spark-yun.git		
+		dir:
+		sub-repository:
+			- name: spark-yun-vip
+			  url: https://github.com/isxcode/spark-yun-vip.git
+	- torch-yun:
+		describe: 至数云-超轻量级一体化应用平台
+		repository-url: https://github.com/isxcode/torch-yun.git		
+		dir:
+		sub-repository:
+			- name: torch-yun-vip
+			  url: https://github.com/isxcode/torch-yun-vip.git
+	- isx-cli:
+		describe: 至行云-至爻数据开发规范脚手架
+		repository-url: https://github.com/isxcode/isx-cli.git		
+		dir:
 `)
 			err := viper.ReadConfig(bytes.NewBuffer(yamlExample))
 			if err != nil {
