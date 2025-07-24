@@ -266,12 +266,18 @@ func cloneCode(isxcodeRepository string, path string, name string, isMain bool) 
 }
 
 func cloneProjectCode() {
-	// 定义项目结构体
+	// 定义项目结构体，包含 sub-repository
+	type SubRepository struct {
+		Name string `mapstructure:"name"`
+		Url  string `mapstructure:"url"`
+	}
+
 	type ProjectConfig struct {
-		Name          string `mapstructure:"name"`
-		Describe      string `mapstructure:"describe"`
-		RepositoryURL string `mapstructure:"repository-url"`
-		Dir           string `mapstructure:"dir"`
+		Name          string          `mapstructure:"name"`
+		Describe      string          `mapstructure:"describe"`
+		RepositoryURL string          `mapstructure:"repository-url"`
+		Dir           string          `mapstructure:"dir"`
+		SubRepository []SubRepository `mapstructure:"sub-repository"`
 	}
 
 	// 获取项目列表
@@ -304,16 +310,39 @@ func cloneProjectCode() {
 		cloneCode(mainRepository, projectPath, projectName, true)
 	}
 
-	// 下载子项目代码
-	var subRepository []Repository
-	viper.UnmarshalKey(projectName+".sub-repository", &subRepository)
-	for _, repository := range subRepository {
+	// 下载子项目代码 - 支持新配置格式
+	var subRepositories []SubRepository
+
+	// 首先尝试从新配置格式获取 sub-repository
+	subRepositories = selectedProject.SubRepository
+
+	// 如果新配置格式没有找到，尝试旧配置格式（向后兼容）
+	if len(subRepositories) == 0 {
+		var legacySubRepository []Repository
+		viper.UnmarshalKey(projectName+".sub-repository", &legacySubRepository)
+		// 转换旧格式到新格式
+		for _, repo := range legacySubRepository {
+			subRepositories = append(subRepositories, SubRepository{
+				Name: repo.Name,
+				Url:  repo.Url,
+			})
+		}
+	}
+
+	// 下载所有子项目
+	for _, repository := range subRepositories {
+		fmt.Printf("正在处理子项目: %s\n", repository.Name)
 		if !github.IsRepoForked(viper.GetString("user.account"), repository.Name) {
+			fmt.Printf("Fork子项目: %s\n", repository.Name)
 			forkRepository := github.ForkRepository("isxcode", repository.Name, "")
 			if forkRepository {
+				fmt.Printf("开始下载子项目: %s\n", repository.Name)
 				cloneCode(repository.Url, projectPath+"/"+projectName, repository.Name, false)
+			} else {
+				fmt.Printf("Fork子项目失败: %s\n", repository.Name)
 			}
 		} else {
+			fmt.Printf("子项目已Fork，直接下载: %s\n", repository.Name)
 			cloneCode(repository.Url, projectPath+"/"+projectName, repository.Name, false)
 		}
 	}
@@ -327,7 +356,7 @@ func saveConfig() {
 	for i, item := range projectList {
 		if project, ok := item.(map[string]interface{}); ok {
 			if name, exists := project["name"]; exists && name == projectName {
-				// 只更新dir字段
+				// 保存项目的实际路径（项目根目录）
 				project["dir"] = projectPath + "/" + projectName
 				projectList[i] = project
 				break

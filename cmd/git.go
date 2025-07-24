@@ -44,8 +44,7 @@ func gitCmdMain(args []string) {
 	}
 
 	// 进入子项目执行命令
-	var subRepository []Repository
-	viper.UnmarshalKey(gitProjectName+".sub-repository", &subRepository)
+	subRepository := GetSubRepositories(gitProjectName)
 	for _, repository := range subRepository {
 
 		if github.IsRepoForked(viper.GetString("user.account"), repository.Name) {

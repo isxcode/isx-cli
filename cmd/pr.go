@@ -55,8 +55,7 @@ func prCmdMain(issueNumber string) {
 	// 通过api创建pr
 	createPr(branchName+" "+title, branchName, projectName)
 
-	var subRepository []Repository
-	viper.UnmarshalKey(viper.GetString("current-project.name")+".sub-repository", &subRepository)
+	subRepository := GetSubRepositories(viper.GetString("current-project.name"))
 	for _, repository := range subRepository {
 		if github.IsRepoForked(viper.GetString("user.account"), repository.Name) {
 			createPr(branchName+" "+title, branchName, repository.Name)
