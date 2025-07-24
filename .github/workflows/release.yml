@@ -52,7 +52,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: i-artifact
-          path: |
+          path:
             ./target/isx_windows_amd64.exe
             ./target/isx_linux_amd64
             ./target/isx_darwin_arm64
