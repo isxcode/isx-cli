@@ -137,7 +137,7 @@ func removeProject() {
 	deleteProject := "N"
 	fmt.Print("确认要删除【" + projectFullPath + "】路径吗?(Y/N) default is N: ")
 	fmt.Scanln(&deleteProject)
-	if deleteProject == "N" {
+	if deleteProject == "N" || deleteProject == "n" {
 		fmt.Println("已中止")
 		os.Exit(1)
 	}

@@ -43,9 +43,20 @@ var deleteCmd = &cobra.Command{
 
 func deleteCmdMain(issueNumber string) {
 
+	// 获取当前项目名称 - 支持新旧配置格式
+	projectName := viper.GetString("now-project")
+	if projectName == "" {
+		projectName = viper.GetString("current-project.name")
+	}
+
+	if projectName == "" {
+		fmt.Println("请先使用【isx choose】选择项目")
+		os.Exit(1)
+	}
+
 	// 判断issue是否被关闭，未关闭的issue不允许删除
 	if !deleteForceFlag {
-		status := getGithubIssueStatus(issueNumber)
+		status := getGithubIssueStatus(issueNumber, projectName)
 		if status != "closed" {
 			fmt.Println("issue未关闭，不允许删除")
 			os.Exit(1)
@@ -55,13 +66,41 @@ func deleteCmdMain(issueNumber string) {
 	// 需要删除的分支名
 	branchName := "GH-" + issueNumber
 
-	// 删除远程分支
-	projectName := viper.GetString("current-project.name")
-	projectPath := viper.GetString(projectName+".dir") + "/" + projectName
+	// 获取项目路径 - 支持新旧配置格式
+	var projectPath string
+
+	// 尝试新配置格式：从 project-list 数组中查找
+	type ProjectConfig struct {
+		Name string `mapstructure:"name"`
+		Dir  string `mapstructure:"dir"`
+	}
+
+	var projectList []ProjectConfig
+	configErr := viper.UnmarshalKey("project-list", &projectList)
+	if configErr == nil {
+		for _, proj := range projectList {
+			if proj.Name == projectName {
+				projectPath = proj.Dir
+				break
+			}
+		}
+	}
+
+	// 如果新配置格式没找到，尝试旧配置格式
+	if projectPath == "" {
+		projectPath = viper.GetString(projectName + ".dir")
+		if projectPath != "" {
+			projectPath = projectPath + "/" + projectName
+		}
+	}
+
+	if projectPath == "" {
+		fmt.Printf("项目 %s 未下载，请先使用【isx clone】下载项目代码\n", projectName)
+		os.Exit(1)
+	}
 	deleteUpstreamBranch(projectPath, branchName)
 
-	var subRepository []Repository
-	viper.UnmarshalKey(viper.GetString("current-project.name")+".sub-repository", &subRepository)
+	subRepository := GetSubRepositories(projectName)
 	for _, repository := range subRepository {
 		deleteUpstreamBranch(projectPath+"/"+repository.Name, branchName)
 	}
@@ -106,10 +145,10 @@ func deleteOriginBranch(path string, branchName string) {
 	}
 }
 
-func getGithubIssueStatus(issueNumber string) string {
+func getGithubIssueStatus(issueNumber string, projectName string) string {
 
 	client := &http.Client{}
-	req, err := http.NewRequest("GET", "https://api.github.com/repos/isxcode/"+viper.GetString("current-project.name")+"/issues/"+issueNumber, nil)
+	req, err := http.NewRequest("GET", "https://api.github.com/repos/isxcode/"+projectName+"/issues/"+issueNumber, nil)
 
 	req.Header = common.GitHubHeader(common.GetToken())
 	resp, err := client.Do(req)
