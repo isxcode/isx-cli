@@ -44,10 +44,9 @@ func chooseCmdMain() {
 
 	for _, proj := range projectList {
 		// 检查项目是否已下载（通过dir字段判断）
-		projectDir := viper.GetString(proj.Name + ".dir")
-		if projectDir != "" {
+		if proj.Dir != "" {
 			// 格式化显示项目信息
-			option := fmt.Sprintf("%s [可选择] : %s",
+			option := fmt.Sprintf("%s : %s",
 				printCommand(proj.Name, 12),
 				proj.Describe)
 			availableProjects = append(availableProjects, option)
@@ -84,6 +83,6 @@ func chooseCmdMain() {
 	// 设置当前的项目
 	projectName := availableProjectNames[selectedIndex]
 	fmt.Println("切换到项目：" + projectName)
-	viper.Set("current-project.name", projectName)
+	viper.Set("now-project", projectName)
 	viper.WriteConfig()
 }

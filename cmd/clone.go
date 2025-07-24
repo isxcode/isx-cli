@@ -320,27 +320,18 @@ func cloneProjectCode() {
 }
 
 func saveConfig() {
-	// 定义项目结构体
-	type ProjectConfig struct {
-		Name          string `mapstructure:"name"`
-		Describe      string `mapstructure:"describe"`
-		RepositoryURL string `mapstructure:"repository-url"`
-		Dir           string `mapstructure:"dir"`
-	}
+	// 直接更新指定项目的dir字段，不影响其他字段
+	projectList := viper.Get("project-list").([]interface{})
 
-	// 获取项目列表
-	var projectList []ProjectConfig
-	err := viper.UnmarshalKey("project-list", &projectList)
-	if err != nil {
-		fmt.Printf("读取项目列表失败: %v\n", err)
-		os.Exit(1)
-	}
-
-	// 更新对应项目的dir字段
-	for i, proj := range projectList {
-		if proj.Name == projectName {
-			projectList[i].Dir = projectPath + "/" + projectName
-			break
+	// 遍历项目列表，找到对应项目并更新dir字段
+	for i, item := range projectList {
+		if project, ok := item.(map[string]interface{}); ok {
+			if name, exists := project["name"]; exists && name == projectName {
+				// 只更新dir字段
+				project["dir"] = projectPath + "/" + projectName
+				projectList[i] = project
+				break
+			}
 		}
 	}
 
