@@ -15,9 +15,10 @@ func init() {
 }
 
 var webCmd = &cobra.Command{
-	Use:   "web",
-	Short: printCommand("isx web", 65) + "| 本地启动前端服务",
-	Long:  `isx web`,
+	Use:    "web",
+	Short:  printCommand("isx web", 65) + "| 本地启动前端服务",
+	Long:   `isx web`,
+	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
 		webCmdMain()
 	},
