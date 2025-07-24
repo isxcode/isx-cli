@@ -108,7 +108,7 @@ Available Commands:
   website     isx website                                                      | 本地启动官网
 
 Flags:
-      --config string   config file (default is $HOME/.isx/isx-config.yml)
+      --config string   config file (default is $HOME/.isx/config.yml)
   -h, --help            help for isx
 
 Use "isx [command] --help" for more information about a command.
