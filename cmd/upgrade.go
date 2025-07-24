@@ -49,46 +49,6 @@ func contains(slice []string, item string) bool {
 
 func upgradeCmdMain() {
 
-	// 判断是否有至匠云模块，没有则直接添加
-	projectList := viper.GetStringSlice("project-list")
-
-	// 获取github中的版本号
-	if !contains(projectList, "pytorch-yun") {
-
-		// 在这次更新中,顺带更新项目描述
-		viper.Set("flink-yun.describe", "至流云-打造流数据分析平台")
-		viper.Set("spark-yun.describe", "至轻云-打造大数据计算平台")
-		viper.Set("isx-cli.describe", "至行云-打造开发规范脚手架")
-
-		// 项目
-		projectList = append(projectList, "pytorch-yun")
-		viper.Set("project-list", projectList)
-		viper.WriteConfig()
-
-		// 添加配置
-		home := common.HomeDir()
-		_, err := os.Stat(home + "/.isx/config.yml")
-		if !os.IsNotExist(err) {
-			pytorchYunStr := "pytorch-yun:\n" +
-				"    name: pytorch-yun\n" +
-				"    describe: 至慧云-打造智能微模型平台\n" +
-				"    dir: \n" +
-				"    repository:\n" +
-				"        url: https://github.com/isxcode/pytorch-yun.git\n" +
-				"        download: no\n" +
-				"    sub-repository:\n" +
-				"        - url: https://github.com/isxcode/pytorch-yun-vip.git\n" +
-				"          name: pytorch-yun-vip"
-			file, err := os.OpenFile(home+"/.isx/config.yml", os.O_APPEND|os.O_WRONLY, 0644)
-			defer file.Close()
-			_, err = file.WriteString(pytorchYunStr)
-			if err != nil {
-				fmt.Println("Error writing to file:", err)
-				return
-			}
-		}
-	}
-
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", "https://api.github.com/repos/isxcode/isx-cli/releases/latest", nil)
 	if err != nil {
@@ -150,6 +110,6 @@ func upgradeCmdMain() {
 	}
 
 	// 更新配置中的版本信息
-	viper.Set("version.number", latestVersion)
+	viper.Set("version", latestVersion)
 	viper.WriteConfig()
 }
