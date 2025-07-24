@@ -37,8 +37,8 @@ func cleanCmdMain() {
 	var resourcePath string
 	if projectName == "spark-yun" {
 		resourcePath = "~/.zhiqingyun"
-	} else if projectName == "flink-yun" {
-		resourcePath = "~/.zhiliuyun"
+	} else if projectName == "torch-yun" {
+		resourcePath = "~/.zhishuyun"
 	} else {
 		fmt.Println("该项目" + projectName + "暂不支持,请升级isx命令")
 		os.Exit(1)
