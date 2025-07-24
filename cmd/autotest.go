@@ -15,9 +15,10 @@ func init() {
 }
 
 var autotestCmd = &cobra.Command{
-	Use:   "autotest",
-	Short: printCommand("isx autotest", 65) + "| 自动化测试",
-	Long:  `isx autotest`,
+	Use:    "autotest",
+	Short:  printCommand("isx autotest", 65) + "| 自动化测试",
+	Long:   `isx autotest`,
+	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
 		autotestCmdMain()
 	},

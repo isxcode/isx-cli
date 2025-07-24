@@ -16,9 +16,10 @@ func init() {
 }
 
 var issueCmd = &cobra.Command{
-	Use:   "issue",
-	Short: printCommand("isx issue", 65) + "| 列出当前仓库分配给您的issue",
-	Long:  `isx issue`,
+	Use:    "issue",
+	Short:  printCommand("isx issue", 65) + "| 列出当前仓库分配给您的issue",
+	Long:   `isx issue`,
+	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
 		IssueCmdMain()
 	},

@@ -15,9 +15,10 @@ func init() {
 }
 
 var serverCmd = &cobra.Command{
-	Use:   "server",
-	Short: printCommand("isx server", 65) + "| 本地启动后端程序",
-	Long:  `isx server`,
+	Use:    "server",
+	Short:  printCommand("isx server", 65) + "| 本地启动后端程序",
+	Long:   `isx server`,
+	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
 		serverCmdMain()
 	},

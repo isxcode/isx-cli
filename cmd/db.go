@@ -15,9 +15,10 @@ func init() {
 }
 
 var dbCmd = &cobra.Command{
-	Use:   "db",
-	Short: printCommand("isx db list | isx db <issue_number>", 65) + "| 查看当前db(暂不开放)",
-	Long:  `isx db | isx db list | isx db 123`,
+	Use:    "db",
+	Short:  printCommand("isx db list | isx db <issue_number>", 65) + "| 查看当前db(暂不开放)",
+	Long:   `isx db | isx db list | isx db 123`,
+	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) > 1 {
 			fmt.Println("使用方式不对，请重新输入命令")
