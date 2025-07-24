@@ -42,11 +42,48 @@ var checkoutCmd = &cobra.Command{
 type checkoutBranchDelegate func(projectPath, branchName string)
 
 func checkoutBranch(branch string, delegate checkoutBranchDelegate) {
-	projectName := viper.GetString("current-project.name")
-	projectPath := viper.GetString(projectName+".dir") + "/" + projectName
+	// 获取当前项目名称 - 支持新旧配置格式
+	projectName := viper.GetString("now-project")
+	if projectName == "" {
+		projectName = viper.GetString("current-project.name")
+	}
+
+	// 获取项目路径 - 支持新旧配置格式
+	var projectPath string
+
+	// 尝试新配置格式：从 project-list 数组中查找
+	type ProjectConfig struct {
+		Name string `mapstructure:"name"`
+		Dir  string `mapstructure:"dir"`
+	}
+
+	var projectList []ProjectConfig
+	err := viper.UnmarshalKey("project-list", &projectList)
+	if err == nil {
+		for _, proj := range projectList {
+			if proj.Name == projectName {
+				projectPath = proj.Dir
+				break
+			}
+		}
+	}
+
+	// 如果新配置格式没找到，尝试旧配置格式
+	if projectPath == "" {
+		projectPath = viper.GetString(projectName + ".dir")
+		if projectPath != "" {
+			projectPath = projectPath + "/" + projectName
+		}
+	}
+
+	if projectPath == "" {
+		fmt.Printf("项目 %s 未下载，请先使用【isx clone】下载项目代码\n", projectName)
+		os.Exit(1)
+	}
+
 	delegate(projectPath, branch)
 
-	subRepository := GetSubRepositories(viper.GetString("current-project.name"))
+	subRepository := GetSubRepositories(projectName)
 	for _, repository := range subRepository {
 		if github.IsRepoForked(viper.GetString("user.account"), repository.Name) {
 			delegate(projectPath+"/"+repository.Name, branch)
@@ -84,12 +121,48 @@ func checkoutCmdMain(issueNumber string) {
 	releaseBranchName := getGithubIssueBranch(issueNumber)
 	branch = "GH-" + issueNumber
 
-	// 本地切出分支
-	projectName := viper.GetString("current-project.name")
-	projectPath := viper.GetString(projectName+".dir") + "/" + projectName
+	// 本地切出分支 - 支持新旧配置格式
+	projectName := viper.GetString("now-project")
+	if projectName == "" {
+		projectName = viper.GetString("current-project.name")
+	}
+
+	// 获取项目路径 - 支持新旧配置格式
+	var projectPath string
+
+	// 尝试新配置格式：从 project-list 数组中查找
+	type ProjectConfig struct {
+		Name string `mapstructure:"name"`
+		Dir  string `mapstructure:"dir"`
+	}
+
+	var projectList []ProjectConfig
+	err := viper.UnmarshalKey("project-list", &projectList)
+	if err == nil {
+		for _, proj := range projectList {
+			if proj.Name == projectName {
+				projectPath = proj.Dir
+				break
+			}
+		}
+	}
+
+	// 如果新配置格式没找到，尝试旧配置格式
+	if projectPath == "" {
+		projectPath = viper.GetString(projectName + ".dir")
+		if projectPath != "" {
+			projectPath = projectPath + "/" + projectName
+		}
+	}
+
+	if projectPath == "" {
+		fmt.Printf("项目 %s 未下载，请先使用【isx clone】下载项目代码\n", projectName)
+		os.Exit(1)
+	}
+
 	createReleaseBranch(projectPath, branch, releaseBranchName)
 
-	subRepository := GetSubRepositories(viper.GetString("current-project.name"))
+	subRepository := GetSubRepositories(projectName)
 	for _, repository := range subRepository {
 		createReleaseBranch(projectPath+"/"+repository.Name, branch, releaseBranchName)
 	}
@@ -98,9 +171,43 @@ func checkoutCmdMain(issueNumber string) {
 }
 
 func getLocalBranchName(branchName string) string {
+	// 获取当前项目名称和路径 - 支持新旧配置格式
+	projectName := viper.GetString("now-project")
+	if projectName == "" {
+		projectName = viper.GetString("current-project.name")
+	}
 
-	projectName := viper.GetString("current-project.name")
-	projectPath := viper.GetString(projectName+".dir") + "/" + projectName
+	// 获取项目路径 - 支持新旧配置格式
+	var projectPath string
+
+	// 尝试新配置格式：从 project-list 数组中查找
+	type ProjectConfig struct {
+		Name string `mapstructure:"name"`
+		Dir  string `mapstructure:"dir"`
+	}
+
+	var projectList []ProjectConfig
+	err := viper.UnmarshalKey("project-list", &projectList)
+	if err == nil {
+		for _, proj := range projectList {
+			if proj.Name == projectName {
+				projectPath = proj.Dir
+				break
+			}
+		}
+	}
+
+	// 如果新配置格式没找到，尝试旧配置格式
+	if projectPath == "" {
+		projectPath = viper.GetString(projectName + ".dir")
+		if projectPath != "" {
+			projectPath = projectPath + "/" + projectName
+		}
+	}
+
+	if projectPath == "" {
+		return ""
+	}
 
 	cmd := exec.Command("bash", "-c", "git branch -l "+"\""+branchName+"\"")
 	cmd.Dir = projectPath
@@ -123,9 +230,14 @@ func getLocalBranchName(branchName string) string {
 }
 
 func getGithubBranch(branchNum string, account string) string {
+	// 获取当前项目名称 - 支持新旧配置格式
+	projectName := viper.GetString("now-project")
+	if projectName == "" {
+		projectName = viper.GetString("current-project.name")
+	}
 
 	client := &http.Client{}
-	req, err := http.NewRequest("GET", "https://api.github.com/repos/"+account+"/"+viper.GetString("current-project.name")+"/branches/"+branchNum, nil)
+	req, err := http.NewRequest("GET", "https://api.github.com/repos/"+account+"/"+projectName+"/branches/"+branchNum, nil)
 
 	req.Header = common.GitHubHeader(common.GetToken())
 	resp, err := client.Do(req)
@@ -240,9 +352,14 @@ func checkoutUpstreamBranch(path string, branchName string) {
 }
 
 func getGithubIssueBranch(issueNumber string) string {
+	// 获取当前项目名称 - 支持新旧配置格式
+	projectName := viper.GetString("now-project")
+	if projectName == "" {
+		projectName = viper.GetString("current-project.name")
+	}
 
 	client := &http.Client{}
-	req, err := http.NewRequest("GET", "https://api.github.com/repos/isxcode/"+viper.GetString("current-project.name")+"/issues/"+issueNumber, nil)
+	req, err := http.NewRequest("GET", "https://api.github.com/repos/isxcode/"+projectName+"/issues/"+issueNumber, nil)
 
 	req.Header = common.GitHubHeader(common.GetToken())
 	resp, err := client.Do(req)

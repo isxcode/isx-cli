@@ -27,7 +27,11 @@ var issueCmd = &cobra.Command{
 
 func IssueCmdMain() {
 	username := viper.GetString("user.account")
-	currentProject := viper.GetString("current-project.name")
+	// 获取当前项目名称 - 支持新旧配置格式
+	currentProject := viper.GetString("now-project")
+	if currentProject == "" {
+		currentProject = viper.GetString("current-project.name")
+	}
 	issueList := GetIssueList(currentProject, username)
 	if len(issueList) == 0 {
 		fmt.Println("当前没有issue")
