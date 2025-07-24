@@ -46,8 +46,7 @@ func checkoutBranch(branch string, delegate checkoutBranchDelegate) {
 	projectPath := viper.GetString(projectName+".dir") + "/" + projectName
 	delegate(projectPath, branch)
 
-	var subRepository []Repository
-	viper.UnmarshalKey(viper.GetString("current-project.name")+".sub-repository", &subRepository)
+	subRepository := GetSubRepositories(viper.GetString("current-project.name"))
 	for _, repository := range subRepository {
 		if github.IsRepoForked(viper.GetString("user.account"), repository.Name) {
 			delegate(projectPath+"/"+repository.Name, branch)
@@ -90,8 +89,7 @@ func checkoutCmdMain(issueNumber string) {
 	projectPath := viper.GetString(projectName+".dir") + "/" + projectName
 	createReleaseBranch(projectPath, branch, releaseBranchName)
 
-	var subRepository []Repository
-	viper.UnmarshalKey(viper.GetString("current-project.name")+".sub-repository", &subRepository)
+	subRepository := GetSubRepositories(viper.GetString("current-project.name"))
 	for _, repository := range subRepository {
 		createReleaseBranch(projectPath+"/"+repository.Name, branch, releaseBranchName)
 	}

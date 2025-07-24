@@ -56,14 +56,13 @@ func pushCmdMain() {
 	}
 
 	// 获取当前分支
-	branchName := git.GetCurrentBranchName(viper.GetString("current-project.name"), true)
+	branchName := git.GetCurrentBranchName(projectName, projectPath, true)
 
 	// 自动commit 和 提交代码
 	commitAndPushCode(projectPath, branchName)
 
 	// 遍历子模块
-	var subRepository []Repository
-	viper.UnmarshalKey(viper.GetString("current-project.name")+".sub-repository", &subRepository)
+	subRepository := GetSubRepositories(projectName)
 	for _, repository := range subRepository {
 		if github.IsRepoForked(viper.GetString("user.account"), repository.Name) {
 			commitAndPushCode(projectPath+"/"+repository.Name, branchName)

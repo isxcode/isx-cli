@@ -25,14 +25,12 @@ var pullCmd = &cobra.Command{
 
 func pullCmdMain() {
 
-	branchName := git.GetCurrentBranchName(viper.GetString("current-project.name"), true)
-
 	projectName := viper.GetString("current-project.name")
 	projectPath := viper.GetString(projectName+".dir") + "/" + projectName
+	branchName := git.GetCurrentBranchName(projectName, projectPath, true)
 	rebaseBranch(projectPath, branchName)
 
-	var subRepository []Repository
-	viper.UnmarshalKey(viper.GetString("current-project.name")+".sub-repository", &subRepository)
+	subRepository := GetSubRepositories(projectName)
 	for _, repository := range subRepository {
 		if github.IsRepoForked(viper.GetString("user.account"), repository.Name) {
 			rebaseBranch(projectPath+"/"+repository.Name, branchName)

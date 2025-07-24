@@ -58,6 +58,46 @@ type Repository struct {
 	Name     string `yaml:"name"`
 }
 
+// SubRepository 新配置格式的子仓库结构
+type SubRepository struct {
+	Name string `mapstructure:"name"`
+	Url  string `mapstructure:"url"`
+}
+
+// GetSubRepositories 获取项目的子仓库列表，支持新旧配置格式
+func GetSubRepositories(projectName string) []Repository {
+	var result []Repository
+
+	// 首先尝试从新配置格式获取 sub-repository
+	type ProjectConfig struct {
+		Name          string          `mapstructure:"name"`
+		SubRepository []SubRepository `mapstructure:"sub-repository"`
+	}
+
+	var projectList []ProjectConfig
+	err := viper.UnmarshalKey("project-list", &projectList)
+	if err == nil {
+		// 在项目列表中查找指定项目
+		for _, project := range projectList {
+			if project.Name == projectName {
+				// 转换新格式到旧格式（保持兼容性）
+				for _, subRepo := range project.SubRepository {
+					result = append(result, Repository{
+						Name: subRepo.Name,
+						Url:  subRepo.Url,
+					})
+				}
+				return result
+			}
+		}
+	}
+
+	// 如果新配置格式没有找到，尝试旧配置格式（向后兼容）
+	var legacySubRepository []Repository
+	viper.UnmarshalKey(projectName+".sub-repository", &legacySubRepository)
+	return legacySubRepository
+}
+
 func init() {
 
 	cobra.OnInitialize(initConfig)

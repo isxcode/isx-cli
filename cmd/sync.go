@@ -38,8 +38,7 @@ func SyncCmdMain(branchName string) {
 func SyncFullProjectBranch(projectName, branchName string) {
 	SyncBranch(projectName, branchName)
 
-	var subRepository []Repository
-	viper.UnmarshalKey(projectName+".sub-repository", &subRepository)
+	subRepository := GetSubRepositories(projectName)
 	for _, repository := range subRepository {
 		SyncBranch(repository.Name, branchName)
 	}
