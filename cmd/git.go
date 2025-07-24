@@ -26,15 +26,57 @@ var gitCmd = &cobra.Command{
 }
 
 func gitCmdMain(args []string) {
+	// 获取当前项目名称 - 支持新旧配置格式
+	gitProjectName = viper.GetString("now-project")
+	if gitProjectName == "" {
+		gitProjectName = viper.GetString("current-project.name")
+	}
 
-	gitProjectName = viper.GetString("current-project.name")
-	gitProjectPath = viper.GetString(gitProjectName + ".dir")
+	if gitProjectName == "" {
+		fmt.Println("请先使用【isx choose】选择项目")
+		os.Exit(1)
+	}
+
+	// 获取项目路径 - 支持新旧配置格式
+	var projectPath string
+
+	// 尝试新配置格式：从 project-list 数组中查找
+	type ProjectConfig struct {
+		Name string `mapstructure:"name"`
+		Dir  string `mapstructure:"dir"`
+	}
+
+	var projectList []ProjectConfig
+	configErr := viper.UnmarshalKey("project-list", &projectList)
+	if configErr == nil {
+		for _, proj := range projectList {
+			if proj.Name == gitProjectName {
+				projectPath = proj.Dir
+				break
+			}
+		}
+	}
+
+	// 如果新配置格式没找到，尝试旧配置格式
+	if projectPath == "" {
+		gitProjectPath = viper.GetString(gitProjectName + ".dir")
+		if gitProjectPath != "" {
+			projectPath = gitProjectPath + "/" + gitProjectName
+		}
+	} else {
+		gitProjectPath = projectPath
+	}
+
+	if projectPath == "" {
+		fmt.Printf("项目 %s 未下载，请先使用【isx clone】下载项目代码\n", gitProjectName)
+		os.Exit(1)
+	}
 
 	// 进入主项目执行git命令
 	gitCmd := exec.Command("git", args...)
 	gitCmd.Stdout = os.Stdout
 	gitCmd.Stderr = os.Stderr
-	gitCmd.Dir = gitProjectPath + "/" + gitProjectName
+	gitCmd.Dir = projectPath
 	err := gitCmd.Run()
 	if err != nil {
 		fmt.Println("执行失败:", err)
@@ -44,15 +86,14 @@ func gitCmdMain(args []string) {
 	}
 
 	// 进入子项目执行命令
-	var subRepository []Repository
-	viper.UnmarshalKey(gitProjectName+".sub-repository", &subRepository)
+	subRepository := GetSubRepositories(gitProjectName)
 	for _, repository := range subRepository {
 
 		if github.IsRepoForked(viper.GetString("user.account"), repository.Name) {
 			gitCmd := exec.Command("git", args...)
 			gitCmd.Stdout = os.Stdout
 			gitCmd.Stderr = os.Stderr
-			gitCmd.Dir = gitProjectPath + "/" + gitProjectName + "/" + repository.Name
+			gitCmd.Dir = projectPath + "/" + repository.Name
 			err := gitCmd.Run()
 			if err != nil {
 				fmt.Println("执行失败:", err)

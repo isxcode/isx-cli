@@ -2,12 +2,12 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"os"
 	"os/exec"
 	"runtime"
-	"strconv"
 	"strings"
 )
 
@@ -36,47 +36,108 @@ func removeCmdMain() {
 }
 
 func inputRemoveProjectNumber() {
-
-	// 打印项目列表
-	projectList := viper.GetStringSlice("project-list")
-	for index, projectName := range projectList {
-		fmt.Println("[" + strconv.Itoa(index) + "] " + printCommand(viper.GetString(projectName+".name"), 14) + "[ " + printCommand(viper.GetString(projectName+".repository.url"), 45) + "] : " + viper.GetString(projectName+".describe"))
+	// 定义项目结构体
+	type ProjectConfig struct {
+		Name          string `mapstructure:"name"`
+		Describe      string `mapstructure:"describe"`
+		RepositoryURL string `mapstructure:"repository-url"`
+		Dir           string `mapstructure:"dir"`
 	}
 
-	// 输入项目编号
-	fmt.Print("请输入删除项目编号：")
-	fmt.Scanln(&deleteProjectNumber)
-
-	// 没有下载的不让删除
-	projectName := projectList[deleteProjectNumber]
-	downloadStatus := viper.GetString(projectName + ".repository.download")
-	if downloadStatus != "ok" {
-		fmt.Print("该项目未下载")
+	// 获取项目列表
+	var projectList []ProjectConfig
+	err := viper.UnmarshalKey("project-list", &projectList)
+	if err != nil {
+		fmt.Printf("读取项目列表失败: %v\n", err)
 		os.Exit(1)
 	}
 
+	// 创建可删除的项目列表（只显示已下载的项目）
+	var removableProjects []string
+	var removableProjectIndices []int
+
+	for i, proj := range projectList {
+		// 检查项目是否已下载（通过dir字段判断）
+		if proj.Dir != "" {
+			// 格式化显示项目信息
+			option := fmt.Sprintf("%s [%s] : %s",
+				printCommand(proj.Name, 14),
+				printCommand(proj.RepositoryURL, 45),
+				proj.Describe)
+			removableProjects = append(removableProjects, option)
+			removableProjectIndices = append(removableProjectIndices, i)
+		}
+	}
+
+	// 检查是否有可删除的项目
+	if len(removableProjects) == 0 {
+		fmt.Println("没有可删除的项目，请先使用 'isx clone' 下载项目代码")
+		os.Exit(1)
+	}
+
+	// 创建交互式选择器
+	prompt := promptui.Select{
+		Label: "请选择要删除的项目",
+		Items: removableProjects,
+		Size:  10, // 显示最多10个选项
+		Templates: &promptui.SelectTemplates{
+			Label:    "{{ . }}:",
+			Active:   "▶ {{ . | red }}",
+			Inactive: "  {{ . }}",
+			Selected: "✗ {{ . | red }}",
+		},
+	}
+
+	// 执行选择
+	selectedIndex, _, err := prompt.Run()
+	if err != nil {
+		fmt.Printf("选择失败: %v\n", err)
+		os.Exit(1)
+	}
+
+	// 设置要删除的项目索引
+	deleteProjectNumber = removableProjectIndices[selectedIndex]
+
 	// 二次确认
-	deleteProject := "N"
-	fmt.Print("确认要删除该项目吗？(Y/N) default is N: ")
-	fmt.Scanln(&deleteProject)
-	if deleteProject == "N" {
-		fmt.Println("已中止")
+	confirmPrompt := promptui.Prompt{
+		Label:     "确认要删除该项目吗",
+		IsConfirm: true,
+	}
+
+	_, err = confirmPrompt.Run()
+	if err != nil {
+		fmt.Println("已中止删除操作")
 		os.Exit(1)
 	}
 }
 
 func removeProject() {
+	// 定义项目结构体
+	type ProjectConfig struct {
+		Name          string `mapstructure:"name"`
+		Describe      string `mapstructure:"describe"`
+		RepositoryURL string `mapstructure:"repository-url"`
+		Dir           string `mapstructure:"dir"`
+	}
+
+	// 获取项目列表
+	var projectList []ProjectConfig
+	err := viper.UnmarshalKey("project-list", &projectList)
+	if err != nil {
+		fmt.Printf("读取项目列表失败: %v\n", err)
+		os.Exit(1)
+	}
 
 	// 获取项目目录
-	projectList := viper.GetStringSlice("project-list")
-	projectName := projectList[deleteProjectNumber]
-	projectPath := viper.GetString(projectName + ".dir")
+	selectedProject := projectList[deleteProjectNumber]
+	projectName := selectedProject.Name
+	projectFullPath := selectedProject.Dir // 这已经是完整路径，包含项目名
 
 	// 三次确认删除
 	deleteProject := "N"
-	fmt.Print("确认要删除【" + projectPath + "/" + projectName + "】路径吗?(Y/N) default is N: ")
+	fmt.Print("确认要删除【" + projectFullPath + "】路径吗?(Y/N) default is N: ")
 	fmt.Scanln(&deleteProject)
-	if deleteProject == "N" {
+	if deleteProject == "N" || deleteProject == "n" {
 		fmt.Println("已中止")
 		os.Exit(1)
 	}
@@ -84,29 +145,43 @@ func removeProject() {
 	// 更新平台替换projectPath
 	removeCommand := ""
 	if runtime.GOOS == "windows" {
-		projectPath = strings.ReplaceAll(projectPath, "C:", "/c")
-		projectPath = strings.ReplaceAll(projectPath, " ", "\\ ")
-		removeCommand = "rm -rf " + projectPath + "/" + projectName
+		projectFullPath = strings.ReplaceAll(projectFullPath, "C:", "/c")
+		projectFullPath = strings.ReplaceAll(projectFullPath, " ", "\\ ")
+		removeCommand = "rm -rf " + projectFullPath
 	} else {
-		removeCommand = "rm -rf " + projectPath + "/" + projectName
+		removeCommand = "rm -rf " + projectFullPath
 	}
 
 	removeCmd := exec.Command("bash", "-c", removeCommand)
 	removeCmd.Stdout = os.Stdout
 	removeCmd.Stderr = os.Stderr
-	err := removeCmd.Run()
+	err = removeCmd.Run()
 	if err != nil {
 		fmt.Println("执行失败:", err)
 		os.Exit(1)
 	} else {
-		fmt.Println(projectPath + "/" + projectName + "路径已删除")
+		fmt.Println(projectFullPath + "路径已删除")
 	}
 
-	// 保存配置
-	if viper.GetString("current-project.name") == projectName {
-		viper.Set("current-project.name", "")
+	// 保存配置：清空project-list中对应项目的dir字段
+	projectListRaw := viper.Get("project-list").([]interface{})
+
+	// 遍历项目列表，找到对应项目并清空dir字段
+	for i, item := range projectListRaw {
+		if project, ok := item.(map[string]interface{}); ok {
+			if name, exists := project["name"]; exists && name == projectName {
+				// 只清空dir字段
+				project["dir"] = ""
+				projectListRaw[i] = project
+				break
+			}
+		}
 	}
-	viper.Set(projectName+".dir", "")
-	viper.Set(projectName+".repository.download", "no")
+
+	// 更新配置
+	viper.Set("project-list", projectListRaw)
+	if viper.GetString("now-project") == projectName {
+		viper.Set("now-project", "")
+	}
 	viper.WriteConfig()
 }

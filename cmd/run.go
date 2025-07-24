@@ -15,9 +15,10 @@ func init() {
 }
 
 var runCmd = &cobra.Command{
-	Use:   "run",
-	Short: printCommand("isx run [frontend/backend/web] [port]", 65) + "| 使用docker运行项目",
-	Long:  `isx run frontend 8888/ isx run backend 8888/ isx run 8888/isx run web 8888`,
+	Use:    "run",
+	Short:  printCommand("isx run [frontend/backend/web] [port]", 65) + "| 使用docker运行项目",
+	Long:   `isx run frontend 8888/ isx run backend 8888/ isx run 8888/isx run web 8888`,
+	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		runType := ""
@@ -68,9 +69,41 @@ var runCmd = &cobra.Command{
 }
 
 func runCmdMain(runType string, port string) {
+	// 定义项目结构体
+	type ProjectConfig struct {
+		Name          string `mapstructure:"name"`
+		Describe      string `mapstructure:"describe"`
+		RepositoryURL string `mapstructure:"repository-url"`
+		Dir           string `mapstructure:"dir"`
+	}
 
-	projectName := viper.GetString("current-project.name")
-	projectPath := viper.GetString(projectName+".dir") + "/" + viper.GetString(projectName+".name")
+	projectName := viper.GetString("now-project")
+	if projectName == "" {
+		fmt.Println("没有选择当前项目，请先使用 'isx choose' 选择项目")
+		os.Exit(1)
+	}
+
+	// 获取项目列表
+	var projectList []ProjectConfig
+	err := viper.UnmarshalKey("project-list", &projectList)
+	if err != nil {
+		fmt.Printf("读取项目列表失败: %v\n", err)
+		os.Exit(1)
+	}
+
+	// 找到当前项目的路径
+	var projectPath string
+	for _, proj := range projectList {
+		if proj.Name == projectName {
+			projectPath = proj.Dir
+			break
+		}
+	}
+
+	if projectPath == "" {
+		fmt.Println("当前项目未下载，请先使用 'isx clone' 下载项目代码")
+		os.Exit(1)
+	}
 
 	usr, _ := user.Current()
 
@@ -79,7 +112,7 @@ func runCmdMain(runType string, port string) {
 	if cacheGradleDir == "" {
 		cacheGradleDir = usr.HomeDir + "/.gradle"
 	}
-	_, err := os.Stat(cacheGradleDir)
+	_, err = os.Stat(cacheGradleDir)
 	if os.IsNotExist(err) {
 		err := os.Mkdir(cacheGradleDir, 0755)
 		if err != nil {

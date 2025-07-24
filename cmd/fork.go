@@ -5,6 +5,7 @@ import (
 	"github.com/isxcode/isx-cli/github"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"os"
 )
 
 var testExistFlag bool
@@ -15,9 +16,10 @@ func init() {
 }
 
 var forkCmd = &cobra.Command{
-	Use:   "fork",
-	Short: printCommand("isx fork", 65) + "| Fork当前项目为同名个人仓库",
-	Long:  `isx fork | isx fork <project-name> | isx fork -t | isx fork -t <project-name>`,
+	Use:    "fork",
+	Short:  printCommand("isx fork", 65) + "| Fork当前项目为同名个人仓库",
+	Long:   `isx fork | isx fork <project-name> | isx fork -t | isx fork -t <project-name>`,
+	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
 		ForkCmdMain(args)
 	},
@@ -44,10 +46,21 @@ func ForkCmdMain(args []string) {
 		}
 		return
 	} else {
-		projectName := viper.GetString("current-project.name")
+		// 获取当前项目名称 - 支持新旧配置格式
+		projectName := viper.GetString("now-project")
+		if projectName == "" {
+			projectName = viper.GetString("current-project.name")
+		}
+
 		if len(args) > 0 {
 			projectName = args[0]
 		}
+
+		if projectName == "" {
+			fmt.Println("请先使用【isx choose】选择项目")
+			os.Exit(1)
+		}
+
 		github.ForkRepository("isxcode", projectName, "")
 	}
 }

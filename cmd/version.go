@@ -20,5 +20,5 @@ var versionCmd = &cobra.Command{
 }
 
 func versionCmdMain() {
-	fmt.Println("当前版本号：v" + viper.GetString("version.number"))
+	fmt.Println("当前版本号：v" + viper.GetString("version"))
 }

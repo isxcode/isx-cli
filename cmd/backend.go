@@ -8,23 +8,22 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
-	"strings"
 )
 
 func init() {
-	rootCmd.AddCommand(gradleCmd)
+	rootCmd.AddCommand(serverCmd)
 }
 
-var gradleCmd = &cobra.Command{
-	Use:   "gradle",
-	Short: printCommand("isx gradle <gradle_command>", 65) + "| 项目内执行gradle命令",
-	Long:  `isx gradle install、isx gradle start、isx gradle clean、isx gradle format`,
+var serverCmd = &cobra.Command{
+	Use:   "backend",
+	Short: printCommand("isx backend", 65) + "| 本地启动后端程序",
+	Long:  `isx backend`,
 	Run: func(cmd *cobra.Command, args []string) {
-		gradleCmdMain(args)
+		serverCmdMain()
 	},
 }
 
-func gradleCmdMain(args []string) {
+func serverCmdMain() {
 	// 获取当前项目名称 - 支持新旧配置格式
 	projectName := viper.GetString("now-project")
 	if projectName == "" {
@@ -71,11 +70,10 @@ func gradleCmdMain(args []string) {
 
 	var gradleCmd *exec.Cmd
 	if runtime.GOOS == "windows" {
-		gradleCmd = exec.Command("bash", "-c", "./gradlew.bat "+strings.Join(args, " "))
+		gradleCmd = exec.Command("bash", "-c", "./gradlew.bat backend")
 	} else {
-		gradleCmd = exec.Command("./gradlew", args...)
+		gradleCmd = exec.Command("./gradlew", "backend")
 	}
-
 	gradleCmd.Stdout = os.Stdout
 	gradleCmd.Stderr = os.Stderr
 	gradleCmd.Dir = projectPath

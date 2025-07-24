@@ -43,20 +43,28 @@ func prCmdMain(issueNumber string) {
 
 	branchName := "GH-" + issueNumber
 
+	// 获取当前项目名称 - 支持新旧配置格式
+	projectName := viper.GetString("now-project")
+	if projectName == "" {
+		projectName = viper.GetString("current-project.name")
+	}
+
+	if projectName == "" {
+		fmt.Println("请先使用【isx choose】选择项目")
+		os.Exit(1)
+	}
+
 	// 获取issue的title
-	title := getGithubIssueTitle(issueNumber)
+	title := getGithubIssueTitle(issueNumber, projectName)
 	if title == "" {
 		fmt.Println("缺陷不存在")
 		os.Exit(1)
 	}
 
-	projectName := viper.GetString("current-project.name")
-
 	// 通过api创建pr
 	createPr(branchName+" "+title, branchName, projectName)
 
-	var subRepository []Repository
-	viper.UnmarshalKey(viper.GetString("current-project.name")+".sub-repository", &subRepository)
+	subRepository := GetSubRepositories(projectName)
 	for _, repository := range subRepository {
 		if github.IsRepoForked(viper.GetString("user.account"), repository.Name) {
 			createPr(branchName+" "+title, branchName, repository.Name)
@@ -132,10 +140,10 @@ func createPr(titleName string, branchName string, name string) {
 	}
 }
 
-func getGithubIssueTitle(issueNumber string) string {
+func getGithubIssueTitle(issueNumber string, projectName string) string {
 
 	client := &http.Client{}
-	req, err := http.NewRequest("GET", "https://api.github.com/repos/isxcode/"+viper.GetString("current-project.name")+"/issues/"+issueNumber, nil)
+	req, err := http.NewRequest("GET", "https://api.github.com/repos/isxcode/"+projectName+"/issues/"+issueNumber, nil)
 
 	req.Header = common.GitHubHeader(common.GetToken())
 	resp, err := client.Do(req)

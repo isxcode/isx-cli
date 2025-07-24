@@ -2,7 +2,6 @@ package git
 
 import (
 	"fmt"
-	"github.com/spf13/viper"
 	"log"
 	"os"
 	"os/exec"
@@ -11,9 +10,7 @@ import (
 
 const BranchTemplate = "当前项目: %s\n当前分支: %s\n项目路径: %s\n"
 
-func GetCurrentBranchName(projectName string, abortOnFailure bool) string {
-	projectPath := viper.GetString(projectName+".dir") + "/" + projectName
-
+func GetCurrentBranchName(projectName string, projectPath string, abortOnFailure bool) string {
 	executeCommand := "git symbolic-ref --short HEAD"
 	branchCmd := exec.Command("bash", "-c", executeCommand)
 	branchCmd.Dir = projectPath

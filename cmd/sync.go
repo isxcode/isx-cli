@@ -17,9 +17,10 @@ func init() {
 }
 
 var syncCmd = &cobra.Command{
-	Use:   "sync",
-	Short: printCommand("isx sync <branch_name>", 65) + "| 同步Github个人仓库指定分支",
-	Long:  `isx sync <branch_name>`,
+	Use:    "sync",
+	Short:  printCommand("isx sync <branch_name>", 65) + "| 同步Github个人仓库指定分支",
+	Long:   `isx sync <branch_name>`,
+	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {
 			fmt.Println("使用方式不对，请重新输入命令")
@@ -37,8 +38,7 @@ func SyncCmdMain(branchName string) {
 func SyncFullProjectBranch(projectName, branchName string) {
 	SyncBranch(projectName, branchName)
 
-	var subRepository []Repository
-	viper.UnmarshalKey(projectName+".sub-repository", &subRepository)
+	subRepository := GetSubRepositories(projectName)
 	for _, repository := range subRepository {
 		SyncBranch(repository.Name, branchName)
 	}
