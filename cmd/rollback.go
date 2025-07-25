@@ -77,9 +77,10 @@ func rollbackCmdMain() {
 
 	// 创建交互式选择器
 	prompt := promptui.Select{
-		Label: "请选择要回滚的备份",
-		Items: backupDirs,
-		Size:  10, // 显示最多10个选项
+		Label:    "请选择要回滚的备份",
+		Items:    backupDirs,
+		Size:     10,   // 显示最多10个选项
+		HideHelp: true, // 隐藏导航提示
 		Templates: &promptui.SelectTemplates{
 			Label:    "{{ . }}:",
 			Active:   "▶ {{ . | cyan }}",
