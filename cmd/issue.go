@@ -19,7 +19,7 @@ func init() {
 
 var issueCmd = &cobra.Command{
 	Use:   "issue",
-	Short: printCommand("isx issue", 65) + "| 交互式选择并切换到issue分支",
+	Short: printCommand("isx issue", 40) + "| 选择任务",
 	Long:  `交互式显示当前仓库分配给您的issue列表，支持光标选择并自动切换到对应分支`,
 	Run: func(cmd *cobra.Command, args []string) {
 		IssueCmdMain()

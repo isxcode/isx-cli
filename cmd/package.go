@@ -16,7 +16,7 @@ func init() {
 
 var packageCmd = &cobra.Command{
 	Use:   "package",
-	Short: printCommand("isx package", 65) + "| 源码编译打包",
+	Short: printCommand("isx package", 40) + "| 源码打包",
 	Long:  `isx package`,
 	Run: func(cmd *cobra.Command, args []string) {
 		packageCmdMain()

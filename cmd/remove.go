@@ -19,7 +19,7 @@ func init() {
 
 var removeCmd = &cobra.Command{
 	Use:   "remove",
-	Short: printCommand("isx remove", 65) + "| 删除本地项目",
+	Short: printCommand("isx remove", 40) + "| 删除本地项目",
 	Long:  `isx remove`,
 	Run: func(cmd *cobra.Command, args []string) {
 		removeCmdMain()
@@ -62,7 +62,7 @@ func inputRemoveProjectNumber() {
 			// 格式化显示项目信息
 			option := fmt.Sprintf("%s [%s] : %s",
 				printCommand(proj.Name, 14),
-				printCommand(proj.RepositoryURL, 45),
+				printCommand(proj.RepositoryURL, 40),
 				proj.Describe)
 			removableProjects = append(removableProjects, option)
 			removableProjectIndices = append(removableProjectIndices, i)

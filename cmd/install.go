@@ -16,7 +16,7 @@ func init() {
 
 var installCmd = &cobra.Command{
 	Use:   "install",
-	Short: printCommand("isx install", 65) + "| 安装项目依赖",
+	Short: printCommand("isx install", 40) + "| 安装依赖",
 	Long:  `isx install`,
 	Run: func(cmd *cobra.Command, args []string) {
 		installCmdMain()

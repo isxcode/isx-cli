@@ -16,7 +16,7 @@ func init() {
 
 var pullCmd = &cobra.Command{
 	Use:   "pull",
-	Short: printCommand("isx pull", 65) + "| 拉取组织代码",
+	Short: printCommand("isx pull", 40) + "| 拉取代码",
 	Long:  `isx pull`,
 	Run: func(cmd *cobra.Command, args []string) {
 

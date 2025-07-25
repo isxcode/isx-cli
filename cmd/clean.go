@@ -16,7 +16,7 @@ func init() {
 
 var cleanCmd = &cobra.Command{
 	Use:   "clean",
-	Short: printCommand("isx clean", 65) + "| 删除项目缓存",
+	Short: printCommand("isx clean", 40) + "| 清除项目缓存",
 	Long:  `isx clean`,
 	Run: func(cmd *cobra.Command, args []string) {
 		cleanCmdMain()

@@ -27,9 +27,7 @@ var rootCmd = &cobra.Command{
 |____|\___||__|__|       \____||_____||____|
 
 至行云-至爻数据开发规范脚手架
-代码仓库：https://github.com/isxcode/isx-cli
-
-`,
+代码仓库：https://github.com/isxcode/isx-cli`,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		cmd.DisableFlagParsing = true
 	},
@@ -112,9 +110,7 @@ func init() {
 	})
 
 	// 隐藏使用说明和标志
-	rootCmd.SetUsageTemplate(`{{if .Runnable}}{{.UseLine}}{{end}}{{if .HasAvailableSubCommands}}
-
-Available Commands:{{range .Commands}}{{if (or .IsAvailableCommand (eq .Name "help"))}}
+	rootCmd.SetUsageTemplate(`{{if .Runnable}}{{.UseLine}}{{end}}{{if .HasAvailableSubCommands}}Available Commands:{{range .Commands}}{{if (or .IsAvailableCommand (eq .Name "help"))}}
   {{rpad .Name .NamePadding }} {{.Short}}{{end}}{{end}}{{end}}
 
 `)

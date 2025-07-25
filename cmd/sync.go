@@ -18,7 +18,7 @@ func init() {
 
 var syncCmd = &cobra.Command{
 	Use:    "sync",
-	Short:  printCommand("isx sync <branch_name>", 65) + "| 同步Github个人仓库指定分支",
+	Short:  printCommand("isx sync <branch_name>", 40) + "| 同步Github个人仓库指定分支",
 	Long:   `isx sync <branch_name>`,
 	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {

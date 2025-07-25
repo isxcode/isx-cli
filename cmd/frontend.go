@@ -17,7 +17,7 @@ func init() {
 
 var frontendCmd = &cobra.Command{
 	Use:   "frontend",
-	Short: printCommand("isx frontend", 65) + "| 本地启动前端服务",
+	Short: printCommand("isx frontend", 40) + "| 本地启动前端",
 	Long:  `isx frontend`,
 	Run: func(cmd *cobra.Command, args []string) {
 		webCmdMain()
@@ -26,7 +26,7 @@ var frontendCmd = &cobra.Command{
 
 var webCmd = &cobra.Command{
 	Use:    "frontend",
-	Short:  printCommand("isx frontend", 65) + "| 本地启动前端服务",
+	Short:  printCommand("isx frontend", 40) + "| 本地启动前端服务",
 	Long:   `isx frontend`,
 	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {

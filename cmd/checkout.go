@@ -26,7 +26,7 @@ func init() {
 
 var checkoutCmd = &cobra.Command{
 	Use:   "checkout",
-	Short: printCommand("isx checkout <issue_number>", 65) + "| 切换开发分支",
+	Short: printCommand("isx checkout <issue_number>", 40) + "| 切换分支",
 	Long:  `isx checkout 123`,
 	Run: func(cmd *cobra.Command, args []string) {
 

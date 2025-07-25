@@ -16,7 +16,7 @@ func init() {
 
 var websiteCmd = &cobra.Command{
 	Use:   "website",
-	Short: printCommand("isx website", 65) + "| 本地启动官网",
+	Short: printCommand("isx website", 40) + "| 本地启动官网",
 	Long:  `isx website`,
 	Run: func(cmd *cobra.Command, args []string) {
 		websiteCmdMain()

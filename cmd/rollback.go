@@ -18,7 +18,7 @@ func init() {
 
 var rollbackCmd = &cobra.Command{
 	Use:   "rollback",
-	Short: printCommand("isx rollback", 65) + "| 回滚项目数据",
+	Short: printCommand("isx rollback", 40) + "| 回滚项目资源",
 	Long:  `回滚项目数据库文件到指定备份`,
 	Run: func(cmd *cobra.Command, args []string) {
 		rollbackCmdMain()

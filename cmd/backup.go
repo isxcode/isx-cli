@@ -16,7 +16,7 @@ func init() {
 
 var backupCmd = &cobra.Command{
 	Use:   "backup <comment>",
-	Short: printCommand("isx backup <comment>", 65) + "| 备份项目数据",
+	Short: printCommand("isx backup <comment>", 40) + "| 备份项目资源",
 	Long:  `备份项目数据库文件，使用指定的备注作为备份名称`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {

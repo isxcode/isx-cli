@@ -16,7 +16,7 @@ func init() {
 
 var dbCmd = &cobra.Command{
 	Use:    "db",
-	Short:  printCommand("isx db list | isx db <issue_number>", 65) + "| 查看当前db(暂不开放)",
+	Short:  printCommand("isx db list | isx db <issue_number>", 40) + "| 查看当前db(暂不开放)",
 	Long:   `isx db | isx db list | isx db 123`,
 	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
