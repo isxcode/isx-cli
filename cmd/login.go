@@ -21,22 +21,42 @@ var loginCmd = &cobra.Command{
 	Short: printCommand("isx login", 40) + "| 用户登录",
 	Long:  `github用户登录，支持用户名和邮箱`,
 	Run: func(cmd *cobra.Command, args []string) {
-
-		// 输入github令牌
-		fmt.Println("快捷链接：https://github.com/settings/tokens")
-		fmt.Println("请输入GitHub Personal Access Token:")
-		fmt.Scanln(&token)
-
-		// 检查令牌是否可用并获取用户信息
-		userInfo := checkGithubTokenAndGetUserInfo()
-
-		// 保存配置
-		saveConfigLogin(userInfo)
+		loginCmdMain()
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(loginCmd)
+}
+
+func loginCmdMain() {
+	// 检查是否已经登录
+	if isAlreadyLoggedIn() {
+		currentAccount := viper.GetString("user.account")
+		fmt.Printf("当前已登录账号: %s\n", currentAccount)
+		fmt.Println("如需切换账号，请先使用 'isx logout' 退出当前账号")
+		return
+	}
+
+	// 输入github令牌
+	fmt.Println("快捷链接：https://github.com/settings/tokens")
+	fmt.Print("请输入GitHub Personal Access Token:")
+	fmt.Scanln(&token)
+
+	// 检查令牌是否可用并获取用户信息
+	userInfo := checkGithubTokenAndGetUserInfo()
+
+	// 保存配置
+	saveConfigLogin(userInfo)
+}
+
+// isAlreadyLoggedIn 检查用户是否已经登录
+func isAlreadyLoggedIn() bool {
+	currentAccount := viper.GetString("user.account")
+	currentToken := viper.GetString("user.token")
+
+	// 如果账号和token都不为空，则认为已登录
+	return currentAccount != "" && currentToken != ""
 }
 
 func saveConfigLogin(userInfo *common.GitHubUserInfo) {
