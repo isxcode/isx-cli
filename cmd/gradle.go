@@ -17,7 +17,7 @@ func init() {
 
 var gradleCmd = &cobra.Command{
 	Use:   "gradle",
-	Short: printCommand("isx gradle <gradle_command>", 65) + "| 项目内执行gradle命令",
+	Short: printCommand("isx gradle <gradle_command>", 40) + "| 执行gradle命令",
 	Long:  `isx gradle install、isx gradle start、isx gradle clean、isx gradle format`,
 	Run: func(cmd *cobra.Command, args []string) {
 		gradleCmdMain(args)

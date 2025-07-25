@@ -14,7 +14,7 @@ func init() {
 
 var dockerCmd = &cobra.Command{
 	Use:   "docker",
-	Short: printCommand("isx docker", 65) + "| 构建Docker镜像",
+	Short: printCommand("isx docker", 40) + "| 构建Docker镜像",
 	Long:  `构建项目的Docker镜像`,
 	Run: func(cmd *cobra.Command, args []string) {
 		dockerCmdMain()
@@ -68,7 +68,7 @@ func dockerCmdMain() {
 
 	// 执行 gradle docker 命令
 	fmt.Printf("正在构建 %s 项目的Docker镜像...\n", projectName)
-	
+
 	gradleCmd := exec.Command("./gradlew", "docker")
 	gradleCmd.Dir = projectPath
 	gradleCmd.Stdout = os.Stdout

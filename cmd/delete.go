@@ -28,7 +28,7 @@ func init() {
 
 var deleteCmd = &cobra.Command{
 	Use:   "delete",
-	Short: printCommand("isx delete <issue_number>", 65) + "| 删除组织分支",
+	Short: printCommand("isx delete <issue_number>", 40) + "| 删除远程分支",
 	Long:  `isx delete 123、isx delete 123 -f 强行删除、 isx delete 123 -a 删除所有和自己相关的需求分支`,
 	Run: func(cmd *cobra.Command, args []string) {
 

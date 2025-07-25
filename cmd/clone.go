@@ -22,7 +22,7 @@ func init() {
 
 var cloneCmd = &cobra.Command{
 	Use:   "clone",
-	Short: printCommand("isx clone", 65) + "| 下载项目代码",
+	Short: printCommand("isx clone", 40) + "| 下载代码",
 	Long:  `isx clone`,
 	Run: func(cmd *cobra.Command, args []string) {
 		cloneCmdMain()
@@ -79,7 +79,7 @@ func inputProjectNumber() {
 		// 格式化显示项目信息
 		option := fmt.Sprintf("%s [%s] : %s",
 			printCommand(proj.Name, 14),
-			printCommand(proj.RepositoryURL, 45),
+			printCommand(proj.RepositoryURL, 40),
 			proj.Describe)
 		projectOptions = append(projectOptions, option)
 	}

@@ -85,7 +85,7 @@ Available Commands:
   delete      isx delete <issue_number>                                        | 删除组织分支
   fork        isx fork                                                         | Fork当前项目为同名个人仓库
   format      isx format                                                       | 格式化代码
-  git         isx git <git command>                                            | 项目内执行git命令
+  git         isx git <git_command>                                            | 项目内执行git命令
   gradle      isx gradle <gradle_command>                                      | 项目内执行gradle命令
   help        Help about any command
   install     isx install                                                      | 安装项目依赖

@@ -18,8 +18,8 @@ func init() {
 
 var gitCmd = &cobra.Command{
 	Use:   "git",
-	Short: printCommand("isx git <git command>", 65) + "| 项目内执行git命令",
-	Long:  `isx git <git command>`,
+	Short: printCommand("isx git <git_command>", 40) + "| 执行git命令",
+	Long:  `isx git <git_command>`,
 	Run: func(cmd *cobra.Command, args []string) {
 		gitCmdMain(args)
 	}, DisableFlagParsing: true,
