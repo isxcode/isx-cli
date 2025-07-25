@@ -135,10 +135,19 @@ func removeProject() {
 	projectFullPath := selectedProject.Dir // 这已经是完整路径，包含项目名
 
 	// 三次确认删除
-	deleteProject := "N"
-	fmt.Print("确认要删除【" + projectFullPath + "】路径吗?(Y/N) default is N: ")
+	deleteProject := "n"
+	fmt.Print("确认要删除【" + projectFullPath + "】路径吗?(y/n) [默认: n]: ")
 	fmt.Scanln(&deleteProject)
-	if deleteProject == "N" || deleteProject == "n" {
+
+	// 如果直接回车，默认为n
+	if deleteProject == "" {
+		deleteProject = "n"
+	}
+
+	// 转换为小写进行比较，支持大小写不敏感
+	deleteProject = strings.ToLower(deleteProject)
+
+	if deleteProject == "n" {
 		fmt.Println("已中止")
 		os.Exit(1)
 	}

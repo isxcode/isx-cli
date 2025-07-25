@@ -49,12 +49,15 @@ func cleanCmdMain() {
 	var flag = ""
 	fmt.Scanln(&flag)
 	flag = strings.Trim(flag, " ")
-	flag = strings.ToUpper(flag)
-	if flag != "Y" && flag != "N" {
-		fmt.Println("输入值异常")
+
+	// 转换为小写进行比较，支持大小写不敏感
+	flag = strings.ToLower(flag)
+
+	if flag != "y" && flag != "n" {
+		fmt.Println("输入值异常，请输入 y 或 n")
 		os.Exit(1)
 	}
-	if flag == "N" {
+	if flag == "n" {
 		fmt.Println("删除项目缓存已终止")
 		os.Exit(0)
 	}
