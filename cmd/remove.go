@@ -71,7 +71,7 @@ func inputRemoveProjectNumber() {
 
 	// 检查是否有可删除的项目
 	if len(removableProjects) == 0 {
-		fmt.Println("没有可删除的项目，请先使用 'isx clone' 下载项目代码")
+		fmt.Println("没有可删除的项目，请先使用 【isx clone】 下载项目代码")
 		os.Exit(1)
 	}
 

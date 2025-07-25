@@ -57,7 +57,7 @@ func buildCmdMain() {
 	}
 
 	if projectPath == "" {
-		fmt.Println("当前项目未下载，请先使用 'isx clone' 下载项目代码")
+		fmt.Println("当前项目未下载，请先使用 【isx clone】下载项目代码")
 		os.Exit(1)
 	}
 
