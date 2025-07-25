@@ -4,11 +4,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/isxcode/isx-cli/common"
+	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"io"
 	"net/http"
 	"os"
+	"strconv"
 )
 
 func init() {
@@ -16,10 +18,9 @@ func init() {
 }
 
 var issueCmd = &cobra.Command{
-	Use:    "issue",
-	Short:  printCommand("isx issue", 65) + "| 列出当前仓库分配给您的issue",
-	Long:   `isx issue`,
-	Hidden: true,
+	Use:   "issue",
+	Short: printCommand("isx issue", 65) + "| 交互式选择并切换到issue分支",
+	Long:  `交互式显示当前仓库分配给您的issue列表，支持光标选择并自动切换到对应分支`,
 	Run: func(cmd *cobra.Command, args []string) {
 		IssueCmdMain()
 	},
@@ -32,14 +33,53 @@ func IssueCmdMain() {
 	if currentProject == "" {
 		currentProject = viper.GetString("current-project.name")
 	}
+
+	if currentProject == "" {
+		fmt.Println("请先使用【isx choose】选择项目")
+		os.Exit(1)
+	}
+
 	issueList := GetIssueList(currentProject, username)
 	if len(issueList) == 0 {
-		fmt.Println("当前没有issue")
-	} else {
-		for _, issue := range issueList {
-			fmt.Printf("💚GH-%-5d | %s \n", issue.Number, issue.Title)
-		}
+		fmt.Println("当前没有分配给您的issue")
+		return
 	}
+
+	// 创建选择项列表
+	var items []string
+	for _, issue := range issueList {
+		items = append(items, fmt.Sprintf("GH-%-5d | %s", issue.Number, issue.Title))
+	}
+
+	// 创建交互式选择器
+	prompt := promptui.Select{
+		Label: "请选择要切换的issue",
+		Items: items,
+		Size:  10, // 显示最多10个选项
+		Templates: &promptui.SelectTemplates{
+			Label:    "{{ . }}:",
+			Active:   "▶ {{ . | cyan }}",
+			Inactive: "  {{ . }}",
+			Selected: "✓ {{ . | green }}",
+		},
+	}
+
+	// 执行选择
+	index, selectedItem, err := prompt.Run()
+	if err != nil {
+		fmt.Printf("选择失败: %v\n", err)
+		os.Exit(1)
+	}
+
+	// 获取选中的issue号码
+	selectedIssue := issueList[index]
+	issueNumber := strconv.Itoa(selectedIssue.Number)
+
+	fmt.Printf("已选择issue: %s\n", selectedItem)
+	fmt.Printf("正在切换到分支 GH-%s...\n", issueNumber)
+
+	// 调用checkout命令切换到对应分支
+	checkoutCmdMain(issueNumber)
 }
 
 type IssueListResp struct {
