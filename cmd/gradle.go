@@ -25,6 +25,12 @@ var gradleCmd = &cobra.Command{
 }
 
 func gradleCmdMain(args []string) {
+	// 如果没有提供参数，显示可用的 gradle 任务
+	if len(args) == 0 {
+		showGradleTasks()
+		return
+	}
+
 	// 获取当前项目名称 - 支持新旧配置格式
 	projectName := viper.GetString("now-project")
 	if projectName == "" {
@@ -86,4 +92,27 @@ func gradleCmdMain(args []string) {
 	} else {
 		fmt.Println("执行成功")
 	}
+}
+
+// showGradleTasks 显示可用的 gradle 任务
+func showGradleTasks() {
+	fmt.Println("isx gradle - Gradle 命令工具")
+	fmt.Println("")
+	fmt.Println("使用方法:")
+	fmt.Println("  isx gradle <task>")
+	fmt.Println("")
+	fmt.Println("常用任务:")
+	fmt.Println("  build      - 构建项目")
+	fmt.Println("  clean      - 清理构建文件")
+	fmt.Println("  test       - 运行测试")
+	fmt.Println("  bootRun    - 启动 Spring Boot 应用")
+	fmt.Println("  install    - 安装依赖")
+	fmt.Println("  format     - 格式化代码")
+	fmt.Println("  start      - 启动项目")
+	fmt.Println("  tasks      - 显示所有可用任务")
+	fmt.Println("")
+	fmt.Println("示例:")
+	fmt.Println("  isx gradle build")
+	fmt.Println("  isx gradle clean build")
+	fmt.Println("  isx gradle bootRun")
 }
