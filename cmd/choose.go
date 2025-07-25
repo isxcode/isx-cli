@@ -60,6 +60,9 @@ func chooseCmdMain() {
 		os.Exit(1)
 	}
 
+	// 添加退出选项
+	availableProjects = append(availableProjects, "退出")
+
 	// 创建交互式选择器
 	prompt := promptui.Select{
 		Label:    "请选择要切换的项目",
@@ -79,6 +82,12 @@ func chooseCmdMain() {
 	if err != nil {
 		fmt.Printf("选择失败: %v\n", err)
 		os.Exit(1)
+	}
+
+	// 检查是否选择了退出
+	if selectedIndex == len(availableProjects)-1 {
+		fmt.Println("已取消操作")
+		return
 	}
 
 	// 设置当前的项目

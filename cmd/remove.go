@@ -75,6 +75,9 @@ func inputRemoveProjectNumber() {
 		os.Exit(1)
 	}
 
+	// 添加退出选项
+	removableProjects = append(removableProjects, "退出")
+
 	// 创建交互式选择器
 	prompt := promptui.Select{
 		Label:    "请选择要删除的项目",
@@ -94,6 +97,12 @@ func inputRemoveProjectNumber() {
 	if err != nil {
 		fmt.Printf("选择失败: %v\n", err)
 		os.Exit(1)
+	}
+
+	// 检查是否选择了退出
+	if selectedIndex == len(removableProjects)-1 {
+		fmt.Println("已取消操作")
+		return
 	}
 
 	// 设置要删除的项目索引
