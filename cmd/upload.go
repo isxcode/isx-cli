@@ -15,7 +15,7 @@ func init() {
 var uploadCmd = &cobra.Command{
 	Use:   "upload",
 	Short: printCommand("isx upload", 40) + "| 发布本地安装包",
-	Long:  `上传项目的构建产物到仓库`,
+	Long:  `上传项目的到仓库`,
 	Run: func(cmd *cobra.Command, args []string) {
 		uploadCmdMain()
 	},
@@ -67,7 +67,7 @@ func uploadCmdMain() {
 	}
 
 	// 执行 gradle upload 命令
-	fmt.Printf("正在上传 %s 项目的构建产物...\n", projectName)
+	fmt.Printf("正在上传 %s 项目的...\n", projectName)
 
 	gradleCmd := exec.Command("./gradlew", "upload")
 	gradleCmd.Dir = projectPath
@@ -76,9 +76,9 @@ func uploadCmdMain() {
 
 	err := gradleCmd.Run()
 	if err != nil {
-		fmt.Printf("构建产物上传失败: %v\n", err)
+		fmt.Printf("上传失败: %v\n", err)
 		os.Exit(1)
 	}
 
-	fmt.Println("构建产物上传成功！")
+	fmt.Println("上传成功！")
 }
