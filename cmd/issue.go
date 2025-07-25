@@ -51,6 +51,9 @@ func IssueCmdMain() {
 		items = append(items, fmt.Sprintf("GH-%-5d | %s", issue.Number, issue.Title))
 	}
 
+	// 添加退出选项
+	items = append(items, "退出")
+
 	// 创建交互式选择器
 	prompt := promptui.Select{
 		Label:    "请选择要切换的issue",
@@ -70,6 +73,12 @@ func IssueCmdMain() {
 	if err != nil {
 		fmt.Printf("选择失败: %v\n", err)
 		os.Exit(1)
+	}
+
+	// 检查是否选择了退出
+	if index == len(items)-1 {
+		fmt.Println("已取消操作")
+		return
 	}
 
 	// 获取选中的issue号码

@@ -75,6 +75,9 @@ func rollbackCmdMain() {
 		os.Exit(1)
 	}
 
+	// 添加退出选项
+	backupDirs = append(backupDirs, "退出")
+
 	// 创建交互式选择器
 	prompt := promptui.Select{
 		Label:    "请选择要回滚的备份",
@@ -90,10 +93,16 @@ func rollbackCmdMain() {
 	}
 
 	// 执行选择
-	_, selectedBackup, err := prompt.Run()
+	selectedIndex, selectedBackup, err := prompt.Run()
 	if err != nil {
 		fmt.Printf("选择失败: %v\n", err)
 		os.Exit(1)
+	}
+
+	// 检查是否选择了退出
+	if selectedIndex == len(backupDirs)-1 {
+		fmt.Println("已取消操作")
+		return
 	}
 
 	// 二次确认
