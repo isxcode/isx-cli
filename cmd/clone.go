@@ -22,7 +22,7 @@ func init() {
 
 var cloneCmd = &cobra.Command{
 	Use:   "clone",
-	Short: printCommand("isx clone", 65) + "| 下载项目代码",
+	Short: printCommand("isx clone", 40) + "| 下载代码",
 	Long:  `isx clone`,
 	Run: func(cmd *cobra.Command, args []string) {
 		cloneCmdMain()
@@ -34,7 +34,7 @@ func cloneCmdMain() {
 	// 判断用户是否登录
 	isLogin := common.CheckUserAccount(common.GetToken())
 	if !isLogin {
-		fmt.Println("请先登录")
+		fmt.Println("未登录，请先使用【isx login】登录账号")
 		os.Exit(1)
 	}
 
@@ -79,16 +79,20 @@ func inputProjectNumber() {
 		// 格式化显示项目信息
 		option := fmt.Sprintf("%s [%s] : %s",
 			printCommand(proj.Name, 14),
-			printCommand(proj.RepositoryURL, 45),
+			printCommand(proj.RepositoryURL, 40),
 			proj.Describe)
 		projectOptions = append(projectOptions, option)
 	}
 
+	// 添加退出选项
+	projectOptions = append(projectOptions, "退出")
+
 	// 创建交互式选择器
 	prompt := promptui.Select{
-		Label: "请选择要下载的项目",
-		Items: projectOptions,
-		Size:  10, // 显示最多10个选项
+		Label:    "请选择要下载的项目",
+		Items:    projectOptions,
+		Size:     10,   // 显示最多10个选项
+		HideHelp: true, // 隐藏导航提示
 		Templates: &promptui.SelectTemplates{
 			Label:    "{{ . }}:",
 			Active:   "▶ {{ . | cyan }}",
@@ -104,6 +108,12 @@ func inputProjectNumber() {
 		os.Exit(1)
 	}
 
+	// 检查是否选择了退出
+	if selectedIndex == len(projectOptions)-1 {
+		fmt.Println("已取消操作")
+		os.Exit(0)
+	}
+
 	// 设置选中的项目
 	projectNumber = selectedIndex
 	projectName = projectList[selectedIndex].Name
@@ -112,29 +122,30 @@ func inputProjectNumber() {
 func inputProjectPath() {
 	currentWorkDir := common.CurrentWorkDir()
 
-	// 输入安装路径，默认为Y
-	fmt.Printf("是否安装在当前路径(%s)下? (Y/n) [默认: Y] ", common.WhiteText(currentWorkDir))
+	// 输入安装路径，默认为y
+	fmt.Printf("是否安装在当前路径(%s)下? (y/n) [默认: y] ", common.WhiteText(currentWorkDir))
 	var flag = ""
 	fmt.Scanln(&flag)
 	flag = strings.Trim(flag, " ")
 
-	// 如果直接回车，默认为Y
+	// 如果直接回车，默认为y
 	if flag == "" {
-		flag = "Y"
-	} else {
-		flag = strings.ToUpper(flag)
+		flag = "y"
 	}
 
-	// 只接受Y或N
-	if flag != "Y" && flag != "N" {
-		fmt.Println("输入值异常，请输入 Y 或 N")
+	// 转换为小写进行比较，支持大小写不敏感
+	flag = strings.ToLower(flag)
+
+	// 只接受y或n
+	if flag != "y" && flag != "n" {
+		fmt.Println("输入值异常，请输入 y 或 n")
 		os.Exit(1)
 	}
 
-	if flag == "Y" {
+	if flag == "y" {
 		projectPath = currentWorkDir
 	} else {
-		// flag == "N"
+		// flag == "n"
 		for {
 			fmt.Print("请输入安装路径: ")
 			fmt.Scanln(&projectPath)
@@ -190,18 +201,19 @@ func ensureDirectoryExists(path string) error {
 	_, err := os.Stat(path)
 	if os.IsNotExist(err) {
 		// 询问是否创建目录
-		fmt.Printf("目录 %s 不存在，是否创建? (Y/n) [默认: Y] ", path)
+		fmt.Printf("目录 %s 不存在，是否创建? (y/n) [默认: y] ", path)
 		var createFlag string
 		fmt.Scanln(&createFlag)
 		createFlag = strings.Trim(createFlag, " ")
 
 		if createFlag == "" {
-			createFlag = "Y"
-		} else {
-			createFlag = strings.ToUpper(createFlag)
+			createFlag = "y"
 		}
 
-		if createFlag == "Y" {
+		// 转换为小写进行比较，支持大小写不敏感
+		createFlag = strings.ToLower(createFlag)
+
+		if createFlag == "y" {
 			err = os.MkdirAll(path, 0755)
 			if err != nil {
 				return fmt.Errorf("创建目录失败: %v", err)

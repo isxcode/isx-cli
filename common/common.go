@@ -71,7 +71,7 @@ func Encrypt(token string) string {
 func GetToken() string {
 	token := viper.GetString("user.token")
 	if token == "" {
-		fmt.Println("请先登录")
+		fmt.Println("未登录，请先使用【isx login】登录账号")
 		os.Exit(1)
 	}
 	if strings.HasPrefix(token, "ghp_") {

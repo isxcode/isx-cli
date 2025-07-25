@@ -17,7 +17,7 @@ func init() {
 
 var forkCmd = &cobra.Command{
 	Use:    "fork",
-	Short:  printCommand("isx fork", 65) + "| Fork当前项目为同名个人仓库",
+	Short:  printCommand("isx fork", 40) + "| Fork当前项目为同名个人仓库",
 	Long:   `isx fork | isx fork <project-name> | isx fork -t | isx fork -t <project-name>`,
 	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {

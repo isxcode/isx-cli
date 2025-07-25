@@ -18,7 +18,7 @@ func init() {
 
 var rollbackCmd = &cobra.Command{
 	Use:   "rollback",
-	Short: printCommand("isx rollback", 65) + "| 回滚项目数据",
+	Short: printCommand("isx rollback", 40) + "| 回滚项目资源",
 	Long:  `回滚项目数据库文件到指定备份`,
 	Run: func(cmd *cobra.Command, args []string) {
 		rollbackCmdMain()
@@ -75,11 +75,15 @@ func rollbackCmdMain() {
 		os.Exit(1)
 	}
 
+	// 添加退出选项
+	backupDirs = append(backupDirs, "退出")
+
 	// 创建交互式选择器
 	prompt := promptui.Select{
-		Label: "请选择要回滚的备份",
-		Items: backupDirs,
-		Size:  10, // 显示最多10个选项
+		Label:    "请选择要回滚的备份",
+		Items:    backupDirs,
+		Size:     10,   // 显示最多10个选项
+		HideHelp: true, // 隐藏导航提示
 		Templates: &promptui.SelectTemplates{
 			Label:    "{{ . }}:",
 			Active:   "▶ {{ . | cyan }}",
@@ -89,22 +93,36 @@ func rollbackCmdMain() {
 	}
 
 	// 执行选择
-	_, selectedBackup, err := prompt.Run()
+	selectedIndex, selectedBackup, err := prompt.Run()
 	if err != nil {
 		fmt.Printf("选择失败: %v\n", err)
 		os.Exit(1)
 	}
 
-	// 二次确认
-	confirmPrompt := promptui.Prompt{
-		Label:     fmt.Sprintf("确认要回滚到备份 %s 吗？这将删除当前数据", selectedBackup),
-		IsConfirm: true,
+	// 检查是否选择了退出
+	if selectedIndex == len(backupDirs)-1 {
+		fmt.Println("已取消操作")
+		return
 	}
 
-	_, err = confirmPrompt.Run()
-	if err != nil {
+	// 检查当前数据目录是否存在 h2 文件
+	if hasH2Files(currentDataPathExpanded) {
+		fmt.Println("检测到当前数据目录存在 h2 文件，为了数据安全，不允许回滚覆盖")
+		fmt.Println("请先备份当前数据或手动清理 h2 文件后再进行回滚操作")
+		return
+	}
+
+	// 二次确认
+	fmt.Printf("确认要回滚到备份 %s 吗？这将删除当前数据 (y/n): ", selectedBackup)
+	var confirm string
+	fmt.Scanln(&confirm)
+
+	// 转换为小写进行比较，支持大小写不敏感
+	confirm = strings.ToLower(strings.Trim(confirm, " "))
+
+	if confirm != "y" && confirm != "yes" {
 		fmt.Println("已中止回滚操作")
-		os.Exit(1)
+		return
 	}
 
 	// 执行回滚
@@ -150,4 +168,32 @@ func getBackupDirectories(basePath string) ([]string, error) {
 	sort.Sort(sort.Reverse(sort.StringSlice(backupDirs)))
 
 	return backupDirs, nil
+}
+
+// hasH2Files 检查指定目录是否存在 h2 数据库文件
+func hasH2Files(dirPath string) bool {
+	// 检查目录是否存在
+	if _, err := os.Stat(dirPath); os.IsNotExist(err) {
+		return false
+	}
+
+	// 读取目录内容
+	entries, err := os.ReadDir(dirPath)
+	if err != nil {
+		return false
+	}
+
+	// 检查是否有 .mv.db 或 .trace.db 文件（H2 数据库文件）
+	for _, entry := range entries {
+		if !entry.IsDir() {
+			fileName := entry.Name()
+			if strings.HasSuffix(fileName, ".mv.db") ||
+				strings.HasSuffix(fileName, ".trace.db") ||
+				strings.HasSuffix(fileName, ".lock.db") {
+				return true
+			}
+		}
+	}
+
+	return false
 }

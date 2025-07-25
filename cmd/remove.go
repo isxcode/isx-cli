@@ -19,7 +19,7 @@ func init() {
 
 var removeCmd = &cobra.Command{
 	Use:   "remove",
-	Short: printCommand("isx remove", 65) + "| 删除本地项目",
+	Short: printCommand("isx remove", 40) + "| 删除本地项目",
 	Long:  `isx remove`,
 	Run: func(cmd *cobra.Command, args []string) {
 		removeCmdMain()
@@ -62,7 +62,7 @@ func inputRemoveProjectNumber() {
 			// 格式化显示项目信息
 			option := fmt.Sprintf("%s [%s] : %s",
 				printCommand(proj.Name, 14),
-				printCommand(proj.RepositoryURL, 45),
+				printCommand(proj.RepositoryURL, 40),
 				proj.Describe)
 			removableProjects = append(removableProjects, option)
 			removableProjectIndices = append(removableProjectIndices, i)
@@ -71,15 +71,19 @@ func inputRemoveProjectNumber() {
 
 	// 检查是否有可删除的项目
 	if len(removableProjects) == 0 {
-		fmt.Println("没有可删除的项目，请先使用 'isx clone' 下载项目代码")
+		fmt.Println("没有可删除的项目，请先使用 【isx clone】 下载项目代码")
 		os.Exit(1)
 	}
 
+	// 添加退出选项
+	removableProjects = append(removableProjects, "退出")
+
 	// 创建交互式选择器
 	prompt := promptui.Select{
-		Label: "请选择要删除的项目",
-		Items: removableProjects,
-		Size:  10, // 显示最多10个选项
+		Label:    "请选择要删除的项目",
+		Items:    removableProjects,
+		Size:     10,   // 显示最多10个选项
+		HideHelp: true, // 隐藏导航提示
 		Templates: &promptui.SelectTemplates{
 			Label:    "{{ . }}:",
 			Active:   "▶ {{ . | red }}",
@@ -93,6 +97,12 @@ func inputRemoveProjectNumber() {
 	if err != nil {
 		fmt.Printf("选择失败: %v\n", err)
 		os.Exit(1)
+	}
+
+	// 检查是否选择了退出
+	if selectedIndex == len(removableProjects)-1 {
+		fmt.Println("已取消操作")
+		return
 	}
 
 	// 设置要删除的项目索引
@@ -134,10 +144,19 @@ func removeProject() {
 	projectFullPath := selectedProject.Dir // 这已经是完整路径，包含项目名
 
 	// 三次确认删除
-	deleteProject := "N"
-	fmt.Print("确认要删除【" + projectFullPath + "】路径吗?(Y/N) default is N: ")
+	deleteProject := "n"
+	fmt.Print("确认要删除【" + projectFullPath + "】路径吗?(y/n) [默认: n]: ")
 	fmt.Scanln(&deleteProject)
-	if deleteProject == "N" || deleteProject == "n" {
+
+	// 如果直接回车，默认为n
+	if deleteProject == "" {
+		deleteProject = "n"
+	}
+
+	// 转换为小写进行比较，支持大小写不敏感
+	deleteProject = strings.ToLower(deleteProject)
+
+	if deleteProject == "n" {
 		fmt.Println("已中止")
 		os.Exit(1)
 	}

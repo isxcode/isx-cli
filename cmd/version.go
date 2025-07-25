@@ -12,7 +12,7 @@ func init() {
 
 var versionCmd = &cobra.Command{
 	Use:   "version",
-	Short: printCommand("isx version", 65) + "| 查看版本号",
+	Short: printCommand("isx version", 40) + "| 查看脚手架版本",
 	Long:  `isx version`,
 	Run: func(cmd *cobra.Command, args []string) {
 		versionCmdMain()

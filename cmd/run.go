@@ -16,7 +16,7 @@ func init() {
 
 var runCmd = &cobra.Command{
 	Use:    "run",
-	Short:  printCommand("isx run [frontend/backend/web] [port]", 65) + "| 使用docker运行项目",
+	Short:  printCommand("isx run [frontend/backend/web] [port]", 40) + "| 使用docker运行项目",
 	Long:   `isx run frontend 8888/ isx run backend 8888/ isx run 8888/isx run web 8888`,
 	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
@@ -101,7 +101,7 @@ func runCmdMain(runType string, port string) {
 	}
 
 	if projectPath == "" {
-		fmt.Println("当前项目未下载，请先使用 'isx clone' 下载项目代码")
+		fmt.Println("当前项目未下载，请先使用 【isx clone】 下载项目代码")
 		os.Exit(1)
 	}
 

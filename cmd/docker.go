@@ -4,26 +4,24 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"log"
 	"os"
 	"os/exec"
-	"runtime"
 )
 
 func init() {
-	rootCmd.AddCommand(websiteCmd)
+	rootCmd.AddCommand(dockerCmd)
 }
 
-var websiteCmd = &cobra.Command{
-	Use:   "website",
-	Short: printCommand("isx website", 40) + "| 本地启动官网",
-	Long:  `isx website`,
+var dockerCmd = &cobra.Command{
+	Use:   "docker",
+	Short: printCommand("isx docker", 40) + "| 构建Docker镜像",
+	Long:  `构建项目的Docker镜像`,
 	Run: func(cmd *cobra.Command, args []string) {
-		websiteCmdMain()
+		dockerCmdMain()
 	},
 }
 
-func websiteCmdMain() {
+func dockerCmdMain() {
 	// 获取当前项目名称 - 支持新旧配置格式
 	projectName := viper.GetString("now-project")
 	if projectName == "" {
@@ -57,9 +55,9 @@ func websiteCmdMain() {
 
 	// 如果新配置格式没找到，尝试旧配置格式
 	if projectPath == "" {
-		projectDir := viper.GetString(projectName + ".dir")
-		if projectDir != "" {
-			projectPath = projectDir + "/" + projectName
+		projectPath = viper.GetString(projectName + ".dir")
+		if projectPath != "" {
+			projectPath = projectPath + "/" + projectName
 		}
 	}
 
@@ -68,20 +66,19 @@ func websiteCmdMain() {
 		os.Exit(1)
 	}
 
-	var gradleCmd *exec.Cmd
-	if runtime.GOOS == "windows" {
-		gradleCmd = exec.Command("bash", "-c", "./gradlew.bat website")
-	} else {
-		gradleCmd = exec.Command("./gradlew", "website")
-	}
+	// 执行 gradle docker 命令
+	fmt.Printf("正在构建 %s 项目的Docker镜像...\n", projectName)
+
+	gradleCmd := exec.Command("./gradlew", "docker")
+	gradleCmd.Dir = projectPath
 	gradleCmd.Stdout = os.Stdout
 	gradleCmd.Stderr = os.Stderr
-	gradleCmd.Dir = projectPath
+
 	err := gradleCmd.Run()
 	if err != nil {
-		log.Fatal(err)
+		fmt.Printf("Docker镜像构建失败: %v\n", err)
 		os.Exit(1)
-	} else {
-		fmt.Println("执行成功")
 	}
+
+	fmt.Println("Docker镜像构建成功！")
 }

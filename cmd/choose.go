@@ -14,7 +14,7 @@ func init() {
 
 var chooseCmd = &cobra.Command{
 	Use:   "choose",
-	Short: printCommand("isx choose", 65) + "| 切换开发项目",
+	Short: printCommand("isx choose", 40) + "| 切换项目",
 	Long:  `从isxcode组织中选择开发项目,isx choose`,
 	Run: func(cmd *cobra.Command, args []string) {
 		chooseCmdMain()
@@ -56,15 +56,19 @@ func chooseCmdMain() {
 
 	// 检查是否有可选择的项目
 	if len(availableProjects) == 0 {
-		fmt.Println("没有可选择的项目，请先使用 'isx clone' 下载项目代码")
+		fmt.Println("没有可选择的项目，请先使用 【isx clone】 下载项目代码")
 		os.Exit(1)
 	}
 
+	// 添加退出选项
+	availableProjects = append(availableProjects, "退出")
+
 	// 创建交互式选择器
 	prompt := promptui.Select{
-		Label: "请选择要切换的项目",
-		Items: availableProjects,
-		Size:  10, // 显示最多10个选项
+		Label:    "请选择要切换的项目",
+		Items:    availableProjects,
+		Size:     10,   // 显示最多10个选项
+		HideHelp: true, // 隐藏导航提示
 		Templates: &promptui.SelectTemplates{
 			Label:    "{{ . }}:",
 			Active:   "▶ {{ . | cyan }}",
@@ -78,6 +82,12 @@ func chooseCmdMain() {
 	if err != nil {
 		fmt.Printf("选择失败: %v\n", err)
 		os.Exit(1)
+	}
+
+	// 检查是否选择了退出
+	if selectedIndex == len(availableProjects)-1 {
+		fmt.Println("已取消操作")
+		return
 	}
 
 	// 设置当前的项目
