@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"strings"
 )
 
 var logoutCmd = &cobra.Command{
@@ -38,11 +39,14 @@ func logoutCmdMain() {
 	}
 
 	// 确认是否要登出
-	fmt.Print("确认要登出吗？(y/N): ")
+	fmt.Print("确认要登出吗？(y/n): ")
 	var confirm string
 	fmt.Scanln(&confirm)
 
-	if confirm != "y" && confirm != "Y" && confirm != "yes" && confirm != "Yes" && confirm != "YES" {
+	// 转换为小写进行比较，支持大小写不敏感
+	confirm = strings.ToLower(strings.Trim(confirm, " "))
+
+	if confirm != "y" && confirm != "yes" {
 		fmt.Println("取消登出")
 		return
 	}

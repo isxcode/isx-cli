@@ -113,29 +113,30 @@ func inputProjectNumber() {
 func inputProjectPath() {
 	currentWorkDir := common.CurrentWorkDir()
 
-	// 输入安装路径，默认为Y
-	fmt.Printf("是否安装在当前路径(%s)下? (Y/n) [默认: Y] ", common.WhiteText(currentWorkDir))
+	// 输入安装路径，默认为y
+	fmt.Printf("是否安装在当前路径(%s)下? (y/n) [默认: y] ", common.WhiteText(currentWorkDir))
 	var flag = ""
 	fmt.Scanln(&flag)
 	flag = strings.Trim(flag, " ")
 
-	// 如果直接回车，默认为Y
+	// 如果直接回车，默认为y
 	if flag == "" {
-		flag = "Y"
-	} else {
-		flag = strings.ToUpper(flag)
+		flag = "y"
 	}
 
-	// 只接受Y或N
-	if flag != "Y" && flag != "N" {
-		fmt.Println("输入值异常，请输入 Y 或 N")
+	// 转换为小写进行比较，支持大小写不敏感
+	flag = strings.ToLower(flag)
+
+	// 只接受y或n
+	if flag != "y" && flag != "n" {
+		fmt.Println("输入值异常，请输入 y 或 n")
 		os.Exit(1)
 	}
 
-	if flag == "Y" {
+	if flag == "y" {
 		projectPath = currentWorkDir
 	} else {
-		// flag == "N"
+		// flag == "n"
 		for {
 			fmt.Print("请输入安装路径: ")
 			fmt.Scanln(&projectPath)
@@ -191,18 +192,19 @@ func ensureDirectoryExists(path string) error {
 	_, err := os.Stat(path)
 	if os.IsNotExist(err) {
 		// 询问是否创建目录
-		fmt.Printf("目录 %s 不存在，是否创建? (Y/n) [默认: Y] ", path)
+		fmt.Printf("目录 %s 不存在，是否创建? (y/n) [默认: y] ", path)
 		var createFlag string
 		fmt.Scanln(&createFlag)
 		createFlag = strings.Trim(createFlag, " ")
 
 		if createFlag == "" {
-			createFlag = "Y"
-		} else {
-			createFlag = strings.ToUpper(createFlag)
+			createFlag = "y"
 		}
 
-		if createFlag == "Y" {
+		// 转换为小写进行比较，支持大小写不敏感
+		createFlag = strings.ToLower(createFlag)
+
+		if createFlag == "y" {
 			err = os.MkdirAll(path, 0755)
 			if err != nil {
 				return fmt.Errorf("创建目录失败: %v", err)
