@@ -34,7 +34,7 @@ func loginCmdMain() {
 	if isAlreadyLoggedIn() {
 		currentAccount := viper.GetString("user.account")
 		fmt.Printf("当前已登录账号: %s\n", currentAccount)
-		fmt.Println("如需切换账号，请先使用 'isx logout' 退出当前账号")
+		fmt.Println("如需切换账号，请先使用 【isx logout】 退出当前账号")
 		return
 	}
 
