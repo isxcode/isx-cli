@@ -39,6 +39,11 @@ func backupCmdMain(comment string) {
 		os.Exit(1)
 	}
 
+	if projectName == "isx-cli" {
+		fmt.Println("该项目" + projectName + "暂不支持")
+		os.Exit(1)
+	}
+
 	// 根据项目名称确定备份路径
 	var sourcePath string
 	var backupBasePath string
