@@ -34,7 +34,7 @@ func cloneCmdMain() {
 	// 判断用户是否登录
 	isLogin := common.CheckUserAccount(common.GetToken())
 	if !isLogin {
-		fmt.Println("请先登录")
+		fmt.Println("未登录，请先使用【isx login】登录账号")
 		os.Exit(1)
 	}
 

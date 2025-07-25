@@ -24,7 +24,7 @@ var loginCmd = &cobra.Command{
 
 		// 输入github令牌
 		fmt.Println("快捷链接：https://github.com/settings/tokens")
-		fmt.Print("请输入GitHub Personal Access Token:")
+		fmt.Println("请输入GitHub Personal Access Token:")
 		fmt.Scanln(&token)
 
 		// 检查令牌是否可用并获取用户信息

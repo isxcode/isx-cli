@@ -56,7 +56,7 @@ func chooseCmdMain() {
 
 	// 检查是否有可选择的项目
 	if len(availableProjects) == 0 {
-		fmt.Println("没有可选择的项目，请先使用 'isx clone' 下载项目代码")
+		fmt.Println("没有可选择的项目，请先使用 【isx clone】 下载项目代码")
 		os.Exit(1)
 	}
 
