@@ -102,7 +102,7 @@ func inputRemoveProjectNumber() {
 	// 检查是否选择了退出
 	if selectedIndex == len(removableProjects)-1 {
 		fmt.Println("已取消操作")
-		return
+		os.Exit(1)
 	}
 
 	// 设置要删除的项目索引
