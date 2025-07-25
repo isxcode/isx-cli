@@ -28,7 +28,7 @@ var gitCmd = &cobra.Command{
 func gitCmdMain(args []string) {
 	// 如果没有提供参数，显示 git 状态信息
 	if len(args) == 0 {
-		fmt.Println("使用方式不对，请输入备注信息：isx git <git_command>")
+		fmt.Println("使用方式不对，请输入：isx git <git_command>")
 		os.Exit(1)
 	}
 

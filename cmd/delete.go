@@ -33,7 +33,7 @@ var deleteCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 		if len(args) != 1 {
-			fmt.Println("使用方式不对，请重新输入命令")
+			fmt.Println("使用方式不对，请输入：isx delete <issus_number>")
 			os.Exit(1)
 		}
 

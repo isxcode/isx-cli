@@ -31,7 +31,7 @@ var checkoutCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 		if len(args) != 1 {
-			fmt.Println("使用方式不对，请重新输入命令")
+			fmt.Println("使用方式不对，请输入：isx checkout <issue_number>")
 			os.Exit(1)
 		}
 
