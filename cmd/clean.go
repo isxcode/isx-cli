@@ -34,13 +34,19 @@ func cleanCmdMain() {
 		fmt.Println("请先使用【isx choose】选择项目")
 		os.Exit(1)
 	}
+
+	if projectName == "isx-cli" {
+		fmt.Println("该项目" + projectName + "暂不支持")
+		os.Exit(1)
+	}
+
 	var resourcePath string
 	if projectName == "spark-yun" {
 		resourcePath = "~/.zhiqingyun"
 	} else if projectName == "torch-yun" {
 		resourcePath = "~/.zhishuyun"
 	} else {
-		fmt.Println("该项目" + projectName + "暂不支持,请升级isx命令")
+		fmt.Println("该项目" + projectName + "暂不支持")
 		os.Exit(1)
 	}
 
