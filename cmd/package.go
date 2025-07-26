@@ -36,6 +36,11 @@ func packageCmdMain() {
 		os.Exit(1)
 	}
 
+	if projectName == "isx-cli" {
+		fmt.Println("该项目" + projectName + "暂不支持")
+		os.Exit(1)
+	}
+
 	// 获取项目路径 - 支持新旧配置格式
 	var projectPath string
 

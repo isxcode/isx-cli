@@ -1,4 +1,4 @@
-# 至行云: 至爻数据开发规范脚手架
+# 至爻数据开发规范脚手架
 
 ##### 在线安装
 
@@ -84,7 +84,7 @@ Available Commands:
   install     isx install                             | 安装依赖
   issue       isx issue                               | 选择任务
   login       isx login                               | 用户登录
-  logout      isx logout                              | 用户登出
+  logout      isx logout                              | 退出登录
   now         isx now                                 | 查看当前信息
   package     isx package                             | 源码打包
   pr          isx pr <issue_number>                   | 提交pr
@@ -95,7 +95,7 @@ Available Commands:
   set         isx set <config_key> <value>            | 修改脚手架配置
   start       isx start                               | 启动项目
   upgrade     isx upgrade                             | 升级脚手架
-  upload      isx upload                              | 发布本地安装包
+  upload      isx upload <target>                     | 发布本地安装包
   version     isx version                             | 查看脚手架版本
   website     isx website                             | 本地启动官网
 ```

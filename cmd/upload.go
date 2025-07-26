@@ -14,14 +14,36 @@ func init() {
 
 var uploadCmd = &cobra.Command{
 	Use:   "upload",
-	Short: printCommand("isx upload", 40) + "| 发布本地安装包",
-	Long:  `上传项目的到仓库`,
+	Short: printCommand("isx upload <target>", 40) + "| 发布本地安装包",
+	Long:  `上传项目到指定仓库，支持：oss、docker、ali`,
 	Run: func(cmd *cobra.Command, args []string) {
-		uploadCmdMain()
+		uploadCmdMain(args)
 	},
 }
 
-func uploadCmdMain() {
+func uploadCmdMain(args []string) {
+	// 检查参数数量
+	if len(args) != 1 {
+		fmt.Println("使用方式不对，请输入：isx upload <target>")
+		fmt.Println("支持的目标：oss、docker、ali")
+		os.Exit(1)
+	}
+
+	// 验证参数值
+	target := args[0]
+	var gradleTask string
+	switch target {
+	case "oss":
+		gradleTask = "upload-ali-oss"
+	case "docker":
+		gradleTask = "upload-docker-hub"
+	case "ali":
+		gradleTask = "upload-ali-hub"
+	default:
+		fmt.Printf("不支持的目标：%s\n", target)
+		fmt.Println("支持的目标：oss、docker、ali")
+		os.Exit(1)
+	}
 	// 获取当前项目名称 - 支持新旧配置格式
 	projectName := viper.GetString("now-project")
 	if projectName == "" {
@@ -30,6 +52,11 @@ func uploadCmdMain() {
 
 	if projectName == "" {
 		fmt.Println("请先使用【isx choose】选择项目")
+		os.Exit(1)
+	}
+
+	if projectName == "isx-cli" {
+		fmt.Println("该项目" + projectName + "暂不支持")
 		os.Exit(1)
 	}
 
@@ -66,19 +93,19 @@ func uploadCmdMain() {
 		os.Exit(1)
 	}
 
-	// 执行 gradle upload 命令
-	fmt.Printf("正在上传 %s 项目的...\n", projectName)
+	// 执行对应的 gradle 命令
+	fmt.Printf("正在发布 %s 项目到 %s...\n", projectName, target)
 
-	gradleCmd := exec.Command("./gradlew", "upload")
+	gradleCmd := exec.Command("./gradlew", gradleTask)
 	gradleCmd.Dir = projectPath
 	gradleCmd.Stdout = os.Stdout
 	gradleCmd.Stderr = os.Stderr
 
 	err := gradleCmd.Run()
 	if err != nil {
-		fmt.Printf("上传失败: %v\n", err)
+		fmt.Printf("上传到 %s 失败: %v\n", target, err)
 		os.Exit(1)
 	}
 
-	fmt.Println("上传成功！")
+	fmt.Printf("上传到 %s 成功！\n", target)
 }

@@ -20,7 +20,7 @@ var backupCmd = &cobra.Command{
 	Long:  `备份项目数据库文件，使用指定的备注作为备份名称`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {
-			fmt.Println("使用方式不对，请输入备注信息：isx backup <comment>")
+			fmt.Println("使用方式不对，请输入：isx backup <comment>")
 			os.Exit(1)
 		}
 		backupCmdMain(args[0])
@@ -36,6 +36,11 @@ func backupCmdMain(comment string) {
 
 	if projectName == "" {
 		fmt.Println("请先使用【isx choose】选择项目")
+		os.Exit(1)
+	}
+
+	if projectName == "isx-cli" {
+		fmt.Println("该项目" + projectName + "暂不支持")
 		os.Exit(1)
 	}
 
