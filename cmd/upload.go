@@ -72,7 +72,7 @@ func uploadCmdMain() {
 	}
 
 	// 执行 gradle upload 命令
-	fmt.Printf("正在上传 %s 项目的...\n", projectName)
+	fmt.Printf("正在发布 %s 项目...\n", projectName)
 
 	gradleCmd := exec.Command("./gradlew", "upload")
 	gradleCmd.Dir = projectPath
