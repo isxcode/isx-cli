@@ -653,22 +653,8 @@ func checkRunningProcess() {
 
 	// 检查输出中是否包含目标进程名
 	if strings.Contains(string(output), processName) {
-		fmt.Printf("\n⚠️  检测到 %s 项目正在运行中！\n", projectName)
-		fmt.Printf("进程名称: %s\n", processName)
-		fmt.Println("\n切换分支前需要先停止项目")
+		fmt.Printf("⚠️  检测到 %s 项目正在运行中！\n", projectName)
+		fmt.Println("切换分支前需要先停止项目")
 		os.Exit(1)
 	}
-}
-
-// expandPath 展开波浪号路径
-func expandPath(path string) string {
-	if strings.HasPrefix(path, "~/") {
-		homeDir, err := os.UserHomeDir()
-		if err != nil {
-			fmt.Printf("获取用户主目录失败: %v\n", err)
-			os.Exit(1)
-		}
-		return homeDir + path[2:]
-	}
-	return path
 }
