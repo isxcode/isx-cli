@@ -501,17 +501,8 @@ func backupH2() {
 	backupDirName := fmt.Sprintf("h2-%s", branchName)
 	backupPath := backupBasePathExpanded + "/" + backupDirName
 
-	// 如果备份目录已存在，先删除
-	if _, err := os.Stat(backupPath); err == nil {
-		removeCmd := exec.Command("rm", "-rf", backupPath)
-		if err := removeCmd.Run(); err != nil {
-			fmt.Printf("删除旧备份失败: %v\n", err)
-			return
-		}
-	}
-
 	// 移动源目录到备份目录
-	moveCmd := exec.Command("mv", sourcePathExpanded, backupPath)
+	moveCmd := exec.Command("cp", sourcePathExpanded, backupPath)
 	if err := moveCmd.Run(); err != nil {
 		fmt.Printf("备份数据库失败: %v\n", err)
 		return
