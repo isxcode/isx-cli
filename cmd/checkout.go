@@ -229,6 +229,9 @@ func getLocalBranchName(branchName string) string {
 		}
 	}
 
+    // 回滚数据库
+    restoreH2()
+
 	return ""
 }
 
@@ -515,4 +518,13 @@ func backupH2() {
 	}
 
 	fmt.Printf("已备份当前分支 %s 的数据库到 %s\n", branchName, backupDirName)
+}
+
+
+func restoreH2() {
+
+       if(检查当前分支backupBasePath/h2-branchName目录存在){
+	      都要先删除sourcePath目录
+	      替换backupBasePath/h2-branchName成sourcePath目录
+	}
 }
