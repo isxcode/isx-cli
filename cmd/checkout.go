@@ -501,9 +501,9 @@ func backupH2() {
 	backupDirName := fmt.Sprintf("h2-%s", branchName)
 	backupPath := backupBasePathExpanded + "/" + backupDirName
 
-	// 移动源目录到备份目录
-	moveCmd := exec.Command("cp", sourcePathExpanded, backupPath)
-	if err := moveCmd.Run(); err != nil {
+	// 复制源目录到备份目录
+	copyCmd := exec.Command("cp", "-r", sourcePathExpanded, backupPath)
+	if err := copyCmd.Run(); err != nil {
 		fmt.Printf("备份数据库失败: %v\n", err)
 		return
 	}
@@ -598,9 +598,9 @@ func restoreH2() {
 		}
 	}
 
-	// 移动备份目录到源目录
-	moveCmd := exec.Command("mv", backupPath, sourcePathExpanded)
-	if err := moveCmd.Run(); err != nil {
+	// 复制备份目录到源目录
+	copyCmd := exec.Command("cp", "-r", backupPath, sourcePathExpanded)
+	if err := copyCmd.Run(); err != nil {
 		fmt.Printf("恢复数据库失败: %v\n", err)
 		return
 	}
