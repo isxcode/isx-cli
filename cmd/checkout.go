@@ -565,10 +565,12 @@ func restoreH2(branchName string) {
 		}
 	}
 
+    fmt.Printf("已恢复分支1 %s 的数据库\n", branchName)
 	// 如果项目路径为空，直接返回（不报错，因为可能是首次使用）
 	if projectPath == "" {
 		return
 	}
+    fmt.Printf("已恢复分支2 %s 的数据库\n", branchName)
 
 	// 根据项目名称确定备份路径
 	var sourcePath string
@@ -594,13 +596,8 @@ func restoreH2(branchName string) {
 	backupDirName := fmt.Sprintf("h2-%s", branchName)
 	backupPath := backupBasePathExpanded + "/" + backupDirName
 
-	// 检查备份路径是否存在
-	if _, err := os.Stat(backupPath); os.IsNotExist(err) {
-		// 备份路径不存在，无需恢复
-		return
-	}
-
 	// 如果源目录已存在，先删除
+	fmt.Printf("已恢复分支3 %s 的数据库\n", branchName)
 	if _, err := os.Stat(sourcePathExpanded); err == nil {
 		removeCmd := exec.Command("rm", "-rf", sourcePathExpanded)
 		if err := removeCmd.Run(); err != nil {
@@ -609,11 +606,13 @@ func restoreH2(branchName string) {
 		}
 	}
 
-	// 移动备份目录到源目录
-	moveCmd := exec.Command("mv", backupPath, sourcePathExpanded)
-	if err := moveCmd.Run(); err != nil {
-		fmt.Printf("恢复数据库失败: %v\n", err)
-		return
+    // 移动备份目录到源目录
+	if _, err := os.Stat(backupPath); os.IsExist(err) {
+        moveCmd := exec.Command("mv", backupPath, sourcePathExpanded)
+        if err := moveCmd.Run(); err != nil {
+            fmt.Printf("恢复数据库失败: %v\n", err)
+            return
+        }
 	}
 
 	fmt.Printf("已恢复分支 %s 的数据库\n", branchName)
