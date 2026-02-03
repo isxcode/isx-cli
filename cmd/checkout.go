@@ -96,10 +96,14 @@ func checkoutCmdMain(issueNumber string) {
 	// 分支名
 	branchName := "GH-" + issueNumber
 
+    // 备份数据库
+    backupH2(branchName)
+
 	// 本地有分支，直接切换
 	branch := getLocalBranchName(branchName)
 	if branch != "" {
 		checkoutBranch(branch, checkoutLocalBranch)
+		restoreH2(branchName)
 		return
 	}
 
@@ -107,6 +111,7 @@ func checkoutCmdMain(issueNumber string) {
 	branch = getGithubBranch(branchName, viper.GetString("user.account"))
 	if branch != "" {
 		checkoutBranch(branch, checkoutOriginBranch)
+		restoreH2(branchName)
 		return
 	}
 
@@ -114,6 +119,7 @@ func checkoutCmdMain(issueNumber string) {
 	branch = getGithubBranch(branchName, "isxcode")
 	if branch != "" {
 		checkoutBranch(branch, checkoutUpstreamBranch)
+		restoreH2(branchName)
 		return
 	}
 
@@ -167,6 +173,8 @@ func checkoutCmdMain(issueNumber string) {
 		createReleaseBranch(projectPath+"/"+repository.Name, branch, releaseBranchName)
 	}
 
+    // 回滚数据库
+    restoreH2(branchName)
 	return
 }
 
@@ -416,4 +424,193 @@ func getGithubIssueBranch(issueNumber string) string {
 	}
 
 	return ""
+}
+
+func backupH2(newBranchName string) {
+
+	// 获取当前项目名称 - 支持新旧配置格式
+	projectName := viper.GetString("now-project")
+	if projectName == "" {
+		projectName = viper.GetString("current-project.name")
+	}
+
+	// 获取项目路径 - 支持新旧配置格式
+	var projectPath string
+
+	// 尝试新配置格式：从 project-list 数组中查找
+	type ProjectConfig struct {
+		Name string `mapstructure:"name"`
+		Dir  string `mapstructure:"dir"`
+	}
+
+	var projectList []ProjectConfig
+	err := viper.UnmarshalKey("project-list", &projectList)
+	if err == nil {
+		for _, proj := range projectList {
+			if proj.Name == projectName {
+				projectPath = proj.Dir
+				break
+			}
+		}
+	}
+
+	// 如果新配置格式没找到，尝试旧配置格式
+	if projectPath == "" {
+		projectDir := viper.GetString(projectName + ".dir")
+		if projectDir != "" {
+			projectPath = projectDir + "/" + projectName
+		}
+	}
+
+	// 如果项目路径为空，直接返回（不报错，因为可能是首次使用）
+	if projectPath == "" {
+		return
+	}
+
+	// 获取当前分支
+	branchName := git.GetCurrentBranchName(projectName, projectPath, false)
+	if branchName == "" || branchName == "获取分支名称失败" {
+		return
+	}
+
+	// 根据项目名称确定备份路径
+	var sourcePath string
+	var backupBasePath string
+
+	switch projectName {
+	case "spark-yun":
+		sourcePath = "~/.zhiqingyun/h2"
+		backupBasePath = "~/.zhiqingyun"
+	case "torch-yun":
+		sourcePath = "~/.zhishuyun/h2"
+		backupBasePath = "~/.zhishuyun"
+	default:
+		// 不支持的项目，静默返回
+		return
+	}
+
+	// 展开波浪号路径
+	sourcePathExpanded := expandPath(sourcePath)
+	backupBasePathExpanded := expandPath(backupBasePath)
+
+	// 生成备份目录名（使用分支名）
+	backupDirName := fmt.Sprintf("h2-%s", branchName)
+	backupPath := backupBasePathExpanded + "/" + backupDirName
+
+	// 删除旧的备份
+    if _, err := os.Stat(backupPath); err == nil {
+       removeCmd := exec.Command("rm", "-rf", backupPath)
+       if err := removeCmd.Run(); err != nil {
+          fmt.Printf("删除旧备份失败: %v\n", err)
+          return
+       }
+    }
+
+	// 当输入的分支和当前分支一致的时候，不删除h2
+	if(newBranchName == branchName){
+        copyCmd := exec.Command("cp", "-r", sourcePathExpanded, backupPath)
+	    if err := copyCmd.Run(); err != nil {
+		    fmt.Printf("备份数据库失败: %v\n", err)
+		    return
+	    }
+	}else{
+	    moveCmd := exec.Command("mv", sourcePathExpanded, backupPath)
+	    if err := moveCmd.Run(); err != nil {
+		    fmt.Printf("移动数据库失败: %v\n", err)
+		    return
+	    }
+	}
+
+	fmt.Printf("已备份当前分支 %s 的数据库到 %s\n", branchName, backupDirName)
+}
+
+
+func restoreH2(branchName string) {
+
+	// 获取当前项目名称 - 支持新旧配置格式
+	projectName := viper.GetString("now-project")
+	if projectName == "" {
+		projectName = viper.GetString("current-project.name")
+	}
+
+	// 获取项目路径 - 支持新旧配置格式
+	var projectPath string
+
+	// 尝试新配置格式：从 project-list 数组中查找
+	type ProjectConfig struct {
+		Name string `mapstructure:"name"`
+		Dir  string `mapstructure:"dir"`
+	}
+
+	var projectList []ProjectConfig
+	err := viper.UnmarshalKey("project-list", &projectList)
+	if err == nil {
+		for _, proj := range projectList {
+			if proj.Name == projectName {
+				projectPath = proj.Dir
+				break
+			}
+		}
+	}
+
+	// 如果新配置格式没找到，尝试旧配置格式
+	if projectPath == "" {
+		projectDir := viper.GetString(projectName + ".dir")
+		if projectDir != "" {
+			projectPath = projectDir + "/" + projectName
+		}
+	}
+
+	// 如果项目路径为空，直接返回（不报错，因为可能是首次使用）
+	if projectPath == "" {
+		return
+	}
+
+	// 根据项目名称确定备份路径
+	var sourcePath string
+	var backupBasePath string
+
+	switch projectName {
+	case "spark-yun":
+		sourcePath = "~/.zhiqingyun/h2"
+		backupBasePath = "~/.zhiqingyun"
+	case "torch-yun":
+		sourcePath = "~/.zhishuyun/h2"
+		backupBasePath = "~/.zhishuyun"
+	default:
+		// 不支持的项目，静默返回
+		return
+	}
+
+	// 展开波浪号路径
+	sourcePathExpanded := expandPath(sourcePath)
+	backupBasePathExpanded := expandPath(backupBasePath)
+
+	// 生成备份目录名（使用分支名）
+	backupDirName := fmt.Sprintf("h2-%s", branchName)
+	backupPath := backupBasePathExpanded + "/" + backupDirName
+
+	// 如果源目录已存在，先删除
+	if _, err := os.Stat(sourcePathExpanded); err == nil {
+		removeCmd := exec.Command("rm", "-rf", sourcePathExpanded)
+		if err := removeCmd.Run(); err != nil {
+			fmt.Printf("删除当前数据库失败: %v\n", err)
+			return
+		}
+	}
+
+	// 检查备份路径是否存在
+	if _, err := os.Stat(backupPath); os.IsNotExist(err) {
+		// 备份路径不存在，无需恢复
+		return
+	}
+
+	// 移动备份目录到源目录
+	moveCmd := exec.Command("mv", backupPath, sourcePathExpanded)
+	if err := moveCmd.Run(); err != nil {
+		fmt.Printf("恢复数据库失败: %v\n", err)
+		return
+	}
+
+	fmt.Printf("已恢复分支 %s 的数据库\n", branchName)
 }

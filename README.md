@@ -99,3 +99,16 @@ Available Commands:
   version     isx version                             | 查看脚手架版本
   website     isx website                             | 本地启动官网
 ```
+
+##### 源码构建
+
+```bash
+docker run --rm \
+  -v "/Users/ispong/isxcode/isx-cli":/usr/src/myapp \
+  -w /usr/src/myapp \
+  -e GOOS=darwin -e GOARCH=arm64 -e CGO_ENABLED=0 golang:1.21 go build -v -o ./target/isx_darwin_arm64
+
+# 安装
+sudo mv /Users/ispong/isxcode/isx-cli/target/isx_darwin_arm64 /usr/local/bin/isx
+sudo chmod a+x /usr/local/bin/isx
+```
