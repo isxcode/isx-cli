@@ -598,9 +598,9 @@ func restoreH2() {
 		}
 	}
 
-	// 复制备份目录到源目录
-	copyCmd := exec.Command("cp", "-r", backupPath, sourcePathExpanded)
-	if err := copyCmd.Run(); err != nil {
+	// 移动备份目录到源目录
+	moveCmd := exec.Command("mv", backupPath, sourcePathExpanded)
+	if err := moveCmd.Run(); err != nil {
 		fmt.Printf("恢复数据库失败: %v\n", err)
 		return
 	}
