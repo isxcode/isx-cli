@@ -96,6 +96,9 @@ func checkoutCmdMain(issueNumber string) {
 	// 分支名
 	branchName := "GH-" + issueNumber
 
+	// 检查进程是否运行
+	checkRunningProcess()
+
     // 备份数据库
     backupH2(branchName)
 
@@ -613,4 +616,45 @@ func restoreH2(branchName string) {
 	}
 
 	fmt.Printf("已恢复分支 %s 的数据库\n", branchName)
+}
+
+// checkRunningProcess 检查项目进程是否正在运行
+func checkRunningProcess() {
+	// 获取当前项目名称 - 支持新旧配置格式
+	projectName := viper.GetString("now-project")
+	if projectName == "" {
+		projectName = viper.GetString("current-project.name")
+	}
+
+	// 如果项目名称为空，直接返回
+	if projectName == "" {
+		return
+	}
+
+	// 根据项目名称确定要检查的进程名
+	var processName string
+	switch projectName {
+	case "spark-yun":
+		processName = "SparkYunApplication"
+	case "torch-yun":
+		processName = "TorchYunApplication"
+	default:
+		// 不支持的项目，不检查进程
+		return
+	}
+
+	// 执行 jps 命令检查进程
+	jpsCmd := exec.Command("jps")
+	output, err := jpsCmd.Output()
+	if err != nil {
+		// jps 命令执行失败，可能是 JDK 未安装，静默返回
+		return
+	}
+
+	// 检查输出中是否包含目标进程名
+	if strings.Contains(string(output), processName) {
+		fmt.Printf("⚠️  检测到 %s 项目正在运行中！\n", projectName)
+		fmt.Println("切换分支前需要先停止项目")
+		os.Exit(1)
+	}
 }
