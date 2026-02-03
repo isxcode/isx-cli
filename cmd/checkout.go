@@ -501,24 +501,28 @@ func backupH2(newBranchName string) {
 	backupDirName := fmt.Sprintf("h2-%s", branchName)
 	backupPath := backupBasePathExpanded + "/" + backupDirName
 
-	// 如果备份目录已存在，先删除
+    // 删除旧的备份
+    if _, err := os.Stat(backupPath); err == nil {
+       removeCmd := exec.Command("rm", "-rf", backupPath)
+       if err := removeCmd.Run(); err != nil {
+          fmt.Printf("删除旧备份失败: %v\n", err)
+          return
+       }
+    }
+
 	// 当输入的分支和当前分支一致的时候，不删除h2
 	if(newBranchName == branchName){
-	    if _, err := os.Stat(backupPath); err == nil {
-            removeCmd := exec.Command("rm", "-rf", backupPath)
-            if err := removeCmd.Run(); err != nil {
-                fmt.Printf("删除旧备份失败: %v\n", err)
-                return
-            }
+        copyCmd := exec.Command("cp", "-r", sourcePathExpanded, backupPath)
+	    if err := copyCmd.Run(); err != nil {
+		    fmt.Printf("备份数据库失败: %v\n", err)
+		    return
 	    }
-	}
-
-
-	// 复制源目录到备份目录
-	copyCmd := exec.Command("cp", "-r", sourcePathExpanded, backupPath)
-	if err := copyCmd.Run(); err != nil {
-		fmt.Printf("备份数据库失败: %v\n", err)
-		return
+	}else{
+	    moveCmd := exec.Command("mv", sourcePathExpanded, backupPath)
+	    if err := moveCmd.Run(); err != nil {
+		    fmt.Printf("移动数据库失败: %v\n", err)
+		    return
+	    }
 	}
 
 	fmt.Printf("已备份当前分支 %s 的数据库到 %s\n", branchName, backupDirName)
