@@ -493,6 +493,10 @@ func backupH2(newBranchName string) {
 	sourcePathExpanded := expandPath(sourcePath)
 	backupBasePathExpanded := expandPath(backupBasePath)
 
+	// 生成备份目录名（使用分支名）
+	backupDirName := fmt.Sprintf("h2-%s", branchName)
+	backupPath := backupBasePathExpanded + "/" + backupDirName
+
 	// 删除旧的备份
     if _, err := os.Stat(backupPath); err == nil {
        removeCmd := exec.Command("rm", "-rf", backupPath)
