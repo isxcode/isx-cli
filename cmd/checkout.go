@@ -96,6 +96,9 @@ func checkoutCmdMain(issueNumber string) {
 	// 分支名
 	branchName := "GH-" + issueNumber
 
+    // 备份数据库
+    backupH2()
+
 	// 本地有分支，直接切换
 	branch := getLocalBranchName(branchName)
 	if branch != "" {
@@ -416,4 +419,43 @@ func getGithubIssueBranch(issueNumber string) string {
 	}
 
 	return ""
+}
+
+func backupH2() {
+
+	// 获取当前项目名称 - 支持新旧配置格式
+	projectName := viper.GetString("now-project")
+	if projectName == "" {
+		projectName = viper.GetString("current-project.name")
+	}
+
+    // 获取项目路径
+    projectDir := viper.GetString(projectName + ".dir")
+    if projectDir != "" {
+       projectPath = projectDir + "/" + projectName
+    }
+
+    // 获取当前分支
+	branchName := git.GetCurrentBranchName(projectName, projectPath, true)
+
+	// 根据项目名称确定备份路径
+	var sourcePath string
+	var backupBasePath string
+
+	switch projectName {
+	case "spark-yun":
+		sourcePath = "~/.zhiqingyun/h2"
+		backupBasePath = "~/.zhiqingyun"
+	case "torch-yun":
+		sourcePath = "~/.zhishuyun/h2"
+		backupBasePath = "~/.zhishuyun"
+	default:
+		fmt.Printf("项目 %s 暂不支持备份功能\n", projectName)
+		os.Exit(1)
+	}
+
+	if(检查sourcePath目录存在){
+	      都要先删除backupBasePath/h2-branchName目录
+	      替换sourcePath成backupBasePath/h2-branchName目录
+	}
 }
