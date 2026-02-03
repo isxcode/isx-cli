@@ -170,6 +170,9 @@ func checkoutCmdMain(issueNumber string) {
 		createReleaseBranch(projectPath+"/"+repository.Name, branch, releaseBranchName)
 	}
 
+    // 回滚数据库
+    restoreH2(branchName)
+
 	return
 }
 
@@ -228,9 +231,6 @@ func getLocalBranchName(branchName string) string {
 			return branch
 		}
 	}
-
-    // 回滚数据库
-    restoreH2()
 
 	return ""
 }
@@ -529,7 +529,7 @@ func backupH2(newBranchName string) {
 }
 
 
-func restoreH2() {
+func restoreH2(branchName string) {
 
 	// 获取当前项目名称 - 支持新旧配置格式
 	projectName := viper.GetString("now-project")
@@ -567,12 +567,6 @@ func restoreH2() {
 
 	// 如果项目路径为空，直接返回（不报错，因为可能是首次使用）
 	if projectPath == "" {
-		return
-	}
-
-	// 获取当前分支
-	branchName := git.GetCurrentBranchName(projectName, projectPath, false)
-	if branchName == "" || branchName == "获取分支名称失败" {
 		return
 	}
 
