@@ -533,8 +533,6 @@ func backupH2(newBranchName string) {
 
 func restoreH2(branchName string) {
 
-    fmt.Printf("项目回滚数据3")
-
 	// 获取当前项目名称 - 支持新旧配置格式
 	projectName := viper.GetString("now-project")
 	if projectName == "" {
@@ -608,7 +606,8 @@ func restoreH2(branchName string) {
 	}
 
     // 移动备份目录到源目录
-	if _, err := os.Stat(backupPath); os.IsExist(err) {
+	if _, err := os.Stat(backupPath); os.IsNotExist(err) {
+	    fmt.Printf("恢复数据库存在2")
         moveCmd := exec.Command("mv", backupPath, sourcePathExpanded)
         if err := moveCmd.Run(); err != nil {
             fmt.Printf("恢复数据库失败: %v\n", err)
