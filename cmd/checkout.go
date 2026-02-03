@@ -493,35 +493,28 @@ func backupH2(newBranchName string) {
 	sourcePathExpanded := expandPath(sourcePath)
 	backupBasePathExpanded := expandPath(backupBasePath)
 
-	// 如果目标分支和当前分支相同，无需备份
-	if newBranchName == branchName {
-		return
-	}
+	// 删除旧的备份
+    if _, err := os.Stat(backupPath); err == nil {
+       removeCmd := exec.Command("rm", "-rf", backupPath)
+       if err := removeCmd.Run(); err != nil {
+          fmt.Printf("删除旧备份失败: %v\n", err)
+          return
+       }
+    }
 
-	// 检查源路径是否存在
-	if _, err := os.Stat(sourcePathExpanded); os.IsNotExist(err) {
-		// 源路径不存在，无需备份
-		return
-	}
-
-	// 生成备份目录名（使用分支名）
-	backupDirName := fmt.Sprintf("h2-%s", branchName)
-	backupPath := backupBasePathExpanded + "/" + backupDirName
-
-	// 如果备份目录已存在，先删除
-	if _, err := os.Stat(backupPath); err == nil {
-		removeCmd := exec.Command("rm", "-rf", backupPath)
-		if err := removeCmd.Run(); err != nil {
-			fmt.Printf("删除旧备份失败: %v\n", err)
-			return
-		}
-	}
-
-	// 移动源目录到备份目录
-	moveCmd := exec.Command("mv", sourcePathExpanded, backupPath)
-	if err := moveCmd.Run(); err != nil {
-		fmt.Printf("备份数据库失败: %v\n", err)
-		return
+	// 当输入的分支和当前分支一致的时候，不删除h2
+	if(newBranchName == branchName){
+        copyCmd := exec.Command("cp", "-r", sourcePathExpanded, backupPath)
+	    if err := copyCmd.Run(); err != nil {
+		    fmt.Printf("备份数据库失败: %v\n", err)
+		    return
+	    }
+	}else{
+	    moveCmd := exec.Command("mv", sourcePathExpanded, backupPath)
+	    if err := moveCmd.Run(); err != nil {
+		    fmt.Printf("移动数据库失败: %v\n", err)
+		    return
+	    }
 	}
 
 	fmt.Printf("已备份当前分支 %s 的数据库到 %s\n", branchName, backupDirName)
