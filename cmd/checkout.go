@@ -523,8 +523,96 @@ func backupH2() {
 
 func restoreH2() {
 
-       if(检查当前分支backupBasePath/h2-branchName目录存在){
-	      都要先删除sourcePath目录
-	      替换backupBasePath/h2-branchName成sourcePath目录
+	// 获取当前项目名称 - 支持新旧配置格式
+	projectName := viper.GetString("now-project")
+	if projectName == "" {
+		projectName = viper.GetString("current-project.name")
 	}
+
+	// 获取项目路径 - 支持新旧配置格式
+	var projectPath string
+
+	// 尝试新配置格式：从 project-list 数组中查找
+	type ProjectConfig struct {
+		Name string `mapstructure:"name"`
+		Dir  string `mapstructure:"dir"`
+	}
+
+	var projectList []ProjectConfig
+	err := viper.UnmarshalKey("project-list", &projectList)
+	if err == nil {
+		for _, proj := range projectList {
+			if proj.Name == projectName {
+				projectPath = proj.Dir
+				break
+			}
+		}
+	}
+
+	// 如果新配置格式没找到，尝试旧配置格式
+	if projectPath == "" {
+		projectDir := viper.GetString(projectName + ".dir")
+		if projectDir != "" {
+			projectPath = projectDir + "/" + projectName
+		}
+	}
+
+	// 如果项目路径为空，直接返回（不报错，因为可能是首次使用）
+	if projectPath == "" {
+		return
+	}
+
+	// 获取当前分支
+	branchName := git.GetCurrentBranchName(projectName, projectPath, false)
+	if branchName == "" || branchName == "获取分支名称失败" {
+		return
+	}
+
+	// 根据项目名称确定备份路径
+	var sourcePath string
+	var backupBasePath string
+
+	switch projectName {
+	case "spark-yun":
+		sourcePath = "~/.zhiqingyun/h2"
+		backupBasePath = "~/.zhiqingyun"
+	case "torch-yun":
+		sourcePath = "~/.zhishuyun/h2"
+		backupBasePath = "~/.zhishuyun"
+	default:
+		// 不支持的项目，静默返回
+		return
+	}
+
+	// 展开波浪号路径
+	sourcePathExpanded := expandPath(sourcePath)
+	backupBasePathExpanded := expandPath(backupBasePath)
+
+	// 生成备份目录名（使用分支名）
+	backupDirName := fmt.Sprintf("h2-%s", branchName)
+	backupPath := backupBasePathExpanded + "/" + backupDirName
+
+	// 检查备份路径是否存在
+	if _, err := os.Stat(backupPath); os.IsNotExist(err) {
+		// 备份路径不存在，无需恢复
+		return
+	}
+
+	// 如果源目录已存在，先删除
+	if _, err := os.Stat(sourcePathExpanded); err == nil {
+		removeCmd := exec.Command("rm", "-rf", sourcePathExpanded)
+		if err := removeCmd.Run(); err != nil {
+			fmt.Printf("删除当前数据库失败: %v\n", err)
+			return
+		}
+	}
+
+	// 移动备份目录到源目录
+	moveCmd := exec.Command("mv", backupPath, sourcePathExpanded)
+	if err := moveCmd.Run(); err != nil {
+		fmt.Printf("恢复数据库失败: %v\n", err)
+		return
+	}
+
+	fmt.Printf("已恢复分支 %s 的数据库\n", branchName)
 }
