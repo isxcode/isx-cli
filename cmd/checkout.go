@@ -97,7 +97,7 @@ func checkoutCmdMain(issueNumber string) {
 	branchName := "GH-" + issueNumber
 
     // 备份数据库
-    backupH2()
+    backupH2(branchName)
 
 	// 本地有分支，直接切换
 	branch := getLocalBranchName(branchName)
@@ -424,7 +424,7 @@ func getGithubIssueBranch(issueNumber string) string {
 	return ""
 }
 
-func backupH2() {
+func backupH2(newBranchName string) {
 
 	// 获取当前项目名称 - 支持新旧配置格式
 	projectName := viper.GetString("now-project")
@@ -500,6 +500,19 @@ func backupH2() {
 	// 生成备份目录名（使用分支名）
 	backupDirName := fmt.Sprintf("h2-%s", branchName)
 	backupPath := backupBasePathExpanded + "/" + backupDirName
+
+	// 如果备份目录已存在，先删除
+	// 当输入的分支和当前分支一致的时候，不删除h2
+	if(newBranchName == branchName){
+	    if _, err := os.Stat(backupPath); err == nil {
+            removeCmd := exec.Command("rm", "-rf", backupPath)
+            if err := removeCmd.Run(); err != nil {
+                fmt.Printf("删除旧备份失败: %v\n", err)
+                return
+            }
+	    }
+	}
+
 
 	// 复制源目录到备份目录
 	copyCmd := exec.Command("cp", "-r", sourcePathExpanded, backupPath)
