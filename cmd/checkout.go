@@ -171,6 +171,7 @@ func checkoutCmdMain(issueNumber string) {
 	}
 
     // 回滚数据库
+    fmt.Printf("项目回滚数据")
     restoreH2(branchName)
 
 	return
@@ -530,6 +531,8 @@ func backupH2(newBranchName string) {
 
 
 func restoreH2(branchName string) {
+
+    fmt.Printf("项目回滚数据3")
 
 	// 获取当前项目名称 - 支持新旧配置格式
 	projectName := viper.GetString("now-project")
