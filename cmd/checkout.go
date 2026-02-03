@@ -117,6 +117,7 @@ func checkoutCmdMain(issueNumber string) {
 	branch = getGithubBranch(branchName, "isxcode")
 	if branch != "" {
 		checkoutBranch(branch, checkoutUpstreamBranch)
+		restoreH2(branchName)
 		return
 	}
 
@@ -171,7 +172,6 @@ func checkoutCmdMain(issueNumber string) {
 	}
 
     // 回滚数据库
-    fmt.Printf("项目回滚数据")
     restoreH2(branchName)
 
 	return
