@@ -5,13 +5,10 @@ on:
     types: [published]
 
 jobs:
-
   package:
-
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Checkout isx-cli
         uses: actions/checkout@v4
 
@@ -28,7 +25,7 @@ jobs:
       - name: Setup go env
         uses: actions/setup-go@v4.1.0
         with:
-          go-version-file: './go.mod'
+          go-version-file: "./go.mod"
 
       - name: Install go modules
         run: |
@@ -39,24 +36,26 @@ jobs:
       - name: isx_windows_amd64
         run: CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o ./target/isx_windows_amd64.exe main.go
 
+      - name: isx_windows_arm64
+        run: CGO_ENABLED=0 GOOS=windows GOARCH=arm64 go build -o ./target/isx_windows_arm64.exe main.go
+
       - name: isx_linux_amd64
         run: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o ./target/isx_linux_amd64 main.go
 
-      - name: isx_darwin_arm64
-        run: CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -o ./target/isx_darwin_arm64 main.go
+      - name: isx_linux_arm64
+        run: CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -o ./target/isx_linux_arm64 main.go
 
       - name: isx_darwin_amd64
         run: CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o ./target/isx_darwin_amd64 main.go
 
+      - name: isx_darwin_arm64
+        run: CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -o ./target/isx_darwin_arm64 main.go
+
       - name: Upload BinaryFile
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: i-artifact
-          path:
-            ./target/isx_windows_amd64.exe
-            ./target/isx_linux_amd64
-            ./target/isx_darwin_arm64
-            ./target/isx_darwin_amd64
+          path: target/
 
       - name: Publish to github
         uses: softprops/action-gh-release@v1
