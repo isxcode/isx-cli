@@ -1,24 +1,24 @@
 name: release project
 
 on:
-  issues:
-    types:
-      - closed
+  workflow_dispatch:
+
+# on:
+#   issues:
+#     types:
+#       - closed
 
 jobs:
-
   package:
-
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Checkout isx-cli
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.ADMIN_GITHUB_TOKEN }}
           repository: "isxcode/isx-cli"
-          ref: 'main'
+          ref: "main"
 
       - name: Cache go modules
         uses: actions/cache@v3
@@ -33,7 +33,7 @@ jobs:
       - name: Setup go env
         uses: actions/setup-go@v4.1.0
         with:
-          go-version-file: './go.mod'
+          go-version-file: "./go.mod"
 
       - name: Install go modules
         run: |
@@ -67,5 +67,5 @@ jobs:
         with:
           region: oss-cn-shanghai
           bucket: isxcode
-          source-dir: 'target'
-          dest-dir: 'zhixingyun'
+          source-dir: "target"
+          dest-dir: "zhixingyun"
