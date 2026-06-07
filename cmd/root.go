@@ -173,6 +173,11 @@ project-list:
       describe: 至行云-至爻数据开发规范脚手架
       repository-url: https://github.com/isxcode/isx-cli.git
       dir: ""
+    - name: ispong-blogs
+      describe: 博客项目
+      repository-owner: ispong
+      repository-url: https://github.com/ispong/ispong-blogs.git
+      dir: ""
 now-project: ""
 user:
     account: ""
@@ -191,6 +196,42 @@ user:
 				os.Exit(1)
 			}
 		}
+	}
+
+	ensureBlogProjectConfig()
+}
+
+func ensureBlogProjectConfig() {
+	projectListRaw := viper.Get("project-list")
+	projectList, ok := projectListRaw.([]interface{})
+	if !ok {
+		return
+	}
+
+	for _, item := range projectList {
+		project, ok := item.(map[string]interface{})
+		if !ok {
+			continue
+		}
+
+		if name, exists := project["name"]; exists && name == blogProjectName {
+			return
+		}
+	}
+
+	projectList = append(projectList, map[string]interface{}{
+		"name":             blogProjectName,
+		"describe":         "博客项目",
+		"repository-owner": blogRepositoryOwner,
+		"repository-url":   blogRepositoryURL,
+		"dir":              "",
+	})
+
+	viper.Set("project-list", projectList)
+	err := viper.WriteConfig()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
 	}
 }
 

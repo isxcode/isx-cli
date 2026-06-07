@@ -9,6 +9,10 @@ import (
 	"github.com/spf13/viper"
 )
 
+const blogProjectName = "ispong-blogs"
+const blogRepositoryOwner = "ispong"
+const blogRepositoryURL = "https://github.com/ispong/ispong-blogs.git"
+
 func init() {
 	blogCmd.AddCommand(blogPushCmd)
 	blogCmd.AddCommand(blogPullCmd)

@@ -229,7 +229,7 @@ func ensureDirectoryExists(path string) error {
 	return nil
 }
 
-func cloneCode(isxcodeRepository string, path string, name string, isMain bool) {
+func cloneCode(isxcodeRepository string, path string, name string, repositoryOwner string, isMain bool) {
 
 	// 替换下载链接
 	isxcodeRepository = strings.Replace(isxcodeRepository, "https://", "https://"+common.GetToken()+"@", -1)
@@ -249,7 +249,7 @@ func cloneCode(isxcodeRepository string, path string, name string, isMain bool) 
 	}
 
 	// 将origin改为个人的
-	userRepository := strings.Replace(isxcodeRepository, "isxcode", viper.GetString("user.account"), -1)
+	userRepository := strings.Replace(isxcodeRepository, repositoryOwner, viper.GetString("user.account"), 1)
 	updateOriginCommand := "git remote set-url origin " + userRepository + " && git fetch origin"
 	fmt.Println(updateOriginCommand)
 	updateOriginCmd := exec.Command("bash", "-c", updateOriginCommand)
@@ -287,6 +287,7 @@ func cloneProjectCode() {
 	type ProjectConfig struct {
 		Name          string          `mapstructure:"name"`
 		Describe      string          `mapstructure:"describe"`
+		RepositoryOwner string        `mapstructure:"repository-owner"`
 		RepositoryURL string          `mapstructure:"repository-url"`
 		Dir           string          `mapstructure:"dir"`
 		SubRepository []SubRepository `mapstructure:"sub-repository"`
@@ -308,6 +309,10 @@ func cloneProjectCode() {
 
 	selectedProject := projectList[projectNumber]
 	mainRepository := selectedProject.RepositoryURL
+	repositoryOwner := selectedProject.RepositoryOwner
+	if repositoryOwner == "" {
+		repositoryOwner = "isxcode"
+	}
 
 	if mainRepository == "" {
 		fmt.Println("项目仓库URL为空")
@@ -316,10 +321,10 @@ func cloneProjectCode() {
 
 	// 下载主项目代码
 	if !github.IsRepoForked(viper.GetString("user.account"), projectName) {
-		github.ForkRepository("isxcode", projectName, "")
-		cloneCode(mainRepository, projectPath, projectName, true)
+		github.ForkRepository(repositoryOwner, projectName, "")
+		cloneCode(mainRepository, projectPath, projectName, repositoryOwner, true)
 	} else {
-		cloneCode(mainRepository, projectPath, projectName, true)
+		cloneCode(mainRepository, projectPath, projectName, repositoryOwner, true)
 	}
 
 	// 下载子项目代码 - 支持新配置格式
@@ -349,13 +354,13 @@ func cloneProjectCode() {
 			forkRepository := github.ForkRepository("isxcode", repository.Name, "")
 			if forkRepository {
 				fmt.Printf("开始下载子项目: %s\n", repository.Name)
-				cloneCode(repository.Url, projectPath+"/"+projectName, repository.Name, false)
+				cloneCode(repository.Url, projectPath+"/"+projectName, repository.Name, "isxcode", false)
 			} else {
 				fmt.Printf("Fork子项目失败: %s\n", repository.Name)
 			}
 		} else {
 			fmt.Printf("子项目已Fork，直接下载: %s\n", repository.Name)
-			cloneCode(repository.Url, projectPath+"/"+projectName, repository.Name, false)
+			cloneCode(repository.Url, projectPath+"/"+projectName, repository.Name, "isxcode", false)
 		}
 	}
 }
@@ -379,5 +384,8 @@ func saveConfig() {
 	// 保存更新后的项目列表
 	viper.Set("project-list", projectList)
 	viper.Set("now-project", projectName)
+	if projectName == blogProjectName {
+		viper.Set("blog.dir", projectPath+"/"+projectName)
+	}
 	viper.WriteConfig()
 }

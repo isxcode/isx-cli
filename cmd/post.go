@@ -40,12 +40,12 @@ func postCmdMain(args []string) {
 	title := titleFirst + " " + titleLast
 	postPath := folder + "/" + titleFirst + "/" + title
 
-	cmd := exec.Command("hexo", "new", titleFirst, "-p", postPath, title)
+	cmd := exec.Command("npx", "hexo", "new", titleFirst, "-p", postPath, title)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	cmd.Dir = getBlogDir()
 
-	fmt.Println("hexo new " + titleFirst + " -p \"" + postPath + "\" \"" + title + "\"")
+	fmt.Println("npx hexo new " + titleFirst + " -p \"" + postPath + "\" \"" + title + "\"")
 
 	err := cmd.Run()
 	if err != nil {

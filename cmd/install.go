@@ -73,6 +73,13 @@ func installCmdMain() {
 		os.Exit(1)
 	}
 
+	if projectName == blogProjectName {
+		viper.Set("blog.dir", projectPath)
+		viper.WriteConfig()
+		installBlogDependencies(projectPath)
+		return
+	}
+
 	var gradleCmd *exec.Cmd
 	if runtime.GOOS == "windows" {
 		gradleCmd = exec.Command("bash", "-c", "./gradlew.bat install -Dfile.encoding=UTF-8")
@@ -90,4 +97,18 @@ func installCmdMain() {
 	} else {
 		fmt.Println("执行成功")
 	}
+}
+
+func installBlogDependencies(projectPath string) {
+	installCmd := exec.Command("npm", "install")
+	installCmd.Stdout = os.Stdout
+	installCmd.Stderr = os.Stderr
+	installCmd.Dir = projectPath
+	err := installCmd.Run()
+	if err != nil {
+		log.Fatal(err)
+		os.Exit(1)
+	}
+
+	fmt.Println("博客依赖安装成功")
 }
