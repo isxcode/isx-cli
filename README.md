@@ -3,6 +3,15 @@
 ##### 在线安装
 
 ```bash
+useradd ispong
+passwd ispong  
+usermod -aG wheel ispong
+sudo su ispong
+sudo yum install -y git
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+echo >> /home/ispong/.bashrc
+echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv bash)"' >> /home/ispong/.bashrc
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv bash)"
 brew tap ispong/tap
 brew install isx
 ```
@@ -13,7 +22,7 @@ brew install isx
 docker run --rm \
   -v "/Volumes/Data/Code/isx-cli":/usr/src/myapp \
   -w /usr/src/myapp \
-  -e GOOS=darwin \
+  -e GOOS=darwin \  
   -e GOARCH=arm64 \
   -e CGO_ENABLED=0 \
   golang:1.21 go build -v -o ./target/isx
@@ -24,7 +33,12 @@ sudo mv /Volumes/Data/Code/isx-cli/target/isx /usr/local/bin/isx
 
 ```bash
 isx env
-sdkman
+sdk install java 17.0.19-amzn
+sdk default java 17.0.19-amzn  
+sdk install gradle 8.7 
+sdk default gradle 8.7 
+fnm install v18.14.2
+fnm use v18.14.2
 ```
 
 ##### 开发流程
