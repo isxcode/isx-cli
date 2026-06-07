@@ -82,11 +82,32 @@ func pullCmdMain() {
 
 func rebaseBranch(path string, branchName string) {
 
-	// rebase远程的代码
-	rebaseCommand := "git fetch upstream && git rebase upstream/" + branchName
-	rebaseCmd := exec.Command("bash", "-c", rebaseCommand)
-	rebaseCmd.Stdout = os.Stdout
-	rebaseCmd.Stderr = os.Stderr
-	rebaseCmd.Dir = path
-	rebaseCmd.Run()
+	runGitPullCommand(path, "git", "fetch", "origin")
+	runGitPullCommand(path, "git", "fetch", "upstream")
+
+	if hasRemoteBranch(path, "origin", branchName) {
+		runGitPullCommand(path, "git", "rebase", "origin/"+branchName)
+		return
+	}
+
+	runGitPullCommand(path, "git", "rebase", "upstream/"+branchName)
+}
+
+func hasRemoteBranch(path string, remoteName string, branchName string) bool {
+	cmd := exec.Command("git", "rev-parse", "--verify", "--quiet", remoteName+"/"+branchName)
+	cmd.Dir = path
+	err := cmd.Run()
+	return err == nil
+}
+
+func runGitPullCommand(path string, name string, args ...string) {
+	cmd := exec.Command(name, args...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	cmd.Dir = path
+	err := cmd.Run()
+	if err != nil {
+		fmt.Println("执行失败:", err)
+		os.Exit(1)
+	}
 }
