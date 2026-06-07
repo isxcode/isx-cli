@@ -1,32 +1,10 @@
-# 至爻数据开发规范脚手架
+# 至爻项目开发脚手架
 
-##### 在线安装
+##### 安装命令
 
 ```bash
-useradd ispong
-passwd ispong  
-usermod -aG wheel ispong
-sudo su ispong
-sudo yum install -y git
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-echo >> /home/ispong/.bashrc
-echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv bash)"' >> /home/ispong/.bashrc
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv bash)"
 brew tap ispong/tap
 brew install isx
-```
-
-##### 本地安装
-
-```bash
-docker run --rm \
-  -v "/Volumes/Data/Code/isx-cli":/usr/src/myapp \
-  -w /usr/src/myapp \
-  -e GOOS=darwin \  
-  -e GOARCH=arm64 \
-  -e CGO_ENABLED=0 \
-  golang:1.21 go build -v -o ./target/isx
-sudo mv /Volumes/Data/Code/isx-cli/target/isx /usr/local/bin/isx
 ```
 
 ##### 安装环境
@@ -98,7 +76,7 @@ Available Commands:
   choose      isx choose                              | 切换项目
   clean       isx clean                               | 清除项目缓存
   clone       isx clone                               | 下载代码
-  config      isx config                                | 查看脚手架配置
+  config      isx config                              | 查看脚手架配置
   delete      isx delete <issue_number>               | 删除远程分支
   docker      isx docker                              | 构建Docker镜像
   env         isx env                                 | 安装本地开发环境
@@ -118,7 +96,7 @@ Available Commands:
   push        isx push                                | 提交代码
   remove      isx remove                              | 删除本地项目
   rollback    isx rollback                            | 回滚项目资源
-  set         isx set <config_key> <value>             | 修改脚手架配置
+  set         isx set <config_key> <value>            | 修改脚手架配置
   start       isx start                               | 启动项目
   upgrade     isx upgrade                             | 升级脚手架
   upload      isx upload <target>                     | 发布本地安装包
