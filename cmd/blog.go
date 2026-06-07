@@ -46,14 +46,44 @@ var blogPullCmd = &cobra.Command{
 func getBlogDir() string {
 	blogDir := viper.GetString("blog.dir")
 	if blogDir == "" {
-		fmt.Println("请先使用【isx set blog.dir <blog_path>】设置博客目录")
+		fmt.Println("请先使用【isx clone】下载博客项目，或使用【isx set blog.dir <blog_path>】设置博客目录")
 		os.Exit(1)
 	}
 	return blogDir
 }
 
-func blogPushCmdMain() {
+func checkBlogProject() string {
 	blogDir := getBlogDir()
+
+	if _, err := os.Stat(blogDir); os.IsNotExist(err) {
+		fmt.Println("博客目录不存在：" + blogDir)
+		fmt.Println("请先使用【isx clone】下载博客项目，或使用【isx set blog.dir <blog_path>】设置博客目录")
+		os.Exit(1)
+	}
+
+	if _, err := os.Stat(blogDir + "/package.json"); os.IsNotExist(err) {
+		fmt.Println("当前目录不是有效的Hexo博客项目：" + blogDir)
+		fmt.Println("请确认【blog.dir】配置的是博客项目根目录")
+		os.Exit(1)
+	}
+
+	return blogDir
+}
+
+func checkBlogHexoDependencies() string {
+	blogDir := checkBlogProject()
+
+	if _, err := os.Stat(blogDir + "/node_modules/.bin/hexo"); os.IsNotExist(err) {
+		fmt.Println("博客项目Hexo依赖未安装")
+		fmt.Println("开始自动安装博客依赖")
+		installBlogDependencies(blogDir)
+	}
+
+	return blogDir
+}
+
+func blogPushCmdMain() {
+	blogDir := checkBlogHexoDependencies()
 
 	commands := [][]string{
 		{"git", "add", "."},
@@ -77,7 +107,7 @@ func blogPushCmdMain() {
 }
 
 func blogPullCmdMain() {
-	blogDir := getBlogDir()
+	blogDir := checkBlogProject()
 
 	commands := [][]string{
 		{"git", "fetch", "origin"},
