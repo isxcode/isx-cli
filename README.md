@@ -49,8 +49,10 @@ isx push -f
 ##### 博客命令
 
 ```bash
-# 设置博客仓库目录
-isx set blog.dir /path/to/ispong-blogs
+# 下载博客项目，选择 ispong-blogs
+isx clone
+# 安装博客依赖
+isx install
 # 新建博客
 isx post mysql install
 # 拉取博客仓库
