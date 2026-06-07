@@ -3,22 +3,9 @@
 ##### 在线安装
 
 ```bash
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/isxcode/isx-cli/main/install.sh)"
+brew tap ispong/tap
+brew install isx
 ```
-
-##### 国内安装
-
-```bash
-sh -c "$(curl -fsSL https://gitee.com/isxcode/isx-cli/raw/main/install.sh)"
-```
-
-##### 安装包下载
-
-- [isx_linux_amd64](https://isxcode.oss-cn-shanghai.aliyuncs.com/zhixingyun/isx_linux_amd64)
-- [isx_windows_amd64.exe](https://isxcode.oss-cn-shanghai.aliyuncs.com/zhixingyun/isx_windows_amd64.exe)
-- [isx_windows_arm64.exe](https://isxcode.oss-cn-shanghai.aliyuncs.com/zhixingyun/isx_windows_arm64.exe)
-- [isx_darwin_amd64](https://isxcode.oss-cn-shanghai.aliyuncs.com/zhixingyun/isx_darwin_amd64)
-- [isx_darwin_arm64](https://isxcode.oss-cn-shanghai.aliyuncs.com/zhixingyun/isx_darwin_arm64)
 
 ##### 开发流程
 
@@ -44,21 +31,6 @@ isx pr <issue_number>
 isx pull 
 # 10.修复冲突,重新提交推送代码
 isx push -f
-```
-
-##### 博客命令
-
-```bash
-# 下载博客项目，选择 ispong-blogs
-isx clone
-# 安装博客依赖
-isx install
-# 新建博客
-isx post mysql install
-# 拉取博客仓库
-isx blog pull
-# 提交博客仓库
-isx blog push
 ```
 
 ##### 使用说明
@@ -90,7 +62,7 @@ Available Commands:
   choose      isx choose                              | 切换项目
   clean       isx clean                               | 清除项目缓存
   clone       isx clone                               | 下载代码
-  config      isx config                              | 查看脚手架配置
+  config      isx config                                | 查看脚手架配置
   delete      isx delete <issue_number>               | 删除远程分支
   docker      isx docker                              | 构建Docker镜像
   format      isx format                              | 代码格式化
@@ -109,7 +81,7 @@ Available Commands:
   push        isx push                                | 提交代码
   remove      isx remove                              | 删除本地项目
   rollback    isx rollback                            | 回滚项目资源
-  set         isx set <config_key> <value>            | 修改脚手架配置
+  set         isx set <config_key> <value>             | 修改脚手架配置
   start       isx start                               | 启动项目
   upgrade     isx upgrade                             | 升级脚手架
   upload      isx upload <target>                     | 发布本地安装包
