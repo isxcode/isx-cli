@@ -7,6 +7,19 @@ brew tap ispong/tap
 brew install isx
 ```
 
+##### 本地安装
+
+```bash
+docker run --rm \
+  -v "/Volumes/Data/Code/isx-cli":/usr/src/myapp \
+  -w /usr/src/myapp \
+  -e GOOS=darwin \
+  -e GOARCH=arm64 \
+  -e CGO_ENABLED=0 \
+  golang:1.21 go build -v -o ./target/isx
+sudo mv /Volumes/Data/Code/isx-cli/target/isx /usr/local/bin/isx
+```
+
 ##### 安装环境
 
 ```bash
