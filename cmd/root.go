@@ -237,5 +237,8 @@ func ensureBlogProjectConfig() {
 
 func printCommand(commandDesc string, length int) string {
 
+	if len(commandDesc) >= length {
+		return commandDesc
+	}
 	return commandDesc + strings.Repeat(" ", length-len(commandDesc))
 }
