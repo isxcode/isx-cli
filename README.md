@@ -7,6 +7,13 @@ brew tap ispong/tap
 brew install isx
 ```
 
+##### 安装环境
+
+```bash
+isx env
+sdkman
+```
+
 ##### 开发流程
 
 ```bash
@@ -40,6 +47,8 @@ isx push -f
 isx -h
 # 命令详解
 isx login -h
+# 安装本地开发环境
+isx env
 ```
 
 ```text
@@ -65,6 +74,7 @@ Available Commands:
   config      isx config                                | 查看脚手架配置
   delete      isx delete <issue_number>               | 删除远程分支
   docker      isx docker                              | 构建Docker镜像
+  env         isx env                                 | 安装本地开发环境
   format      isx format                              | 代码格式化
   frontend    isx frontend                            | 本地启动前端
   git         isx git <git_command>                   | 执行git命令
