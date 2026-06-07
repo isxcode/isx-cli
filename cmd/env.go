@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
+	"runtime"
+	"strings"
 
 	"github.com/isxcode/isx-cli/common"
 	"github.com/spf13/cobra"
@@ -31,6 +34,7 @@ func envCmdMain() {
 	installBrewFormula("fnm", "Node.js版本管理工具")
 	installBrewFormula("pyenv", "Python版本管理工具")
 	installSdkman()
+	configureShellEnv()
 
 	fmt.Println("本地开发环境安装完成")
 }
@@ -93,6 +97,79 @@ func runEnvCommand(name string, args ...string) {
 	err := cmd.Run()
 	if err != nil {
 		fmt.Println("执行失败:", err)
+		os.Exit(1)
+	}
+}
+
+func configureShellEnv() {
+	shellName := getCurrentShellName()
+	shellConfigPath := getShellConfigPath(shellName)
+	shellConfig := buildShellConfig(shellName)
+
+	appendShellConfig(shellConfigPath, shellConfig)
+
+	fmt.Println("环境变量已写入：" + shellConfigPath)
+	fmt.Println("当前终端执行以下命令后即可使用 sdk、fnm、pyenv：")
+	fmt.Println("source " + shellConfigPath)
+}
+
+func getCurrentShellName() string {
+	shellPath := os.Getenv("SHELL")
+	shellName := filepath.Base(shellPath)
+	if shellName == "bash" || shellName == "zsh" {
+		return shellName
+	}
+
+	if runtime.GOOS == "darwin" {
+		return "zsh"
+	}
+	return "bash"
+}
+
+func getShellConfigPath(shellName string) string {
+	home := common.HomeDir()
+	if shellName == "zsh" {
+		return home + "/.zshrc"
+	}
+	return home + "/.bashrc"
+}
+
+func buildShellConfig(shellName string) string {
+	return `
+# >>> isx env >>>
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] && source "$SDKMAN_DIR/bin/sdkman-init.sh"
+
+command -v fnm >/dev/null 2>&1 && eval "$(fnm env --shell ` + shellName + `)"
+command -v pyenv >/dev/null 2>&1 && eval "$(pyenv init -)"
+# <<< isx env <<<
+`
+}
+
+func appendShellConfig(path string, shellConfig string) {
+	const startMark = "# >>> isx env >>>"
+
+	contentBytes, err := os.ReadFile(path)
+	if err == nil && strings.Contains(string(contentBytes), startMark) {
+		fmt.Println("环境变量配置已存在：" + path)
+		return
+	}
+
+	file, err := os.OpenFile(path, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
+	if err != nil {
+		fmt.Println("写入环境变量配置失败:", err)
+		os.Exit(1)
+	}
+	defer func(file *os.File) {
+		err := file.Close()
+		if err != nil {
+			fmt.Println("关闭配置文件失败:", err)
+		}
+	}(file)
+
+	_, err = file.WriteString(shellConfig)
+	if err != nil {
+		fmt.Println("写入环境变量配置失败:", err)
 		os.Exit(1)
 	}
 }
