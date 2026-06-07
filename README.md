@@ -46,6 +46,19 @@ isx pull
 isx push -f
 ```
 
+##### 博客命令
+
+```bash
+# 设置博客仓库目录
+isx set blog.dir /path/to/ispong-blogs
+# 新建博客
+isx post mysql install
+# 拉取博客仓库
+isx blog pull
+# 提交博客仓库
+isx blog push
+```
+
 ##### 使用说明
 
 ```bash
@@ -70,6 +83,7 @@ isx login -h
 Available Commands:
   backend     isx backend                             | 本地启动后端
   backup      isx backup <comment>                    | 备份项目资源
+  blog        isx blog <command>                      | 博客管理
   checkout    isx checkout <issue_number>             | 切换分支
   choose      isx choose                              | 切换项目
   clean       isx clean                               | 清除项目缓存
@@ -87,6 +101,7 @@ Available Commands:
   logout      isx logout                              | 退出登录
   now         isx now                                 | 查看当前信息
   package     isx package                             | 源码打包
+  post        isx post <category> <title>             | 新建博客
   pr          isx pr <issue_number>                   | 提交pr
   pull        isx pull                                | 拉取代码
   push        isx push                                | 提交代码
@@ -98,17 +113,4 @@ Available Commands:
   upload      isx upload <target>                     | 发布本地安装包
   version     isx version                             | 查看脚手架版本
   website     isx website                             | 本地启动官网
-```
-
-##### 源码构建
-
-```bash
-docker run --rm \
-  -v "/Users/ispong/isxcode/isx-cli":/usr/src/myapp \
-  -w /usr/src/myapp \
-  -e GOOS=darwin -e GOARCH=arm64 -e CGO_ENABLED=0 golang:1.21 go build -v -o ./target/isx_darwin_arm64
-
-# 安装
-sudo mv /Users/ispong/isxcode/isx-cli/target/isx_darwin_arm64 /usr/local/bin/isx
-sudo chmod a+x /usr/local/bin/isx
 ```
