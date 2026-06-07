@@ -75,29 +75,26 @@ func prCmdMain(issueNumber string) {
 func createPr(titleName string, branchName string, name string) {
 
 	type ReqJSON struct {
-		Title    string `json:"title"`
-		Body     string `json:"body"`
-		HeadRepo string `json:"head_repo"`
-		Head     string `json:"head"`
-		Base     string `json:"base"`
+		Title string `json:"title"`
+		Body  string `json:"body"`
+		Head  string `json:"head"`
+		Base  string `json:"base"`
 	}
 
 	reqJson := ReqJSON{}
 	if prMainFlag {
 		reqJson = ReqJSON{
-			Title:    titleName,
-			Head:     branchName,
-			HeadRepo: "isxcode/" + name,
-			Base:     "main",
-			Body:     branchName,
+			Title: titleName,
+			Head:  branchName,
+			Base:  "main",
+			Body:  branchName,
 		}
 	} else {
 		reqJson = ReqJSON{
-			Title:    titleName,
-			Head:     branchName,
-			HeadRepo: viper.GetString("user.account") + "/" + name,
-			Base:     branchName,
-			Body:     branchName,
+			Title: titleName,
+			Head:  viper.GetString("user.account") + ":" + branchName,
+			Base:  branchName,
+			Body:  branchName,
 		}
 	}
 
@@ -122,7 +119,7 @@ func createPr(titleName string, branchName string, name string) {
 	}(resp.Body)
 
 	// 读取响应体内容
-	_, err = io.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println("读取响应体失败:", err)
 		os.Exit(1)
@@ -136,7 +133,7 @@ func createPr(titleName string, branchName string, name string) {
 	} else if resp.StatusCode == http.StatusUnprocessableEntity {
 		fmt.Println("没有提交内容或者重复提交")
 	} else {
-		fmt.Println("无法验证token合法性，登录失败")
+		printGithubApiError("创建PR失败", resp.StatusCode, body)
 	}
 }
 
@@ -177,9 +174,24 @@ func getGithubIssueTitle(issueNumber string, projectName string) string {
 		fmt.Println("issue不存在")
 		os.Exit(1)
 	} else {
-		fmt.Println("无法验证token合法性，登录失败")
+		printGithubApiError("获取issue失败", resp.StatusCode, body)
 		os.Exit(1)
 	}
 
 	return ""
+}
+
+func printGithubApiError(action string, statusCode int, body []byte) {
+	type GithubError struct {
+		Message string `json:"message"`
+	}
+
+	var githubError GithubError
+	err := json.Unmarshal(body, &githubError)
+	if err == nil && githubError.Message != "" {
+		fmt.Printf("%s，状态码：%d，原因：%s\n", action, statusCode, githubError.Message)
+		return
+	}
+
+	fmt.Printf("%s，状态码：%d，响应：%s\n", action, statusCode, string(body))
 }
