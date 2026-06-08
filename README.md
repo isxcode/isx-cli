@@ -4,6 +4,7 @@
 
 ```bash
 brew tap ispong/tap
+brew update
 brew install isx
 ```
 
@@ -52,8 +53,6 @@ isx push -f
 isx -h
 # 命令详解
 isx login -h
-# 安装本地开发环境
-isx env
 ```
 
 ```text
@@ -65,12 +64,11 @@ isx env
  |  |\    ||  |  |      \     ||     | |  | 
 |____|\___||__|__|       \____||_____||____|
 
-至行云-至爻数据开发规范脚手架
+至行云-至爻项目开发脚手架
 代码仓库：https://github.com/isxcode/isx-cli
 
 Available Commands:
-  backend     isx backend                             | 本地启动后端
-  backup      isx backup <comment>                    | 备份项目资源
+  backend     isx backend                             | 启动后端
   blog        isx blog <command>                      | 博客管理
   checkout    isx checkout <issue_number>             | 切换分支
   choose      isx choose                              | 切换项目
@@ -81,10 +79,9 @@ Available Commands:
   docker      isx docker                              | 构建Docker镜像
   env         isx env                                 | 安装本地开发环境
   format      isx format                              | 代码格式化
-  frontend    isx frontend                            | 本地启动前端
+  frontend    isx frontend                            | 启动前端
   git         isx git <git_command>                   | 执行git命令
   gradle      isx gradle <gradle_command>             | 执行gradle命令
-  install     isx install                             | 安装依赖
   issue       isx issue                               | 选择任务
   login       isx login                               | 用户登录
   logout      isx logout                              | 退出登录
@@ -95,11 +92,9 @@ Available Commands:
   pull        isx pull                                | 拉取代码
   push        isx push                                | 提交代码
   remove      isx remove                              | 删除本地项目
-  rollback    isx rollback                            | 回滚项目资源
   set         isx set <config_key> <value>            | 修改脚手架配置
   start       isx start                               | 启动项目
   upgrade     isx upgrade                             | 升级脚手架
-  upload      isx upload <target>                     | 发布本地安装包
   version     isx version                             | 查看脚手架版本
   website     isx website                             | 本地启动官网
 ```
