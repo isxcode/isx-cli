@@ -16,8 +16,8 @@ sdk install java 17.0.19-amzn
 sdk default java 17.0.19-amzn  
 sdk install gradle 8.7 
 sdk default gradle 8.7 
-fnm install v18.14.2
-fnm use v18.14.2
+fnm install v22.22.3
+fnm use v22.22.3
 ```
 
 ##### 开发流程
