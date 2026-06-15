@@ -18,6 +18,7 @@ sdk install gradle 8.7
 sdk default gradle 8.7 
 fnm install v22.22.3
 fnm use v22.22.3
+fnm default v22.22.3
 npm install -g pnpm
 ```
 
